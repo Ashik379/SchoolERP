@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Date Sheet | Vidya Vikas ERP</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #f3f4f6;
+            --sidebar-width: 270px;
+            --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --text-dark: #111827;
+            --text-body: #374151;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-body);
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            height: 100vh;
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #111827;
+            background-image: radial-gradient(at 0% 0%, #1f2937 0px, transparent 50%), radial-gradient(at 100% 100%, #000000 0px, transparent 50%);
+            color: #a3aed0;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: 0.3s;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+
+        .brand-box {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .user-profile {
+            background: rgba(255, 255, 255, 0.03);
+            margin: 0 15px 20px;
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            margin: 5px 15px;
+            border-radius: 12px;
+            color: #a3aed0;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.4);
+            transform: translateX(5px);
+        }
+
+        .menu-item i.menu-icon {
+            width: 25px;
+            font-size: 18px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .submenu {
+            background: rgba(0, 0, 0, 0.2);
+            margin: 0 25px;
+            border-radius: 10px;
+            display: none;
+            padding: 5px 0;
+        }
+
+        .submenu a {
+            padding: 10px 15px;
+            display: block;
+            color: #8892b0;
+            text-decoration: none;
+            font-size: 13px;
+            transition: 0.2s;
+            border-radius: 8px;
+        }
+
+        .submenu a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 20px;
+        }
+
+        /* --- CONTENT --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            transition: 0.3s;
+        }
+
+        .glass-header {
+            background: white;
+            border-radius: 15px;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            border-left: 5px solid #1e3c72;
+        }
+
+        .premium-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            height: 100%;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 8px;
+            padding: 10px 12px;
+            border: 1px solid #9ca3af;
+            background: #fff;
+            color: #000;
+            font-weight: 500;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #1e3c72;
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
+        }
+
+        label {
+            color: #111827;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        /* Table Custom */
+        .table-custom {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #e5e7eb;
+            font-size: 13px;
+        }
+
+        .table-custom th {
+            background: #1f2937;
+            color: white;
+            padding: 12px;
+        }
+
+        .table-custom td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: middle;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -270px;
+            }
+
+            .sidebar.active {
+                margin-left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="brand-box">
+            <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
+            <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px; text-transform: uppercase;">ERP
+                Solution 2.0</small>
+        </div>
+
+        <div class="user-profile">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="45">
+            <div class="ms-3">
+                <h6 class="mb-0 text-white fw-bold">Administrator</h6><span
+                    class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25"
+                    style="font-size: 10px;">● Active</span>
+            </div>
+        </div>
+
+        <div class="sidebar-menu mt-3">
+            <small class="px-4 text-secondary fw-bold text-uppercase" style="font-size: 11px;">Main Menu</small>
+
+            <a href="/" class="menu-item mt-2"><span><i class="fas fa-tachometer-alt menu-icon"></i>
+                    Dashboard</span></a>
+
+            <div class="menu-item" onclick="toggleSubmenu('masterSub')"><span><i class="fas fa-database menu-icon"></i>
+                    Master Record</span><i class="fas fa-chevron-right arrow" id="arr_masterSub"></i></div>
+            <div class="submenu" id="masterSub"><a href="/masters/class">Class Master</a><a
+                    href="/masters/section">Section Master</a><a href="/masters/transport">Transport</a><a
+                    href="/masters/ledger">Ledger</a></div>
+
+            <a href="/admission" class="menu-item"><span><i class="fas fa-user-plus menu-icon"></i> Admission</span></a>
+            <a href="/students" class="menu-item"><span><i class="fas fa-users menu-icon"></i> Students</span></a>
+
+            <div class="menu-item" onclick="toggleSubmenu('attSub')"><span><i class="fas fa-calendar-alt menu-icon"></i>
+                    Attendance</span><i class="fas fa-chevron-right arrow" id="arr_attSub"></i></div>
+            <div class="submenu" id="attSub"><a href="/attendance/entry">Mark Attendance</a><a
+                    href="/attendance/view">View Register</a></div>
+
+            <div class="menu-item" onclick="toggleSubmenu('feeSub')"><span><i class="fas fa-wallet menu-icon"></i>
+                    Fees</span><i class="fas fa-chevron-right arrow" id="arr_feeSub"></i></div>
+            <div class="submenu" id="feeSub"><a href="/fees/collect">Collect Fee</a><a href="/fees/schedule">Fee
+                    Heads</a><a href="/fees/master">Fee Plans</a></div>
+
+            <div class="menu-item active" onclick="toggleSubmenu('examSub')"><span><i
+                        class="fas fa-file-signature menu-icon"></i> Examinations</span><i
+                    class="fas fa-chevron-down arrow" id="arr_examSub"></i></div>
+            <div class="submenu" id="examSub" style="display: block;">
+                <a href="/exams/master">Exam Setup</a>
+                <a href="/exams/schedule" class="text-white fw-bold"
+                    style="background: rgba(255,255,255,0.1); padding-left: 20px;">Date Sheet</a>
+                <a href="/exams/admit-card">Admit Card</a>
+            </div>
+
+            <div class="menu-item" onclick="toggleSubmenu('resSub')"><span><i class="fas fa-poll menu-icon"></i>
+                    Results</span><i class="fas fa-chevron-right arrow" id="arr_resSub"></i></div>
+            <div class="submenu" id="resSub"><a href="/results/entry">Marks Entry</a><a
+                    href="/results/print-selection">Report Card</a><a href="/results/manager">Result Manager</a></div>
+
+            <a href="/fees/id-cards-panel" class="menu-item"><span><i class="fas fa-id-badge menu-icon"></i> ID
+                    Cards</span></a>
+
+            <div class="mt-5 px-3 mb-4"><a href="/auth/logout" class="btn w-100 fw-bold text-white"
+                    style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;"><i
+                        class="fas fa-power-off me-2"></i> Logout</a></div>
+        </div>
+    </div>
+
+    <div class="main-content">
+
+        <div class="glass-header">
+            <div>
+                <h4 class="fw-bold mb-0 text-dark">Exam Date Sheet</h4><small class="text-secondary fw-bold">Set dates,
+                    timing & marks for subjects</small>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#createExamModal"
+                    style="background: var(--primary-gradient); border:none;"><i class="fas fa-plus me-2"></i> Create
+                    Exam</button>
+                <button class="btn btn-dark d-md-none rounded-circle" onclick="toggleSidebar()"><i
+                        class="fas fa-bars"></i></button>
+            </div>
+        </div>
+
+        <div class="premium-card mb-4" style="border-top: 3px solid #1e3c72;">
+            <div class="row align-items-end g-3">
+                <div class="col-md-4">
+                    <label>Select Class</label>
+                    <select id="classSelect" class="form-select bg-light" onchange="loadSubjects()">
+                        <option value="">-- Choose Class --</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Select Exam</label>
+                    <select id="examSelect" class="form-select bg-light" onchange="loadSchedule()">
+                        <option value="">-- Choose Exam --</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button onclick="loadSchedule()" class="btn btn-dark w-100 fw-bold py-2"
+                        style="border-radius: 8px;"><i class="fas fa-sync-alt me-2"></i> Load Schedule</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="premium-card p-0 overflow-hidden">
+                    <div class="bg-light p-3 border-bottom d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 fw-bold text-dark"><i class="fas fa-edit text-primary me-2"></i> Set Schedule
+                        </h6>
+                    </div>
+
+                    <div id="subjectContainer" class="p-3" style="max-height: 500px; overflow-y: auto;">
+                        <div class="text-center text-muted py-5"><i class="fas fa-arrow-up mb-2"></i><br>Select Class &
+                            Exam above</div>
+                    </div>
+
+                    <div class="p-3 bg-light border-top">
+                        <button onclick="saveSchedule()" class="btn btn-success w-100 fw-bold py-2 shadow-sm"
+                            style="background-color: #059669; border:none;"><i class="fas fa-save me-2"></i> SAVE DATE
+                            SHEET</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="premium-card p-0 overflow-hidden">
+                    <div class="bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 fw-bold"><i class="fas fa-table me-2"></i> Preview</h6>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table-custom text-center mb-0">
+                            <thead class="bg-light text-dark">
+                                <tr>
+                                    <th class="bg-light text-dark">Subject</th>
+                                    <th class="bg-light text-dark">Date & Time</th>
+                                    <th class="bg-light text-dark">Marks (Max/Pass)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scheduleTable">
+                                <tr>
+                                    <td colspan="3" class="p-5 text-muted">No schedule loaded yet.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createExamModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header text-white" style="background: #1e3c72;">
+                    <h5 class="modal-title fw-bold">Create New Exam</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <label>Exam Name</label>
+                    <input type="text" id="newExamName" class="form-control mb-3" placeholder="e.g. Final Term 2026">
+                    <label>Session</label>
+                    <input type="text" id="newExamSession" class="form-control" value="2025-26">
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success fw-bold" onclick="saveNewExam()">Save Exam</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSubmenu(id) { let el = document.getElementById(id); let arr = document.getElementById('arr_' + id); if (el) { if (el.style.display === 'block') { el.style.display = 'none'; if (arr) arr.style.transform = 'rotate(0deg)'; } else { el.style.display = 'block'; if (arr) arr.style.transform = 'rotate(90deg)'; } } }
+        function toggleSidebar() { let sb = document.getElementById('sidebar'); if (sb) sb.classList.toggle('active'); }
+
+        document.addEventListener("DOMContentLoaded", function () { loadClasses(); loadExams(); });
+
+        async function loadClasses() {
+            try {
+                let res = await fetch("/api/v1/masters/classes");
+                let data = await res.json();
+                let sel = document.getElementById("classSelect");
+                data.forEach(c => sel.innerHTML += `<option value="${c.id}">${c.class_name}</option>`);
+            } catch (e) { }
+        }
+
+        async function loadExams() {
+            try {
+                let res = await fetch("/api/v1/exams/types");
+                let data = await res.json();
+                let sel = document.getElementById("examSelect");
+                sel.innerHTML = '<option value="">-- Choose Exam --</option>';
+                data.forEach(e => sel.innerHTML += `<option value="${e.exam_name}">${e.exam_name}</option>`);
+            } catch (e) { }
+        }
+
+        async function saveNewExam() {
+            let name = document.getElementById("newExamName").value;
+            let session = document.getElementById("newExamSession").value;
+            if (!name) return alert("Please enter Exam Name!");
+
+            try {
+                let res = await fetch("/api/v1/exams/types", {
+                    method: "POST", headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ exam_name: name, session: session })
+                });
+                if (res.ok) {
+                    alert("✅ Exam Created!");
+                    bootstrap.Modal.getInstance(document.getElementById('createExamModal')).hide();
+                    loadExams();
+                } else alert("Error creating exam.");
+            } catch (e) { }
+        }
+
+        async function loadSubjects() {
+            let clsId = document.getElementById("classSelect").value;
+            let container = document.getElementById("subjectContainer");
+            if (!clsId) return;
+
+            container.innerHTML = "<div class='text-center p-3 text-primary'>Loading...</div>";
+            try {
+                let res = await fetch(`/api/v1/exams/class-subjects/${clsId}`);
+                let data = await res.json();
+                container.innerHTML = "";
+                if (data.length === 0) { container.innerHTML = "<div class='text-danger text-center'>No subjects found.</div>"; return; }
+
+                data.forEach(item => {
+                    let sub = item.subject_val;
+                    container.innerHTML += `
+                    <div class="border rounded p-3 mb-2 bg-white shadow-sm subject-row">
+                        <div class="d-flex align-items-center mb-2 border-bottom pb-2">
+                            <input type="checkbox" class="form-check-input subject-chk me-2" value="${sub.id}" checked>
+                            <span class="fw-bold text-dark">${sub.subject_name}</span>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-4"><input type="date" class="form-control form-control-sm date-in"></div>
+                            <div class="col-2"><input type="time" class="form-control form-control-sm start-in"></div>
+                            <div class="col-2"><input type="time" class="form-control form-control-sm end-in"></div>
+                            <div class="col-2"><input type="number" class="form-control form-control-sm max-in" placeholder="MM" value="100"></div>
+                            <div class="col-2"><input type="number" class="form-control form-control-sm pass-in" placeholder="PM" value="33"></div>
+                        </div>
+                    </div>`;
+                });
+            } catch (e) { }
+        }
+
+        async function saveSchedule() {
+            let clsId = document.getElementById("classSelect").value;
+            let examName = document.getElementById("examSelect").value;
+            if (!clsId || !examName) return alert("Select Class and Exam!");
+
+            let schedules = [];
+            document.querySelectorAll(".subject-row").forEach(row => {
+                if (row.querySelector(".subject-chk").checked) {
+                    let sId = row.querySelector(".subject-chk").value;
+                    let date = row.querySelector(".date-in").value;
+                    let start = row.querySelector(".start-in").value;
+                    let end = row.querySelector(".end-in").value;
+                    let max = row.querySelector(".max-in").value;
+                    let pass = row.querySelector(".pass-in").value;
+
+                    if (date && start && end) {
+                        schedules.push({ subject_id: parseInt(sId), exam_date: date, start_time: start + ":00", end_time: end + ":00", max_marks: parseInt(max), pass_marks: parseInt(pass) });
+                    }
+                }
+            });
+
+            if (schedules.length === 0) return alert("Fill data for at least one subject.");
+
+            try {
+                let res = await fetch("/api/v1/exams/save-schedule", {
+                    method: "POST", headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ class_id: parseInt(clsId), exam_name: examName, schedules: schedules })
+                });
+                if (res.ok) { alert("Saved!"); loadSchedule(); }
+                else alert("Error saving.");
+            } catch (e) { }
+        }
+
+        async function loadSchedule() {
+            let clsId = document.getElementById("classSelect").value;
+            let examName = document.getElementById("examSelect").value;
+            if (!clsId || !examName) return;
+
+            try {
+                let res = await fetch(`/api/v1/exams/get-schedule?class_id=${clsId}&exam_name=${examName}`);
+                let data = await res.json();
+                let tbody = document.getElementById("scheduleTable");
+                tbody.innerHTML = "";
+
+                if (data.length === 0) { tbody.innerHTML = "<tr><td colspan='3' class='p-4'>No Data Found</td></tr>"; return; }
+
+                data.forEach(item => {
+                    let subName = item.subject_val ? item.subject_val.subject_name : "Sub ID " + item.subject_id;
+                    tbody.innerHTML += `<tr><td class="fw-bold text-start ps-4">${subName}</td><td>${item.exam_date}<br><small class="text-muted">${item.start_time.slice(0, 5)} - ${item.end_time.slice(0, 5)}</small></td><td><span class="badge bg-success">${item.max_marks}</span> / <span class="badge bg-warning text-dark">${item.pass_marks}</span></td></tr>`;
+                });
+            } catch (e) { }
+        }
+    </script>
+
+</body>
+
+</html>

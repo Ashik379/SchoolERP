@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Bulk Report Cards</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #eee;
+        }
+
+        /* DESIGN (Same as Single Print) */
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            margin: 20px auto;
+            padding: 10mm;
+            border: 2px solid #e83e8c;
+            outline: 5px double #e83e8c;
+            outline-offset: 5px;
+            position: relative;
+            page-break-after: always;
+            /* KEY FOR BULK PRINT */
+        }
+
+        /* Copy CSS from print_result.html below here */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #d63384;
+        }
+
+        .school-name {
+            font-size: 28px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .school-address {
+            font-size: 12px;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .student-box {
+            border: 2px solid #333;
+            padding: 10px;
+            margin-bottom: 15px;
+            background: #fff0f6;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .info-table td {
+            padding: 3px 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .photo-box {
+            width: 100px;
+            height: 120px;
+            border: 1px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-box img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .marks-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .marks-table th,
+        .marks-table td {
+            border: 1px solid #333;
+            padding: 6px;
+            text-align: center;
+        }
+
+        .marks-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .sub-col {
+            font-weight: bold;
+            text-align: left !important;
+        }
+
+        .footer-grid {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .small-table {
+            width: 100%;
+            border: 1px solid #333;
+            font-size: 11px;
+        }
+
+        .small-table td,
+        .small-table th {
+            border: 1px solid #333;
+            padding: 4px;
+        }
+
+        .remarks-box {
+            border: 1px solid #333;
+            padding: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding: 0 20px;
+        }
+
+        .sign-line {
+            text-align: center;
+            width: 150px;
+            border-top: 2px solid #333;
+            padding-top: 5px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .page {
+                margin: 0;
+                border: none;
+                outline: none;
+                width: 100%;
+                height: 100vh;
+            }
+
+            .btn-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="text-center my-3 btn-print">
+        <button onclick="window.print()" class="btn btn-primary fw-bold">🖨️ Print All Cards</button>
+    </div>
+
+    {% for report in all_reports %}
+    <div class="page">
+        <div class="header">
+            <div class="d-flex justify-content-center align-items-center">
+                <img src="https://cdn-icons-png.flaticon.com/512/3204/3204277.png" width="60" class="me-3">
+                <div>
+                    <h1 class="school-name">VIDYA VIKAS INTERMEDIATE COLLEGE</h1>
+                    <p class="school-address">Laxmiganj, Kushinagar - 274306</p>
+                </div>
+            </div>
+            <div
+                style="background: #333; color: #fff; padding: 2px; margin-top: 5px; font-weight: bold; font-size: 14px;">
+                ANNUAL REPORT CARD (SESSION 2025-26)
+            </div>
+        </div>
+
+        <div class="student-box">
+            <table class="info-table" style="width: 70%;">
+                <tr>
+                    <td>Student Name:</td>
+                    <td>{{ report.student.student_name }}</td>
+                    <td>Class:</td>
+                    <td>{{ report.class_name }}</td>
+                </tr>
+                <tr>
+                    <td>Father's Name:</td>
+                    <td>{{ report.student.father_name }}</td>
+                    <td>Roll No:</td>
+                    <td>{{ report.student.roll_no }}</td>
+                </tr>
+                <tr>
+                    <td>Mother's Name:</td>
+                    <td>{{ report.student.mother_name }}</td>
+                    <td>Adm No:</td>
+                    <td>{{ report.student.admission_no }}</td>
+                </tr>
+                <tr>
+                    <td>Date of Birth:</td>
+                    <td>{{ report.student.dob }}</td>
+                    <td>Contact:</td>
+                    <td>{{ report.student.mobile_number }}</td>
+                </tr>
+            </table>
+            <div class="photo-box">
+                {% if report.student.student_photo %}
+                <img src="/static/uploads/students/{{ report.student.student_photo }}">
+                {% else %}
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+                {% endif %}
+            </div>
+        </div>
+
+        {% if report.result_visible %}
+        <!-- MARKS TABLE - Only shown if result is visible -->
+        <table class="marks-table">
+            <thead>
+                <tr>
+                    <th rowspan="2" style="width: 25%; text-align:left;">Subjects</th>
+                    {% for exam in exams %}
+                    <th>{{ exam.exam_name }}</th>
+                    {% endfor %}
+                    <th rowspan="2">Total</th>
+                    <th rowspan="2">Grade</th>
+                </tr>
+                <tr>
+                    {% for exam in exams %}
+                    <th style="font-size: 10px;">Obt / Max</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in report.report_data %}
+                <tr>
+                    <td class="sub-col">{{ row.subject }}</td>
+                    {% for exam in exams %}
+                    <td>
+                        {% if row.marks[exam.id] %}
+                        <b>{{ row.marks[exam.id].obtained }}</b> <span class="text-muted">/ {{ row.marks[exam.id].max
+                            }}</span>
+                        {% else %} - {% endif %}
+                    </td>
+                    {% endfor %}
+                    <td><b>{{ row.total_obt }}</b> / {{ row.total_max }}</td>
+                    <td><b>{{ row.grade }}</b></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot style="background: #fff0f6;">
+                <tr>
+                    <td style="text-align: right; font-weight: bold;">GRAND TOTAL</td>
+                    <td colspan="{{ exams|length }}" style="text-align: center;">
+                        <b>{{ report.grand_total }}</b> / {{ report.max_total }}
+                    </td>
+                    <td colspan="2"><b>{{ report.percentage }}%</b></td>
+                </tr>
+            </tfoot>
+        </table>
+        {% else %}
+        <!-- RESULT WITHHELD WATERMARK -->
+        <div
+            style="border: 4px solid #dc3545; border-radius: 20px; padding: 80px 40px; text-align: center; background: repeating-linear-gradient(45deg, #fff0f6, #fff0f6 10px, #ffe0e6 10px, #ffe0e6 20px); margin: 60px 0; position: relative;">
+            <div
+                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); font-size: 100px; font-weight: 900; color: rgba(220, 53, 69, 0.15); white-space: nowrap;">
+                WITHHELD</div>
+            <div style="position: relative; z-index: 1;">
+                <i class="fas fa-lock" style="font-size: 100px; color: #dc3545; margin-bottom: 20px;"></i>
+                <h2 style="color: #dc3545; margin-bottom: 20px; font-weight: 800;">RESULT WITHHELD</h2>
+                <p style="font-size: 20px; color: #333; margin-bottom: 15px; font-weight: 600;">{{
+                    report.withhold_message }}</p>
+                <p style="font-size: 16px; color: #666;">Please contact the school administration for more information.
+                </p>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="footer-grid">
+            <div style="flex: 1;">
+                <table class="small-table">
+                    <tr style="background: #eee;">
+                        <th>Co-Scholastic</th>
+                        <th>Grade</th>
+                    </tr>
+                    <tr>
+                        <td>General Knowledge</td>
+                        <td>A</td>
+                    </tr>
+                    <tr>
+                        <td>Discipline</td>
+                        <td>A</td>
+                    </tr>
+                </table>
+            </div>
+            <div style="flex: 1;">
+                <table class="small-table text-center">
+                    <tr style="background: #eee;">
+                        <th colspan="2">Grading Scale</th>
+                    </tr>
+                    <tr>
+                        <td>91-100</td>
+                        <td>A1</td>
+                    </tr>
+                    <tr>
+                        <td>33-60</td>
+                        <td>C</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="remarks-box">Remarks: Promoted to Next Class.</div>
+
+        <div class="signatures">
+            <div class="sign-line">Parent</div>
+            <div class="sign-line">Class Teacher</div>
+            <div class="sign-line">Principal</div>
+        </div>
+    </div>
+    {% endfor %}
+
+</body>
+
+</html>

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .info-label { font-size: 12px; color: #888; text-transform: uppercase; font-weight: 600; }
+    .info-value { font-size: 15px; color: #333; font-weight: 500; margin-bottom: 15px; }
+    .section-title { background: #f8f9fa; padding: 8px 15px; border-radius: 5px; font-weight: bold; margin-bottom: 15px; color: #1e3c72; border-left: 4px solid #1e3c72; }
+</style>
+
+<div class="container mt-4 pb-5">
+    <div class="text-center mb-4">
+        <img src="{{ '/static/uploads/students/' + student.student_photo if student.student_photo else 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' }}" 
+             class="rounded-circle shadow" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid white;">
+        <h4 class="mt-2 mb-0 fw-bold">{{ student.student_name }}</h4>
+        <p class="text-muted small">Admission No: {{ student.admission_no }}</p>
+    </div>
+
+    <div class="section-title">PERSONAL INFORMATION</div>
+    <div class="row px-2">
+        <div class="col-6">
+            <div class="info-label">Date of Birth</div>
+            <div class="info-value">{{ student.dob or 'N/A' }}</div>
+        </div>
+        <div class="col-6">
+            <div class="info-label">Gender</div>
+            <div class="info-value">{{ student.gender }}</div>
+        </div>
+        <div class="col-6">
+            <div class="info-label">Category</div>
+            <div class="info-value">{{ student.category or 'General' }}</div>
+        </div>
+        <div class="col-6">
+            <div class="info-label">Blood Group</div>
+            <div class="info-value">{{ student.blood_group or 'N/A' }}</div>
+        </div>
+        
+        <div class="col-6">
+            <div class="info-label text-primary">APAAR ID</div>
+            <div class="info-value">{{ student.apaar_id or '-' }}</div>
+        </div>
+        <div class="col-6">
+            <div class="info-label text-primary">PAN Number</div>
+            <div class="info-value">{{ student.pan_no or '-' }}</div>
+        </div>
+        <div class="col-6">
+            <div class="info-label">Aadhaar No</div>
+            <div class="info-value">{{ student.aadhaar_no or '-' }}</div>
+        </div>
+    </div>
+
+    <div class="section-title">PARENTS DETAILS</div>
+    <div class="row px-2">
+        <div class="col-6">
+            <div class="info-label">Father's Name</div>
+            <div class="info-value">{{ student.father_name }}</div>
+        </div>
+        <div class="col-6">
+            <div class="info-label">Mother's Name</div>
+            <div class="info-value">{{ student.mother_name }}</div>
+        </div>
+        <div class="col-6">
+            <div class="info-label">Father Mobile</div>
+            <div class="info-value">{{ student.father_mobile or '-' }}</div>
+        </div>
+        <div class="col-6">
+            <div class="info-label">Student Mobile</div>
+            <div class="info-value">{{ student.mobile_number }}</div>
+        </div>
+
+        <div class="col-6">
+            <div class="info-label text-primary">Father Aadhaar</div>
+            <div class="info-value">{{ student.father_aadhaar or '-' }}</div>
+        </div>
+        <div class="col-6">
+            <div class="info-label text-primary">Mother Aadhaar</div>
+            <div class="info-value">{{ student.mother_aadhaar or '-' }}</div>
+        </div>
+    </div>
+
+    <div class="section-title">ADDRESS & TRANSPORT</div>
+    <div class="row px-2">
+        <div class="col-12">
+            <div class="info-label">Current Address</div>
+            <div class="info-value">{{ student.address or 'N/A' }}, {{ student.city or '' }}</div>
+        </div>
+        <div class="col-12">
+            <div class="info-label">Transport Status</div>
+            <div class="info-value">
+                {% if student.transport_opted %}
+                    <span class="text-success fw-bold">Opted</span> (Point: {{ student.transport_val.pickup_point_name if student.transport_val else 'N/A' }})
+                {% else %}
+                    <span class="text-muted">Not Opted</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="/students/portal/{{ student.id }}" class="btn btn-primary w-100 rounded-pill">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

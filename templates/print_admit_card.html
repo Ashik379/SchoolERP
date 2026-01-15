@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admit Cards</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Arial', sans-serif; background: #eee; }
+        
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            margin: 10px auto;
+            padding: 10mm;
+            box-sizing: border-box;
+            page-break-after: always;
+        }
+
+        .admit-card {
+            border: 2px solid #000;
+            height: 135mm;
+            margin-bottom: 10mm;
+            padding: 15px;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 10px; }
+        .school-name { font-size: 24px; font-weight: bold; text-transform: uppercase; margin: 0; }
+        .exam-title { font-size: 16px; font-weight: bold; margin: 5px 0; text-decoration: underline; }
+        
+        /* LOGO PLACEHOLDERS */
+        .logo-left { position: absolute; top: 15px; left: 15px; width: 60px; height: 60px; border: 1px solid #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+
+        .info-grid { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .info-text { width: 75%; font-size: 13px; line-height: 1.6; }
+        .info-row { display: flex; }
+        .label { font-weight: bold; width: 120px; }
+        
+        /* STUDENT PHOTO FIXED */
+        .student-photo {
+            width: 100px; height: 120px;
+            border: 1px solid #000;
+            background: #f0f0f0;
+            overflow: hidden;
+        }
+        .student-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 5px; }
+        th, td { border: 1px solid #000; padding: 4px 8px; text-align: left; }
+        th { background: #f2f2f2; text-align: center; font-weight: bold; }
+
+        .footer { margin-top: 20px; display: flex; justify-content: space-between; align-items: end; padding: 0 20px; }
+        .sign-box { text-align: center; font-size: 12px; font-weight: bold; }
+        .sign-line { width: 120px; border-bottom: 1px solid #000; margin-bottom: 5px; }
+
+        @media print {
+            body { background: white; }
+            .page { margin: 0; border: none; padding: 5mm; }
+            .admit-card { margin-bottom: 5mm; }
+            .page-break { page-break-after: always; }
+        }
+    </style>
+</head>
+<body>
+
+{% for batch in students|batch(2) %}
+<div class="page">
+    {% for student in batch %}
+    <div class="admit-card">
+        <div class="logo-left"></div>
+
+        <div class="header">
+            <h1 class="school-name">VIDYA VIKAS INTERMEDIATE COLLEGE</h1>
+            <p style="margin:2px 0; font-size:12px;">Laxmiganj, Kushinagar , U.P- 274306</p>
+            <h3 class="exam-title">ADMIT CARD - {{ exam_name }}</h3>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-text">
+                <div class="info-row"><span class="label">Roll Number:</span> <span>{{ student.roll_no or 'N/A' }}</span></div>
+                <div class="info-row"><span class="label">Admission No:</span> <span>{{ student.admission_no }}</span></div>
+                <div class="info-row"><span class="label">Student Name:</span> <span style="font-weight:bold;">{{ student.student_name }}</span></div>
+                <div class="info-row"><span class="label">Father's Name:</span> <span>{{ student.father_name }}</span></div>
+                <div class="info-row"><span class="label">Class/Sec:</span> <span>{{ student.class_val.class_name }} - {{ student.section_val.section_name if student.section_val else '' }}</span></div>
+                <div class="info-row"><span class="label">DOB:</span> <span>{{ student.dob }}</span></div>
+            </div>
+            
+            <div class="student-photo">
+                <img src="/static/uploads/students/{{ student.student_photo }}" 
+                     onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png';"
+                     alt="Student Photo">
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Subject</th>
+                    <th style="width:100px;">Invigilator Sign</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if schedule %}
+                    {% for item in schedule %}
+                    <tr>
+                        <td style="text-align:center;">{{ item.exam_date }}</td>
+                        <td style="text-align:center;">{{ item.start_time.strftime('%I:%M %p') }} - {{ item.end_time.strftime('%I:%M %p') }}</td>
+                        <td style="font-weight:bold;">{{ item.subject_val.subject_name }}</td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="4" style="text-align:center;">Date sheet not scheduled yet.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <div class="footer">
+            <div class="sign-box"><div class="sign-line"></div>Class Teacher</div>
+            <div class="sign-box"><div class="sign-line"></div>Principal Signature</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+
+</body>
+</html>

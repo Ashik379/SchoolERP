@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Dashboard | Vidya Vikas ERP</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg-body: #f0f2f5;
+            --sidebar-width: 270px;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+            --hover-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-body);
+            color: #444;
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            height: 100vh;
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #111827;
+            background-image: radial-gradient(at 0% 0%, #1f2937 0px, transparent 50%), radial-gradient(at 100% 100%, #000000 0px, transparent 50%);
+            color: #a3aed0;
+            z-index: 1000;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.3s;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+
+        .brand-box {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .user-profile {
+            background: rgba(255, 255, 255, 0.03);
+            margin: 0 15px 20px;
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item {
+            padding: 14px 25px;
+            margin: 5px 15px;
+            border-radius: 12px;
+            color: #a3aed0;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+            transform: translateX(5px);
+        }
+
+        .menu-item i.menu-icon {
+            width: 25px;
+            font-size: 18px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .submenu {
+            background: rgba(0, 0, 0, 0.2);
+            margin: 0 25px;
+            border-radius: 10px;
+            display: none;
+            padding: 5px 0;
+        }
+
+        .submenu a {
+            padding: 10px 15px;
+            display: block;
+            color: #8892b0;
+            text-decoration: none;
+            font-size: 13px;
+            transition: 0.2s;
+            border-radius: 8px;
+        }
+
+        .submenu a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 20px;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            transition: 0.3s;
+        }
+
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+            border: 1px solid white;
+        }
+
+        /* --- STATS CARDS --- */
+        .stat-card {
+            border: none;
+            border-radius: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-7px) scale(1.02);
+        }
+
+        .stat-card .card-body {
+            padding: 25px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .stat-card h2 {
+            font-weight: 800;
+            font-size: 38px;
+            margin-bottom: 2px;
+        }
+
+        .stat-card p {
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-icon-bg {
+            position: absolute;
+            right: -15px;
+            bottom: -15px;
+            font-size: 110px;
+            opacity: 0.15;
+            transform: rotate(-15deg);
+        }
+
+        .bg-grad-1 {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .bg-grad-2 {
+            background: linear-gradient(45deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .bg-grad-3 {
+            background: linear-gradient(45deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .bg-grad-4 {
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        /* --- QUICK ACTION BUTTONS --- */
+        .quick-btn {
+            background: white;
+            border: none;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #555;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            border: 1px solid white;
+        }
+
+        .quick-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+            background: #fff;
+        }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 12px;
+            transition: 0.3s;
+        }
+
+        .quick-btn:hover .icon-box {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        .ib-blue {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .ib-green {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .ib-orange {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .ib-red {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        /* --- PREMIUM TABLE --- */
+        .premium-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid white;
+            height: 100%;
+        }
+
+        .table-custom {
+            border-collapse: separate;
+            border-spacing: 0 12px;
+            width: 100%;
+        }
+
+        .table-custom thead th {
+            border: none;
+            color: #8898aa;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+            padding: 0 15px;
+        }
+
+        .table-custom tbody tr {
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            transition: 0.2s;
+            border-radius: 12px;
+        }
+
+        .table-custom tbody tr:hover {
+            transform: scale(1.01);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            position: relative;
+            z-index: 2;
+        }
+
+        .table-custom td {
+            border: none;
+            padding: 15px;
+            vertical-align: middle;
+            font-size: 14px;
+        }
+
+        .table-custom td:first-child {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+
+        .table-custom td:last-child {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        /* Chart */
+        .chart-container {
+            position: relative;
+            height: 230px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .chart-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -270px;
+            }
+
+            .sidebar.active {
+                margin-left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="brand-box">
+            <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
+            <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px; text-transform: uppercase;">ERP
+                Solution 2.0</small>
+        </div>
+
+        <div class="user-profile">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="45">
+            <div class="ms-3">
+                <h6 class="mb-0 text-white fw-bold">Administrator</h6><span
+                    class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25"
+                    style="font-size: 10px;">● Active</span>
+            </div>
+        </div>
+
+        <div class="sidebar-menu mt-3">
+            <small class="px-4 text-secondary fw-bold text-uppercase" style="font-size: 11px;">Main Menu</small>
+
+            <a href="/" class="menu-item active mt-2"><span><i class="fas fa-th-large menu-icon"></i>
+                    Dashboard</span></a>
+
+            <div class="menu-item" onclick="toggleSubmenu('masterSub')"><span><i class="fas fa-database menu-icon"></i>
+                    Master Record</span><i class="fas fa-chevron-right arrow" id="arr_masterSub"></i></div>
+            <div class="submenu" id="masterSub"><a href="/masters/class">Class Master</a><a
+                    href="/masters/section">Section Master</a><a href="/masters/transport">Transport</a><a
+                    href="/masters/ledger">Ledger</a></div>
+
+            <a href="/admission" class="menu-item"><span><i class="fas fa-user-plus menu-icon"></i> Admission</span></a>
+            <a href="/students" class="menu-item"><span><i class="fas fa-users menu-icon"></i> Students</span></a>
+
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 10px 15px;">
+
+            <a href="/website/manager" class="menu-item"><span><i class="fas fa-globe menu-icon text-warning"></i>
+                    Website</span></a>
+            <a href="/communication" class="menu-item"><span><i class="fas fa-paper-plane menu-icon text-info"></i>
+                    Communication</span></a>
+
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 10px 15px;">
+            <div class="menu-item" onclick="toggleSubmenu('attSub')"><span><i class="fas fa-calendar-alt menu-icon"></i>
+                    Attendance</span><i class="fas fa-chevron-right arrow" id="arr_attSub"></i></div>
+            <div class="submenu" id="attSub"><a href="/attendance/entry">Mark Attendance</a><a
+                    href="/attendance/view">View Register</a></div>
+
+            <div class="menu-item" onclick="toggleSubmenu('feeSub')"><span><i class="fas fa-wallet menu-icon"></i>
+                    Fees</span><i class="fas fa-chevron-right arrow" id="arr_feeSub"></i></div>
+            <div class="submenu" id="feeSub"><a href="/fees/collect">Collect Fee</a><a href="/fees/schedule">Fee
+                    Heads</a><a href="/fees/master">Fee Plans</a>
+                <a href="/fees/history"><i class="fas fa-history me-1"></i> Fee History</a>
+            </div>
+
+            <div class="menu-item" onclick="toggleSubmenu('examSub')"><span><i
+                        class="fas fa-file-signature menu-icon"></i> Exam</span><i class="fas fa-chevron-right arrow"
+                    id="arr_examSub"></i></div>
+            <div class="submenu" id="examSub"><a href="/exams/master">Exam Setup</a><a href="/exams/schedule">Date
+                    Sheet</a><a href="/exams/admit-card">Admit Card</a></div>
+
+            <div class="menu-item" onclick="toggleSubmenu('resSub')"><span><i class="fas fa-poll menu-icon"></i>
+                    Results</span><i class="fas fa-chevron-right arrow" id="arr_resSub"></i></div>
+            <div class="submenu" id="resSub"><a href="/results/entry">Marks Entry</a><a
+                    href="/results/print-selection">Report Card</a><a href="/results/manager">Result Manager</a></div>
+
+            <a href="/fees/id-cards-panel" class="menu-item"><span><i class="fas fa-id-badge menu-icon"></i> ID
+                    Cards</span></a>
+            <div class="mt-5 px-3 mb-4"><a href="/auth/logout" class="btn w-100 fw-bold text-white"
+                    style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;"><i
+                        class="fas fa-power-off me-2"></i> Logout</a></div>
+        </div>
+    </div>
+
+    <div class="main-content">
+
+        <div class="glass-header">
+            <div>
+                <h4 class="fw-bold mb-0 text-dark">Dashboard</h4>
+                <small class="text-muted" id="dateDisplay">Loading date...</small>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="me-4 text-end d-none d-md-block">
+                    <h4 class="mb-0 fw-bold" style="color: #667eea;" id="clock">00:00:00</h4>
+                    <span class="badge bg-light text-dark border">Session 2025-26</span>
+                </div>
+                <button class="btn btn-dark d-md-none rounded-circle" onclick="toggleSidebar()"><i
+                        class="fas fa-bars"></i></button>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card bg-grad-1">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p>Total Students</p>
+                                <h2>{{ total_students | default(0) }}</h2>
+                            </div><i class="fas fa-user-graduate fa-3x opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card bg-grad-2">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p>Today's Collection</p>
+                                <h2>₹ {{ todays_collection | default(0) }}</h2>
+                            </div><i class="fas fa-rupee-sign fa-3x opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card bg-grad-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p>Pending Fees</p>
+                                <h2>₹ {{ total_due | default(0) }}</h2>
+                            </div><i class="fas fa-chart-pie fa-3x opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card bg-grad-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p>Total Classes</p>
+                                <h2>{{ total_classes | default(0) }}</h2>
+                            </div><i class="fas fa-chalkboard fa-3x opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h6 class="text-muted fw-bold text-uppercase mb-3 small ps-1">Quick Access</h6>
+        <div class="row g-3 mb-4">
+            <div class="col-lg-3 col-6"><a href="/admission" class="quick-btn">
+                    <div class="icon-box ib-blue"><i class="fas fa-user-plus"></i></div>
+                    <div class="fw-bold text-dark">New Admission</div>
+                </a></div>
+            <div class="col-lg-3 col-6"><a href="/fees/collect" class="quick-btn">
+                    <div class="icon-box ib-green"><i class="fas fa-hand-holding-usd"></i></div>
+                    <div class="fw-bold text-dark">Collect Fee</div>
+                </a></div>
+            <div class="col-lg-3 col-6"><a href="/attendance/entry" class="quick-btn">
+                    <div class="icon-box ib-orange"><i class="fas fa-calendar-check"></i></div>
+                    <div class="fw-bold text-dark">Mark Attendance</div>
+                </a></div>
+            <div class="col-lg-3 col-6"><a href="/results/entry" class="quick-btn">
+                    <div class="icon-box ib-red"><i class="fas fa-poll"></i></div>
+                    <div class="fw-bold text-dark">Marks Entry</div>
+                </a></div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="premium-card">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold mb-0">Recent Admissions</h5>
+                        <a href="/admission" class="btn btn-primary rounded-pill px-4 shadow-sm"
+                            style="background: #667eea; border:none;"><i class="fas fa-plus small me-2"></i>New</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Adm No</th>
+                                    <th>Student</th>
+                                    <th>Class</th>
+                                    <th>Contact</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if recent_students %}
+                                {% for s in recent_students %}
+                                <tr>
+                                    <td class="fw-bold text-primary">#{{ s.admission_no }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center fw-bold text-white shadow-sm"
+                                                style="width:38px; height:38px; margin-right:12px; background: linear-gradient(45deg, #667eea, #764ba2);">
+                                                {{ s.student_name[:1] }}</div>
+                                            <div>
+                                                <div class="fw-bold text-dark">{{ s.student_name }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-light text-dark border px-3 py-2 rounded-pill">{% if
+                                            s.class_val %} {{ s.class_val.class_name }} {% else %} - {% endif %}</span>
+                                    </td>
+                                    <td class="text-secondary fw-bold">{{ s.mobile_number }}</td>
+                                    <td><a href="/students/profile/{{ s.id }}"
+                                            class="btn btn-light btn-sm rounded-circle shadow-sm text-primary"><i
+                                                class="fas fa-arrow-right"></i></a></td>
+                                </tr>
+                                {% endfor %}
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">No admissions found yet.</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="premium-card">
+                    <h5 class="fw-bold mb-4">Today's Attendance</h5>
+                    <div class="chart-container">
+                        <canvas id="attendanceChart"></canvas>
+                        <div class="chart-text"><small class="text-muted text-uppercase fw-bold"
+                                style="font-size: 10px;">Total Students</small><br><strong
+                                style="font-size: 28px; color: #333;">{{ total_students | default(0) }}</strong></div>
+                    </div>
+                    <div class="mt-4 row text-center">
+                        <div class="col-4">
+                            <div class="fw-bold fs-5 text-success">{{ att_present | default(0) }}</div><small
+                                class="text-muted" style="font-size: 11px;">PRESENT</small>
+                        </div>
+                        <div class="col-4">
+                            <div class="fw-bold fs-5 text-danger">{{ att_absent | default(0) }}</div><small
+                                class="text-muted" style="font-size: 11px;">ABSENT</small>
+                        </div>
+                        <div class="col-4">
+                            <div class="fw-bold fs-5 text-secondary">{{ att_unmarked | default(0) }}</div><small
+                                class="text-muted" style="font-size: 11px;">PENDING</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSubmenu(id) { let el = document.getElementById(id); let arr = document.getElementById('arr_' + id); if (el) { if (el.style.display === 'block') { el.style.display = 'none'; if (arr) arr.style.transform = 'rotate(0deg)'; } else { el.style.display = 'block'; if (arr) arr.style.transform = 'rotate(90deg)'; } } }
+        function toggleSidebar() { let sb = document.getElementById('sidebar'); if (sb) sb.classList.toggle('active'); }
+        function updateTime() { const now = new Date(); const c = document.getElementById('clock'); const d = document.getElementById('dateDisplay'); if (c) c.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); if (d) d.innerText = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); }
+        setInterval(updateTime, 1000); updateTime();
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const c = document.getElementById('attendanceChart');
+            if (c) {
+                const ctx = c.getContext('2d');
+                let p = {{ att_present | default (0)
+            }
+        };
+        let a = {{ att_absent | default (0) }};
+        let u = {{ att_unmarked | default (0) }};
+        let d = [p, a, u], clr = ['#00c851', '#ff4444', '#e0e0e0'];
+        if (p + a + u === 0) { d = [1]; clr = ['#f4f6f9']; }
+        new Chart(ctx, { type: 'doughnut', data: { labels: ['Present', 'Absent', 'Unmarked'], datasets: [{ data: d, backgroundColor: clr, borderWidth: 0, borderRadius: 20 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '80%', plugins: { legend: { display: false } }, layout: { padding: 10 } } });
+            }
+        });
+    </script>
+
+</body>
+
+</html>

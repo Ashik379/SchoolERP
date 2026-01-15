@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Manager | Vidya Vikas ERP</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #f0f2f5;
+            --sidebar-width: 270px;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+            --hover-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-body);
+            color: #444;
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR (Same as Dashboard) --- */
+        .sidebar {
+            height: 100vh;
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #111827;
+            background-image: radial-gradient(at 0% 0%, #1f2937 0px, transparent 50%), radial-gradient(at 100% 100%, #000000 0px, transparent 50%);
+            color: #a3aed0;
+            z-index: 1000;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.3s;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+
+        .brand-box {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .user-profile {
+            background: rgba(255, 255, 255, 0.03);
+            margin: 0 15px 20px;
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item {
+            padding: 14px 25px;
+            margin: 5px 15px;
+            border-radius: 12px;
+            color: #a3aed0;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+            transform: translateX(5px);
+        }
+
+        .menu-item i.menu-icon {
+            width: 25px;
+            font-size: 18px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .submenu {
+            background: rgba(0, 0, 0, 0.2);
+            margin: 0 25px;
+            border-radius: 10px;
+            display: none;
+            padding: 5px 0;
+        }
+
+        .submenu a {
+            padding: 10px 15px;
+            display: block;
+            color: #8892b0;
+            text-decoration: none;
+            font-size: 13px;
+            transition: 0.2s;
+            border-radius: 8px;
+        }
+
+        .submenu a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 20px;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            transition: 0.3s;
+        }
+
+        /* --- PAGE STYLES --- */
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+            border: 1px solid white;
+        }
+
+        .premium-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid white;
+            overflow: hidden;
+        }
+
+        /* Tabs */
+        .nav-tabs {
+            border-bottom: 2px solid #f1f5f9;
+            padding: 0 20px;
+        }
+
+        .nav-link {
+            border: none;
+            color: #64748b;
+            font-weight: 600;
+            padding: 15px 25px;
+            border-bottom: 3px solid transparent;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #667eea;
+        }
+
+        .nav-link.active {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            background: transparent;
+        }
+
+        /* Tables */
+        .table-custom {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .table-custom th {
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            padding: 15px;
+            border: none;
+        }
+
+        .table-custom tr {
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+            transition: 0.2s;
+        }
+
+        .table-custom tr:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .table-custom td {
+            padding: 15px;
+            border: none;
+            vertical-align: middle;
+        }
+
+        .table-custom td:first-child {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+
+        .table-custom td:last-child {
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .img-preview {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #e2e8f0;
+        }
+
+        /* Gallery */
+        .gallery-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: 0.3s;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            padding: 10px;
+            color: white;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        /* Buttons */
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: none;
+            transition: 0.2s;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .btn-delete:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -270px;
+            }
+
+            .sidebar.active {
+                margin-left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="brand-box">
+            <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
+            <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px; text-transform: uppercase;">ERP
+                Solution 2.0</small>
+        </div>
+
+        <div class="user-profile">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="45">
+            <div class="ms-3">
+                <h6 class="mb-0 text-white fw-bold">Administrator</h6>
+                <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25"
+                    style="font-size: 10px;">● Active</span>
+            </div>
+        </div>
+
+        <div class="sidebar-menu mt-3">
+            <small class="px-4 text-secondary fw-bold text-uppercase" style="font-size: 11px;">Main Menu</small>
+
+            <a href="/" class="menu-item mt-2"><span><i class="fas fa-th-large menu-icon"></i> Dashboard</span></a>
+
+            <div class="menu-item" onclick="toggleSubmenu('masterSub')"><span><i class="fas fa-database menu-icon"></i>
+                    Master Record</span><i class="fas fa-chevron-right arrow" id="arr_masterSub"></i></div>
+            <div class="submenu" id="masterSub"><a href="/masters/class">Class Master</a><a
+                    href="/masters/section">Section Master</a></div>
+
+            <a href="/students" class="menu-item"><span><i class="fas fa-users menu-icon"></i> Students</span></a>
+
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 10px 15px;">
+            <a href="/website/manager" class="menu-item active"><span><i
+                        class="fas fa-globe menu-icon text-warning"></i> Website Manager</span></a>
+            <a href="/communication" class="menu-item"><span><i class="fas fa-paper-plane menu-icon text-info"></i>
+                    Communication</span></a>
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 10px 15px;">
+
+            <div class="mt-5 px-3 mb-4"><a href="/auth/logout" class="btn w-100 fw-bold text-white"
+                    style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;"><i
+                        class="fas fa-power-off me-2"></i> Logout</a></div>
+        </div>
+    </div>
+
+    <div class="main-content">
+
+        <div class="glass-header">
+            <div>
+                <h4 class="fw-bold mb-0 text-dark"><i class="fas fa-globe text-warning me-2"></i>Website Content Manager
+                </h4>
+                <small class="text-muted">Update notices, toppers & gallery instantly.</small>
+            </div>
+            <div class="d-flex align-items-center">
+                <button class="btn btn-dark d-md-none rounded-circle" onclick="toggleSidebar()"><i
+                        class="fas fa-bars"></i></button>
+            </div>
+        </div>
+
+        <div class="premium-card">
+            <ul class="nav nav-tabs pt-3" role="tablist">
+                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab"
+                        data-bs-target="#notices-pane"><i class="fas fa-bullhorn me-2"></i>Notice Board</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#toppers-pane"><i
+                            class="fas fa-trophy me-2"></i>Toppers</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#gallery-pane"><i
+                            class="fas fa-images me-2"></i>Photo Gallery</button></li>
+            </ul>
+
+            <div class="tab-content p-4">
+
+                <div class="tab-pane fade show active" id="notices-pane">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h6 class="fw-bold text-dark mb-0">Active Circulars</h6>
+                        <button class="btn btn-primary rounded-pill px-4 shadow-sm" data-bs-toggle="modal"
+                            data-bs-target="#addNoticeModal" style="background: #667eea; border:none;">
+                            <i class="fas fa-plus me-2"></i>New Notice
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Title</th>
+                                    <th>Event Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="noticeTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="toppers-pane">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h6 class="fw-bold text-dark mb-0">Hall of Fame</h6>
+                        <button class="btn btn-warning text-dark fw-bold rounded-pill px-4 shadow-sm"
+                            data-bs-toggle="modal" data-bs-target="#addTopperModal">
+                            <i class="fas fa-award me-2"></i>Add Topper
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Student</th>
+                                    <th>Class</th>
+                                    <th>Result</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="topperTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="gallery-pane">
+                    <div class="bg-light p-4 rounded-3 border mb-4">
+                        <h6 class="fw-bold mb-3 small text-uppercase text-muted">Upload New Memory</h6>
+                        <form id="galleryForm" class="row g-3">
+                            <div class="col-md-2">
+                                <select name="category" class="form-select border-0 shadow-sm">
+                                    <option>Events</option>
+                                    <option>Campus</option>
+                                    <option>Sports</option>
+                                    <option>Awards</option>
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="text" name="description" class="form-control border-0 shadow-sm"
+                                    placeholder="Caption (e.g. Annual Sports Day)" required>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="file" name="photo" class="form-control border-0 shadow-sm" accept="image/*"
+                                    required>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-success w-100 fw-bold shadow-sm"><i
+                                        class="fas fa-cloud-upload-alt me-2"></i>Upload</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <h6 class="fw-bold text-muted mb-3 small text-uppercase ps-1">Recent Uploads</h6>
+                    <div class="row g-3" id="galleryList">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addNoticeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <form id="noticeForm" class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="fw-bold">New Notice</h5><button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" name="title" class="form-control mb-3" placeholder="Notice Title" required>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6"><select name="category" class="form-select">
+                                <option value="notice">Circular</option>
+                                <option value="event">Event</option>
+                            </select></div>
+                        <div class="col-6"><input type="date" name="event_date" class="form-control" required></div>
+                    </div>
+                    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="is_new"
+                            checked><label class="form-check-label small">Show 'New' Badge</label></div>
+                </div>
+                <div class="modal-footer border-0 pt-0"><button class="btn btn-primary w-100">Publish</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addTopperModal" tabindex="-1">
+        <div class="modal-dialog">
+            <form id="topperForm" class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="fw-bold">Add Topper</h5><button type="button" class="btn-close"
+                        data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-2">
+                        <div class="col-6"><input type="text" name="student_name" class="form-control mb-2"
+                                placeholder="Student Name" required></div>
+                        <div class="col-6"><input type="text" name="percentage" class="form-control mb-2"
+                                placeholder="98.5%" required></div>
+                        <div class="col-6"><select name="class_name" class="form-select mb-2">
+                                <option>Class 10</option>
+                                <option>Class 12</option>
+                            </select></div>
+                        <div class="col-6"><input type="number" name="rank" class="form-control mb-2" value="1"
+                                required></div>
+                        <div class="col-12"><input type="file" name="photo" class="form-control" required></div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0"><button class="btn btn-dark w-100">Save Record</button></div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_BASE = "http://127.0.0.1:8000/api/v1/website";
+
+        function toggleSubmenu(id) { let el = document.getElementById(id); let arr = document.getElementById('arr_' + id); if (el.style.display === 'block') { el.style.display = 'none'; arr.style.transform = 'rotate(0deg)'; } else { el.style.display = 'block'; arr.style.transform = 'rotate(90deg)'; } }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+
+        // --- LOAD DATA ---
+        async function loadData() {
+            // Notices
+            let nData = await (await fetch(`${API_BASE}/updates`)).json();
+            document.getElementById('noticeTable').innerHTML = nData.map(i => `
+                <tr>
+                    <td><span class="badge ${i.category === 'notice' ? 'bg-info' : 'bg-warning'} text-dark">${i.category.toUpperCase()}</span></td>
+                    <td class="fw-bold">${i.title}</td>
+                    <td class="text-muted">${i.date}</td>
+                    <td>${i.isNew ? '<span class="badge bg-danger">NEW</span>' : '-'}</td>
+                    <td><button onclick="del('${API_BASE}/delete/${i.id}')" class="btn-action btn-delete"><i class="fas fa-trash"></i></button></td>
+                </tr>`).join('');
+
+            // Toppers
+            let tData = await (await fetch(`${API_BASE}/toppers`)).json();
+            document.getElementById('topperTable').innerHTML = tData.map(t => `
+                <tr>
+                    <td><span class="badge bg-warning text-dark rounded-circle">${t.rank}</span></td>
+                    <td><div class="d-flex align-items-center"><img src="${t.photo_url}" class="img-preview me-2"><span class="fw-bold">${t.student_name}</span></div></td>
+                    <td>${t.class_name}</td>
+                    <td class="fw-bold text-success">${t.percentage}</td>
+                    <td><button onclick="del('${API_BASE}/toppers/delete/${t.id}')" class="btn-action btn-delete"><i class="fas fa-trash"></i></button></td>
+                </tr>`).join('');
+
+            // Gallery
+            let gData = await (await fetch(`${API_BASE}/gallery`)).json();
+            document.getElementById('galleryList').innerHTML = gData.map(g => `
+                <div class="col-md-2 col-6">
+                    <div class="gallery-item">
+                        <img src="${g.image_url}" class="gallery-img">
+                        <div class="gallery-overlay">
+                            <small class="d-block text-truncate fw-bold">${g.description}</small>
+                            <span class="badge bg-white text-dark" style="font-size:10px;">${g.category}</span>
+                            <button onclick="del('${API_BASE}/gallery/delete/${g.id}')" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                </div>`).join('');
+        }
+
+        // --- SUBMIT ---
+        document.getElementById('noticeForm').onsubmit = async (e) => handleSub(e, `${API_BASE}/add`);
+        document.getElementById('topperForm').onsubmit = async (e) => handleSub(e, `${API_BASE}/toppers/add`);
+        document.getElementById('galleryForm').onsubmit = async (e) => handleSub(e, `${API_BASE}/gallery/add`);
+
+        async function handleSub(e, url) {
+            e.preventDefault();
+            await fetch(url, { method: 'POST', body: new FormData(e.target) });
+            e.target.reset();
+            const modalEl = e.target.closest('.modal');
+            if (modalEl) bootstrap.Modal.getInstance(modalEl).hide();
+            loadData();
+        }
+
+        async function del(url) {
+            if (confirm("Are you sure?")) { await fetch(url, { method: 'DELETE' }); loadData(); }
+        }
+
+        loadData();
+    </script>
+</body>
+
+</html>

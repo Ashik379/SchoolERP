@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Dashboard | Vidya Vikas ERP</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary-bg: #f3f4f6;
+            --sidebar-width: 260px;
+            --sidebar-bg: #111827;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        body { font-family: 'Poppins', sans-serif; background-color: var(--primary-bg); color: #333; overflow-x: hidden; }
+
+        /* --- SIDEBAR STYLING --- */
+        .sidebar {
+            height: 100vh;
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0; left: 0;
+            background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+
+        .brand-box {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            margin: 10px;
+            border-radius: 10px;
+        }
+
+        .sidebar-menu { padding: 10px 0; }
+        .sidebar-menu a {
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: 0.3s;
+            border-left: 4px solid transparent;
+            font-size: 14px;
+        }
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-left-color: #00d2ff;
+        }
+        .sidebar-menu i { width: 30px; font-size: 18px; }
+
+        .submenu { background: rgba(0,0,0,0.2); display: none; padding-left: 10px; }
+        .has-submenu { cursor: pointer; }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        /* --- TOP HEADER --- */
+        .header-bar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        /* --- STATS CARDS (GRADIENTS) --- */
+        .stat-card {
+            border: none;
+            border-radius: 15px;
+            color: white;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s;
+            box-shadow: var(--card-shadow);
+            height: 100%;
+        }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .stat-card .card-body { padding: 25px; z-index: 2; position: relative; }
+        .stat-card h2 { font-weight: 700; margin-bottom: 5px; font-size: 32px; }
+        .stat-card p { font-size: 14px; opacity: 0.9; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-icon-bg {
+            position: absolute;
+            right: -10px;
+            bottom: -10px;
+            font-size: 100px;
+            opacity: 0.2;
+            transform: rotate(-15deg);
+        }
+
+        .bg-gradient-blue { background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%); }
+        .bg-gradient-green { background: linear-gradient(45deg, #43e97b 0%, #38f9d7 100%); }
+        .bg-gradient-orange { background: linear-gradient(45deg, #fa709a 0%, #fee140 100%); }
+        .bg-gradient-red { background: linear-gradient(45deg, #ff0844 0%, #ffb199 100%); }
+
+        /* --- TABLES & CHARTS --- */
+        .custom-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            border: none;
+            box-shadow: var(--card-shadow);
+            height: 100%;
+        }
+        .card-header-custom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .table img { border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        /* --- QUICK ACTIONS --- */
+        .quick-btn {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: 0.2s;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #555;
+        }
+        .quick-btn:hover { background: #f8f9fa; border-color: #1e3c72; transform: translateY(-3px); }
+        .quick-btn i { font-size: 24px; margin-bottom: 8px; color: #1e3c72; }
+
+        @media (max-width: 768px) {
+            .sidebar { margin-left: -260px; }
+            .sidebar.active { margin-left: 0; }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar" id="sidebar">
+    <div class="brand-box">
+        <h4 class="mb-0 fw-bold"><i class="fas fa-graduation-cap"></i> VIDYA VIKAS</h4>
+        <small style="opacity: 0.7;">ERP System 2.0</small>
+    </div>
+
+    <div class="user-profile">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="40">
+        <div class="ms-3">
+            <h6 class="mb-0 fw-bold">Administrator</h6>
+            <small class="text-success"><i class="fas fa-circle" style="font-size: 8px;"></i> Online</small>
+        </div>
+    </div>
+
+    <div class="sidebar-menu">
+        <a href="/dashboard" class="active"><i class="fas fa-th-large"></i> Dashboard</a>
+        
+        <div class="has-submenu" onclick="toggleSubmenu('admissionMenu')">
+            <a href="javascript:void(0)"><i class="fas fa-user-plus"></i> Admissions <i class="fas fa-chevron-down ms-auto" style="font-size: 10px;"></i></a>
+        </div>
+        <div class="submenu" id="admissionMenu">
+            <a href="/admission"><i class="fas fa-plus"></i> New Student</a>
+            <a href="/students"><i class="fas fa-list"></i> Student List</a>
+        </div>
+
+        <div class="has-submenu" onclick="toggleSubmenu('feeMenu')">
+            <a href="javascript:void(0)"><i class="fas fa-rupee-sign"></i> Fee Manager <i class="fas fa-chevron-down ms-auto" style="font-size: 10px;"></i></a>
+        </div>
+        <div class="submenu" id="feeMenu">
+            <a href="/fees/collect"><i class="fas fa-hand-holding-usd"></i> Collect Fees</a>
+            <a href="#"><i class="fas fa-file-invoice"></i> Fee Plans</a>
+        </div>
+
+        <a href="/attendance/entry"><i class="fas fa-calendar-alt"></i> Attendance</a>
+        <a href="#"><i class="fas fa-poll"></i> Exam Results</a>
+        <a href="#"><i class="fas fa-id-card"></i> ID Cards</a>
+        
+        <div class="mt-4 border-top pt-2 mx-3 border-secondary">
+            <a href="/auth/logout" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    
+    <div class="header-bar">
+        <div>
+            <h4 class="fw-bold mb-0 text-dark">Dashboard Overview</h4>
+            <small class="text-muted" id="currentDate">Loading Date...</small>
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="me-4 text-end d-none d-md-block">
+                <h5 class="mb-0 fw-bold text-primary" id="clock">00:00:00</h5>
+                <span class="badge bg-light text-dark border">Session: 2025-26</span>
+            </div>
+            <button class="btn btn-outline-dark d-md-none" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card bg-gradient-blue">
+                <div class="card-body">
+                    <p>Total Students</p>
+                    <h2>{{ total_students }}</h2>
+                    <i class="fas fa-users stat-icon-bg"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card bg-gradient-green">
+                <div class="card-body">
+                    <p>Total Classes</p>
+                    <h2>{{ total_classes }}</h2>
+                    <i class="fas fa-chalkboard-teacher stat-icon-bg"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card bg-gradient-orange">
+                <div class="card-body">
+                    <p>Transport Routes</p>
+                    <h2>{{ total_routes }}</h2>
+                    <i class="fas fa-bus stat-icon-bg"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card bg-gradient-red">
+                <div class="card-body">
+                    <p>Pending Fees</p>
+                    <h2>₹ {{ total_due }}</h2>
+                    <i class="fas fa-exclamation-triangle stat-icon-bg"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        
+        <div class="col-lg-8">
+            
+            <div class="row g-3 mb-4">
+                <div class="col-3">
+                    <a href="/fees/collect" class="quick-btn">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span class="small fw-bold">Collect Fee</span>
+                    </a>
+                </div>
+                <div class="col-3">
+                    <a href="/admission" class="quick-btn">
+                        <i class="fas fa-user-plus"></i>
+                        <span class="small fw-bold">Add Student</span>
+                    </a>
+                </div>
+                <div class="col-3">
+                    <a href="/attendance/entry" class="quick-btn">
+                        <i class="fas fa-calendar-check"></i>
+                        <span class="small fw-bold">Attendance</span>
+                    </a>
+                </div>
+                <div class="col-3">
+                    <a href="#" class="quick-btn">
+                        <i class="fas fa-print"></i>
+                        <span class="small fw-bold">Reports</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="custom-card">
+                <div class="card-header-custom">
+                    <h5 class="mb-0 fw-bold">Recently Admitted Students</h5>
+                    <a href="/students" class="btn btn-sm btn-primary rounded-pill px-3">View All</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Student</th>
+                                <th>Adm No</th>
+                                <th>Class</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in recent_students %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="{{ '/static/uploads/students/' + s.student_photo if s.student_photo else 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' }}" 
+                                             class="rounded-circle me-2" width="35" height="35" style="object-fit:cover">
+                                        <div>
+                                            <span class="fw-bold d-block text-dark">{{ s.student_name }}</span>
+                                            <small class="text-muted">{{ s.father_name }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="fw-bold text-primary">{{ s.admission_no }}</td>
+                                <td><span class="badge bg-light text-dark border">{% if s.class_val %} {{ s.class_val.class_name }} {% else %} - {% endif %}</span></td>
+                                <td><i class="fas fa-check-circle text-success"></i> Active</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="4" class="text-center text-muted py-3">No recent admissions found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="custom-card">
+                <div class="card-header-custom">
+                    <h5 class="mb-0 fw-bold">Today's Attendance</h5>
+                    <small class="text-muted">{{ total_students }} Total</small>
+                </div>
+                <div style="height: 250px; position: relative;">
+                    <canvas id="attendanceChart"></canvas>
+                </div>
+                <div class="mt-4 text-center">
+                    <span class="me-3"><i class="fas fa-circle text-success"></i> {{ att_present }} Present</span>
+                    <span class="me-3"><i class="fas fa-circle text-danger"></i> {{ att_absent }} Absent</span>
+                </div>
+            </div>
+
+            <div class="custom-card mt-4 bg-dark text-white text-center py-4">
+                <i class="fas fa-calendar-alt fa-3x mb-2 opacity-50"></i>
+                <h5>Academic Calendar</h5>
+                <p class="small opacity-75">Check upcoming holidays and events.</p>
+                <button class="btn btn-sm btn-outline-light rounded-pill mt-2">View Calendar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Sidebar Toggle for Mobile
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+    }
+
+    // 2. Submenu Toggle
+    function toggleSubmenu(id) {
+        let el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    // 3. Real-

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Ledger | Vidya Vikas ERP</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- GLOBAL STYLES --- */
+        :root {
+            --bg-body: #f0f2f5;
+            --sidebar-width: 270px;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+            --hover-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-body);
+            color: #444;
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            height: 100vh;
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #111827;
+            background-image: radial-gradient(at 0% 0%, #1f2937 0px, transparent 50%), radial-gradient(at 100% 100%, #000000 0px, transparent 50%);
+            color: #a3aed0;
+            z-index: 1000;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.3s;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+
+        .brand-box {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .user-profile {
+            background: rgba(255, 255, 255, 0.03);
+            margin: 0 15px 20px;
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item {
+            padding: 14px 25px;
+            margin: 5px 15px;
+            border-radius: 12px;
+            color: #a3aed0;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+            transform: translateX(5px);
+        }
+
+        .menu-item i.menu-icon {
+            width: 25px;
+            font-size: 18px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .submenu {
+            background: rgba(0, 0, 0, 0.2);
+            margin: 0 25px;
+            border-radius: 10px;
+            display: none;
+            padding: 5px 0;
+        }
+
+        .submenu a {
+            padding: 10px 15px;
+            display: block;
+            color: #8892b0;
+            text-decoration: none;
+            font-size: 13px;
+            transition: 0.2s;
+            border-radius: 8px;
+            margin: 2px 5px;
+        }
+
+        .submenu a:hover,
+        .submenu a.active-link {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 20px;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            transition: 0.3s;
+        }
+
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+            border: 1px solid white;
+        }
+
+        /* --- CARDS & FORMS --- */
+        .premium-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid white;
+            height: 100%;
+        }
+
+        .btn-gradient {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+            transition: 0.3s;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* --- TABLE --- */
+        .table-responsive {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .premium-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .premium-table thead th {
+            background: #f8fafc;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+            padding: 18px 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .premium-table tbody td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
+            font-size: 14px;
+            background: white;
+            transition: 0.2s;
+        }
+
+        .premium-table tbody tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        .balance-badge {
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 6px;
+            display: inline-block;
+            font-size: 13px;
+        }
+
+        .bg-cr {
+            background: #f0fdf4;
+            color: #15803d;
+            border: 1px solid #dcfce7;
+        }
+
+        .bg-dr {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fee2e2;
+        }
+
+        .btn-action-edit {
+            width: 35px;
+            height: 35px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: #eff6ff;
+            color: #3b82f6;
+            border: 1px solid #dbeafe;
+            transition: 0.2s;
+        }
+
+        .btn-action-edit:hover {
+            background: #3b82f6;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* --- MODAL --- */
+        .modal-content {
+            border-radius: 20px;
+            border: none;
+            box-shadow: var(--hover-shadow);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #f1f5f9;
+            padding: 20px 25px;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            padding: 10px 15px;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -270px;
+            }
+
+            .sidebar.active {
+                margin-left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="brand-box">
+            <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
+            <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px; text-transform: uppercase;">ERP
+                Solution 2.0</small>
+        </div>
+
+        <div class="user-profile">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="45">
+            <div class="ms-3">
+                <h6 class="mb-0 text-white fw-bold">Administrator</h6>
+                <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25"
+                    style="font-size: 10px;">● Active</span>
+            </div>
+        </div>
+
+        <div class="sidebar-menu mt-3">
+            <small class="px-4 text-secondary fw-bold text-uppercase" style="font-size: 11px;">Main Menu</small>
+
+            <a href="/" class="menu-item mt-2"><span><i class="fas fa-th-large menu-icon"></i> Dashboard</span></a>
+
+            <div class="menu-item active" onclick="toggleSubmenu('masterSub')"><span><i
+                        class="fas fa-database menu-icon"></i> Master Record</span><i class="fas fa-chevron-down arrow"
+                    id="arr_masterSub"></i></div>
+            <div class="submenu" id="masterSub" style="display: block;">
+                <a href="/masters/class">Class Master</a>
+                <a href="/masters/section">Section Master</a>
+                <a href="/masters/transport">Transport</a>
+                <a href="/masters/ledger" class="active-link">Ledger</a>
+            </div>
+
+            <a href="/admission" class="menu-item"><span><i class="fas fa-user-plus menu-icon"></i> Admission</span></a>
+            <a href="/students" class="menu-item"><span><i class="fas fa-users menu-icon"></i> Students</span></a>
+
+            <div class="menu-item" onclick="toggleSubmenu('attSub')"><span><i class="fas fa-calendar-alt menu-icon"></i>
+                    Attendance</span><i class="fas fa-chevron-right arrow" id="arr_attSub"></i></div>
+            <div class="submenu" id="attSub">
+                <a href="/attendance/entry">Mark Attendance</a>
+                <a href="/attendance/view">View Register</a>
+            </div>
+
+            <div class="menu-item" onclick="toggleSubmenu('feeSub')"><span><i class="fas fa-wallet menu-icon"></i>
+                    Fees</span><i class="fas fa-chevron-right arrow" id="arr_feeSub"></i></div>
+            <div class="submenu" id="feeSub">
+                <a href="/fees/collect">Collect Fee</a>
+                <a href="/fees/schedule">Fee Heads</a>
+                <a href="/fees/master">Fee Plans</a>
+                <a href="/fees/history"><i class="fas fa-history me-1"></i> Fee History</a>
+            </div>
+
+            <div class="menu-item" onclick="toggleSubmenu('examSub')"><span><i
+                        class="fas fa-file-signature menu-icon"></i> Exam</span><i class="fas fa-chevron-right arrow"
+                    id="arr_examSub"></i></div>
+            <div class="submenu" id="examSub">
+                <a href="/exams/master">Exam Setup</a>
+                <a href="/exams/schedule">Date Sheet</a>
+                <a href="/exams/admit-card">Admit Card</a>
+            </div>
+
+            <div class="menu-item" onclick="toggleSubmenu('resSub')"><span><i class="fas fa-poll menu-icon"></i>
+                    Results</span><i class="fas fa-chevron-right arrow" id="arr_resSub"></i></div>
+            <div class="submenu" id="resSub">
+                <a href="/results/entry">Marks Entry</a>
+                <a href="/results/print-selection">Report Card</a>
+                <a href="/results/manager">Result Manager</a>
+            </div>
+
+            <a href="/fees/id-cards-panel" class="menu-item"><span><i class="fas fa-id-badge menu-icon"></i> ID
+                    Cards</span></a>
+
+            <div class="mt-5 px-3 mb-4">
+                <a href="/auth/logout" class="btn w-100 fw-bold text-white"
+                    style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;">
+                    <i class="fas fa-power-off me-2"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="glass-header">
+            <div>
+                <h4 class="fw-bold mb-0 text-dark">Account Ledger</h4>
+                <small class="text-muted">Manage Financial Heads</small>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="me-2 text-end d-none d-md-block">
+                    <h4 class="mb-0 fw-bold" style="color: #667eea;" id="clock">00:00:00</h4>
+                    <span class="badge bg-light text-dark border">Session 2025-26</span>
+                </div>
+                <button class="btn btn-dark d-md-none rounded-circle" onclick="toggleSidebar()"><i
+                        class="fas fa-bars"></i></button>
+            </div>
+        </div>
+        <div class="premium-card p-0 overflow-hidden">
+            <div class="p-4 border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0 text-dark"><i class="fas fa-file-invoice text-primary me-2"></i>Ledger List</h5>
+                <button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#addLedgerModal">
+                    <i class="fas fa-plus me-2"></i> Add Ledger
+                </button>
+            </div>
+
+            <div class="p-4">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" placeholder="Search Ledger...">
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="premium-table">
+                        <thead>
+                            <tr>
+                                <th>Ledger Name</th>
+                                <th>Under Group</th>
+                                <th class="text-end">Opening Balance</th>
+                                <th class="text-center" width="100px">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledgerTable">
+                            <tr>
+                                <td colspan="4" class="text-center py-5">
+                                    <div class="spinner-border text-primary" role="status"></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addLedgerModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Add New Ledger Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="ledgerForm">
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small text-uppercase fw-bold">Ledger Name</label>
+                            <input type="text" class="form-control" name="ledger_name" placeholder="e.g. Activity Fees"
+                                required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small text-uppercase fw-bold">Under Group</label>
+                            <select class="form-select" name="under_group">
+                                <option value="Fee Received">Fee Received</option>
+                                <option value="Bank">Bank</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Direct Income">Direct Income</option>
+                                <option value="Indirect Expense">Indirect Expense</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-secondary small text-uppercase fw-bold">Opening
+                                Balance</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" name="opening_balance" value="0">
+                                <div class="input-group-text bg-light">
+                                    <div class="form-check form-check-inline m-0">
+                                        <input class="form-check-input" type="radio" name="balance_type" value="Dr"
+                                            checked>
+                                        <label class="form-check-label small">Dr</label>
+                                    </div>
+                                    <div class="form-check form-check-inline m-0 ms-2">
+                                        <input class="form-check-input" type="radio" name="balance_type" value="Cr">
+                                        <label class="form-check-label small">Cr</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-gradient w-100" onclick="saveLedger()">Save Ledger</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sidebar & Clock
+        function toggleSubmenu(id) { let el = document.getElementById(id); let arr = document.getElementById('arr_' + id); if (el) { if (el.style.display === 'block') { el.style.display = 'none'; if (arr) arr.style.transform = 'rotate(0deg)'; } else { el.style.display = 'block'; if (arr) arr.style.transform = 'rotate(0deg)'; } } }
+        function toggleSidebar() { let sb = document.getElementById('sidebar'); if (sb) sb.classList.toggle('active'); }
+        function updateTime() { const now = new Date(); const c = document.getElementById('clock'); if (c) c.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+        setInterval(updateTime, 1000); updateTime();
+
+        // --- Ledger Logic ---
+
+        async function loadLedgers() {
+            let tbody = document.getElementById('ledgerTable');
+            try {
+                let res = await fetch('/api/v1/masters/ledgers');
+                let data = await res.json();
+
+                tbody.innerHTML = '';
+
+                if (data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center py-5 text-muted">No ledgers found.</td></tr>`;
+                    return;
+                }
+
+                data.forEach(item => {
+                    let badgeClass = item.balance_type === 'Cr' ? 'bg-cr' : 'bg-dr';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="fw-bold text-dark">${item.ledger_name}</td>
+                            <td class="text-secondary">${item.under_group}</td>
+                            <td class="text-end">
+                                <span class="balance-badge ${badgeClass}">
+                                    ${item.balance_type} ${item.opening_balance.toFixed(2)}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <button class="btn-action-edit" onclick="alert('Edit feature coming soon!')" title="Edit Ledger">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (e) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-5 text-danger">Error loading data.</td></tr>`;
+            }
+        }
+
+        async function saveLedger() {
+            let form = document.getElementById('ledgerForm');
+            let formData = new FormData(form);
+            let data = Object.fromEntries(formData.entries());
+
+            let payload = {
+                ledger_name: data.ledger_name,
+                under_group: data.under_group,
+                opening_balance: parseFloat(data.opening_balance),
+                balance_type: document.querySelector('input[name="balance_type"]:checked').value
+            };
+
+            try {
+                let res = await fetch('/api/v1/masters/ledgers', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    loadLedgers();
+                    var myModalEl = document.getElementById('addLedgerModal');
+                    var modal = bootstrap.Modal.getInstance(myModalEl);
+                    modal.hide();
+                    form.reset();
+                } else {
+                    alert("Error saving ledger");
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        loadLedgers();
+    </script>
+</body>
+
+</html>

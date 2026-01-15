@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital School ERP</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body { background-color: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
+        
+        /* SIDEBAR STYLES */
+        .sidebar { 
+            min-height: 100vh; 
+            width: 250px; 
+            background: #2c3e50; 
+            color: #ecf0f1; 
+            position: fixed;
+        }
+        .sidebar .brand {
+            padding: 20px;
+            background: #1a252f;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #34495e;
+        }
+        .sidebar a { 
+            color: #bdc3c7; 
+            text-decoration: none; 
+            display: block; 
+            padding: 12px 20px; 
+            border-left: 4px solid transparent;
+            transition: all 0.3s;
+        }
+        .sidebar a:hover { 
+            background: #34495e; 
+            color: #fff; 
+            border-left-color: #3498db;
+        }
+        .sidebar a.active { 
+            background: #34495e; 
+            color: #fff; 
+            border-left-color: #2ecc71; 
+        }
+        .sidebar i { width: 25px; }
+        .sidebar .menu-label {
+            padding: 15px 20px 5px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #7f8c8d;
+            font-weight: bold;
+        }
+
+        /* CONTENT AREA */
+        .content { margin-left: 250px; padding: 20px; }
+        
+        /* NAVBAR */
+        .top-navbar {
+            background: #fff;
+            padding: 15px 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="brand">
+        <i class="fas fa-school me-2"></i> DIGITAL SCHOOL
+    </div>
+    
+    <div class="menu-label">Main</div>
+    <a href="/"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    
+    <div class="menu-label">Students</div>
+    <a href="/admission"><i class="fas fa-user-plus"></i> New Admission</a>
+    <a href="/students/list"><i class="fas fa-users"></i> Student List</a>
+    
+    <div class="menu-label">Examinations</div>
+    <a href="/exams/master"><i class="fas fa-book"></i> Exam & Subjects</a>
+    <a href="/exams/schedule"><i class="fas fa-calendar-alt"></i> Date Sheet</a>
+    <a href="/exams/admit-card"><i class="fas fa-id-card"></i> Print Admit Card</a>
+
+    <div class="menu-label">Fees & Finance</div>
+    <a href="/fees/collect"><i class="fas fa-rupee-sign"></i> Collect Fees</a>
+    <a href="/fees/history"><i class="fas fa-history"></i> Fee History</a>
+
+    <div class="mt-5 text-center">
+        <button class="btn btn-outline-danger btn-sm w-75">Logout</button>
+    </div>
+</div>
+
+<div class="content">
+    <div class="top-navbar rounded">
+        <h5 class="m-0 text-dark">Welcome, Admin</h5>
+        <div>
+            <span class="me-3 text-muted"><i class="far fa-clock"></i> Session: 2025-26</span>
+            <i class="fas fa-user-circle fa-lg text-secondary"></i>
+        </div>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

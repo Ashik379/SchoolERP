@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marks Entry | Vidya Vikas ERP</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #f3f4f6;
+            --sidebar-width: 270px;
+            --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --text-dark: #111827;
+            --text-body: #374151;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-body);
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            height: 100vh;
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #111827;
+            background-image: radial-gradient(at 0% 0%, #1f2937 0px, transparent 50%), radial-gradient(at 100% 100%, #000000 0px, transparent 50%);
+            color: #a3aed0;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: 0.3s;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+
+        .brand-box {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .user-profile {
+            background: rgba(255, 255, 255, 0.03);
+            margin: 0 15px 20px;
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            margin: 5px 15px;
+            border-radius: 12px;
+            color: #a3aed0;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.4);
+            transform: translateX(5px);
+        }
+
+        .menu-item i.menu-icon {
+            width: 25px;
+            font-size: 18px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .submenu {
+            background: rgba(0, 0, 0, 0.2);
+            margin: 0 25px;
+            border-radius: 10px;
+            display: none;
+            padding: 5px 0;
+        }
+
+        .submenu a {
+            padding: 10px 15px;
+            display: block;
+            color: #8892b0;
+            text-decoration: none;
+            font-size: 13px;
+            transition: 0.2s;
+            border-radius: 8px;
+        }
+
+        .submenu a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 20px;
+        }
+
+        /* --- CONTENT AREA --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            transition: 0.3s;
+        }
+
+        .glass-header {
+            background: white;
+            border-radius: 15px;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            border-left: 5px solid #1e3c72;
+        }
+
+        /* --- MARKS ENTRY SPECIFIC --- */
+        .premium-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+
+        .form-label {
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .form-select {
+            border-radius: 8px;
+            padding: 10px 15px;
+            border: 1px solid #9ca3af;
+            font-weight: 500;
+        }
+
+        /* Table Styling */
+        .table-custom {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table-custom thead th {
+            background: #1e3c72;
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .table-custom tbody td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+            text-align: center;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .mark-input {
+            width: 80px;
+            margin: 0 auto;
+            text-align: center;
+            font-weight: 800;
+            border: 2px solid #d1d5db;
+            border-radius: 6px;
+        }
+
+        .mark-input:focus {
+            border-color: #1e3c72;
+            box-shadow: none;
+            background: #f0f7ff;
+        }
+
+        .sticky-col {
+            position: sticky;
+            left: 0;
+            background: #f8fafc !important;
+            z-index: 10;
+            border-right: 2px solid #cbd5e1 !important;
+            text-align: left !important;
+            padding-left: 15px !important;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -270px;
+            }
+
+            .sidebar.active {
+                margin-left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="brand-box">
+            <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
+            <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px; text-transform: uppercase;">ERP
+                Solution 2.0</small>
+        </div>
+        <div class="user-profile">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="45">
+            <div class="ms-3">
+                <h6 class="mb-0 text-white fw-bold">Admin</h6><small class="text-success">● Active</small>
+            </div>
+        </div>
+        <div class="sidebar-menu mt-3">
+            <a href="/" class="menu-item"><span><i class="fas fa-tachometer-alt menu-icon"></i> Dashboard</span></a>
+            <div class="menu-item" onclick="toggleSubmenu('attSub')"><span><i class="fas fa-calendar-alt menu-icon"></i>
+                    Attendance</span><i class="fas fa-chevron-right arrow" id="arr_attSub"></i></div>
+            <div class="submenu" id="attSub"><a href="/attendance/entry">Mark Attendance</a><a
+                    href="/attendance/view">View Register</a></div>
+
+            <div class="menu-item active" onclick="toggleSubmenu('resSub')"><span><i class="fas fa-poll menu-icon"></i>
+                    Results</span><i class="fas fa-chevron-down arrow" id="arr_resSub"></i></div>
+            <div class="submenu" id="resSub" style="display: block;">
+                <a href="/results/entry" class="text-white fw-bold"
+                    style="background: rgba(255,255,255,0.1); padding-left: 20px;">Marks Entry</a>
+                <a href="/results/print-selection">Report Card</a>
+                <a href="/results/manager">Result Manager</a>
+            </div>
+
+            <a href="/fees/id-cards-panel" class="menu-item"><span><i class="fas fa-id-badge menu-icon"></i> ID
+                    Cards</span></a>
+            <div class="mt-5 px-3">
+                <a href="/auth/logout" class="btn w-100 fw-bold text-white"
+                    style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;"><i
+                        class="fas fa-power-off me-2"></i> Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="glass-header">
+            <div>
+                <h4 class="fw-bold mb-0 text-dark">Marks Entry Panel</h4>
+                <small class="text-secondary fw-bold">Upload and manage academic results</small>
+            </div>
+            <button class="btn btn-dark d-md-none rounded-circle" onclick="toggleSidebar()"><i
+                    class="fas fa-bars"></i></button>
+        </div>
+
+        <div class="premium-card mb-4" style="border-top: 3px solid #1e3c72;">
+            <div class="row align-items-end g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Select Class</label>
+                    <select id="classSelect" class="form-select bg-light">
+                        <option value="">-- Choose Class --</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Select Exam</label>
+                    <select id="examSelect" class="form-select bg-light">
+                        <option value="">-- Choose Exam --</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button onclick="loadEntryGrid()" class="btn btn-primary w-100 fw-bold py-2"
+                        style="background: #1e3c72; border:none; border-radius: 8px;">
+                        <i class="fas fa-search me-2"></i> LOAD STUDENT LIST
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="premium-card p-0 overflow-hidden" id="gridCard" style="display:none;">
+            <div class="bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 fw-bold"><i class="fas fa-edit me-2 text-warning"></i> Input Scores</h6>
+                <button onclick="saveMarks()" class="btn btn-success btn-sm fw-bold px-4 shadow-sm"
+                    style="background:#059669; border:none;">
+                    <i class="fas fa-save me-1"></i> SAVE ALL
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table-custom mb-0">
+                    <thead id="gridHeader"></thead>
+                    <tbody id="gridBody"></tbody>
+                </table>
+            </div>
+
+            <div class="p-4 text-end bg-light border-top">
+                <button onclick="saveMarks()" class="btn btn-success btn-lg fw-bold px-5 shadow"
+                    style="background:#059669; border:none; border-radius:10px;">
+                    <i class="fas fa-check-circle me-2"></i> UPDATE DATABASE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSubmenu(id) { let el = document.getElementById(id); let arr = document.getElementById('arr_' + id); if (el) { if (el.style.display === 'block') { el.style.display = 'none'; if (arr) arr.style.transform = 'rotate(0deg)'; } else { el.style.display = 'block'; if (arr) arr.style.transform = 'rotate(90deg)'; } } }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+
+        document.addEventListener("DOMContentLoaded", async function () {
+            try {
+                let cRes = await fetch("/api/v1/masters/classes");
+                let classes = await cRes.json();
+                let cSel = document.getElementById("classSelect");
+                classes.forEach(c => cSel.innerHTML += `<option value="${c.id}">${c.class_name}</option>`);
+
+                let eRes = await fetch("/api/v1/exams/types");
+                let exams = await eRes.json();
+                let eSel = document.getElementById("examSelect");
+                exams.forEach(e => eSel.innerHTML += `<option value="${e.id}">${e.exam_name}</option>`);
+            } catch (e) { console.error(e); }
+        });
+
+        let currentSubjects = [];
+
+        async function loadEntryGrid() {
+            let cls = document.getElementById("classSelect").value;
+            let exm = document.getElementById("examSelect").value;
+            if (!cls || !exm) return alert("Please Select Class and Exam!");
+
+            document.getElementById("gridCard").style.display = "none";
+
+            try {
+                let res = await fetch(`/results/get-entry-data?class_id=${cls}&exam_id=${exm}`);
+                let data = await res.json();
+
+                currentSubjects = data.subjects;
+                let savedMarks = data.saved_marks;
+
+                if (currentSubjects.length === 0) return alert("⚠️ No subjects scheduled. Check Date Sheet.");
+                if (data.students.length === 0) return alert("⚠️ No students found.");
+
+                // Header
+                let thead = `<tr><th class="sticky-col">Student Name</th><th>Roll No</th>`;
+                currentSubjects.forEach(sub => {
+                    thead += `<th>${sub.name}<br><span class="badge bg-warning text-dark mt-1" style="font-size:9px;">MAX: ${sub.max_marks}</span></th>`;
+                });
+                thead += `</tr>`;
+                document.getElementById("gridHeader").innerHTML = thead;
+
+                // Body
+                let tbody = "";
+                data.students.forEach((std, index) => {
+                    let row = `<tr>
+                    <td class="sticky-col">
+                        <div class="fw-bold text-dark">${std.name}</div>
+                        <small class="text-muted">Adm: ${std.adm_no}</small>
+                    </td>
+                    <td>${std.roll || '-'}</td>`;
+
+                    currentSubjects.forEach(sub => {
+                        let key = `${std.id}_${sub.id}`;
+                        let val = savedMarks[key] !== undefined ? savedMarks[key] : "";
+                        row += `<td>
+                        <input type="number" class="form-control mark-input" 
+                               data-std="${std.id}" data-sub="${sub.id}" data-max="${sub.max_marks}"
+                               value="${val}" oninput="validateMarks(this)" placeholder="-">
+                    </td>`;
+                    });
+                    row += `</tr>`;
+                    tbody += row;
+                });
+
+                document.getElementById("gridBody").innerHTML = tbody;
+                document.getElementById("gridCard").style.display = "block";
+
+            } catch (e) { alert("Error loading entry grid."); }
+        }
+
+        function validateMarks(input) {
+            let max = parseFloat(input.getAttribute("data-max"));
+            let val = parseFloat(input.value);
+            if (val > max) { input.style.background = "#fee2e2"; input.style.borderColor = "#dc2626"; }
+            else { input.style.background = "white"; input.style.borderColor = "#d1d5db"; }
+        }
+
+        async function saveMarks() {
+            let cls = parseInt(document.getElementById("classSelect").value);
+            let exm = parseInt(document.getElementById("examSelect").value);
+            let inputs = document.querySelectorAll(".mark-input");
+            let marksData = [];
+            let errorFlag = false;
+
+            inputs.forEach(inp => {
+                if (inp.value !== "") {
+                    let max = parseFloat(inp.getAttribute("data-max"));
+                    let val = parseFloat(inp.value);
+                    if (val > max) errorFlag = true;
+                    marksData.push({ student_id: parseInt(inp.dataset.std), subject_id: parseInt(inp.dataset.sub), marks: val, is_absent: false });
+                }
+            });
+
+            if (errorFlag) return alert("❌ Error: Marks exceed Maximum Limit!");
+            if (marksData.length === 0) return alert("Enter marks first.");
+
+            try {
+                let res = await fetch("/results/save", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ class_id: cls, exam_id: exm, data: marksData })
+                });
+                if (res.ok) alert("✅ Marks Saved!");
+                else alert("❌ Server Error.");
+            } catch (e) { alert("Network Error."); }
+        }
+    </script>
+
+</body>
+
+</html>

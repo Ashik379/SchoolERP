@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Setup | Vidya Vikas ERP</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #f0f2f5;
+            --sidebar-width: 270px;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        body { font-family: 'Outfit', sans-serif; background-color: var(--bg-body); color: #444; overflow-x: hidden; }
+
+        /* --- PREMIUM SIDEBAR (Same as Dashboard) --- */
+        .sidebar {
+            height: 100vh; width: var(--sidebar-width); position: fixed; top: 0; left: 0;
+            background: #111827; background-image: radial-gradient(at 0% 0%, #1f2937 0px, transparent 50%), radial-gradient(at 100% 100%, #000000 0px, transparent 50%);
+            color: #a3aed0; z-index: 1000; overflow-y: auto; transition: 0.3s;
+        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+
+        .brand-box { padding: 30px 20px; text-align: center; }
+        .user-profile { background: rgba(255,255,255,0.03); margin: 0 15px 20px; padding: 15px; border-radius: 15px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
+
+        .menu-item {
+            padding: 14px 25px; margin: 5px 15px; border-radius: 12px; color: #a3aed0; text-decoration: none;
+            display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; font-weight: 500; font-size: 14px;
+        }
+        .menu-item:hover, .menu-item.active { background: var(--primary-gradient); color: white; box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4); transform: translateX(5px); }
+        .menu-item i.menu-icon { width: 25px; font-size: 18px; text-align: center; margin-right: 10px; }
+
+        .submenu { background: rgba(0,0,0,0.2); margin: 0 25px; border-radius: 10px; display: none; padding: 5px 0; }
+        .submenu a { padding: 10px 15px; display: block; color: #8892b0; text-decoration: none; font-size: 13px; transition: 0.2s; border-radius: 8px; }
+        .submenu a:hover { color: white; background: rgba(255,255,255,0.05); padding-left: 20px; }
+
+        /* --- CONTENT AREA --- */
+        .main-content { margin-left: var(--sidebar-width); padding: 30px; transition: 0.3s; }
+
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border-radius: 20px;
+            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: var(--card-shadow); margin-bottom: 30px; border: 1px solid white;
+        }
+
+        .premium-card {
+            background: white; border-radius: 20px; padding: 30px;
+            box-shadow: var(--card-shadow); border: 1px solid white; height: 100%;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px; padding: 12px 15px; border: 1px solid #e0e6ed; background: #f9fafb;
+        }
+        .form-control:focus, .form-select:focus { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); background: white; }
+
+        .list-group-item { border: none; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+        .list-group-item:last-child { border-bottom: none; }
+        
+        @media (max-width: 768px) { .sidebar { margin-left: -270px; } .sidebar.active { margin-left: 0; } .main-content { margin-left: 0; } }
+    </style>
+</head>
+<body>
+
+<div class="sidebar" id="sidebar">
+    <div class="brand-box">
+        <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
+        <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px; text-transform: uppercase;">ERP Solution 2.0</small>
+    </div>
+
+    <div class="user-profile">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="45">
+        <div class="ms-3">
+            <h6 class="mb-0 text-white fw-bold">Administrator</h6>
+            <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25" style="font-size: 10px;">● Active</span>
+        </div>
+    </div>
+
+    <div class="sidebar-menu mt-3">
+        <small class="px-4 text-secondary fw-bold text-uppercase" style="font-size: 11px;">Main Menu</small>
+        
+        <a href="/" class="menu-item mt-2"><span><i class="fas fa-th-large menu-icon"></i> Dashboard</span></a>
+        
+        <div class="menu-item" onclick="toggleSubmenu('masterSub')"><span><i class="fas fa-database menu-icon"></i> Master Record</span><i class="fas fa-chevron-right arrow" id="arr_masterSub"></i></div>
+        <div class="submenu" id="masterSub"><a href="/masters/class">Class Master</a><a href="/masters/section">Section Master</a></div>
+
+        <a href="/admission" class="menu-item"><span><i class="fas fa-user-plus menu-icon"></i> Admission</span></a>
+        <a href="/students" class="menu-item"><span><i class="fas fa-users menu-icon"></i> Students</span></a>
+        
+        <div class="menu-item" onclick="toggleSubmenu('attSub')"><span><i class="fas fa-calendar-alt menu-icon"></i> Attendance</span><i class="fas fa-chevron-right arrow" id="arr_attSub"></i></div>
+        <div class="submenu" id="attSub"><a href="/attendance/entry">Mark Attendance</a><a href="/attendance/view">View Register</a></div>
+
+        <div class="menu-item" onclick="toggleSubmenu('feeSub')"><span><i class="fas fa-wallet menu-icon"></i> Fees</span><i class="fas fa-chevron-right arrow" id="arr_feeSub"></i></div>
+        <div class="submenu" id="feeSub"><a href="/fees/collect">Collect Fee</a><a href="/fees/master">Fee Plans</a></div>
+
+        <div class="menu-item active" onclick="toggleSubmenu('examSub')"><span><i class="fas fa-file-signature menu-icon"></i> Exam</span><i class="fas fa-chevron-down arrow" id="arr_examSub"></i></div>
+        <div class="submenu" id="examSub" style="display: block;">
+            <a href="/exams/master" class="text-white fw-bold" style="background: rgba(255,255,255,0.1); padding-left: 20px;">Exam Setup</a>
+            <a href="/results/entry">Marks Entry</a>
+            <a href="/results/print-selection">Report Card</a>
+        </div>
+
+        <a href="/fees/id-cards-panel" class="menu-item"><span><i class="fas fa-id-badge menu-icon"></i> ID Cards</span></a>
+        
+        <div class="mt-5 px-3 mb-4">
+            <a href="/auth/logout" class="btn w-100 fw-bold text-white" style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;"><i class="fas fa-power-off me-2"></i> Logout</a>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    
+    <div class="glass-header">
+        <div>
+            <h4 class="fw-bold mb-0 text-dark">Subject & Exam Setup</h4>
+            <small class="text-muted">Manage subjects and assign them to classes</small>
+        </div>
+        <button class="btn btn-dark d-md-none rounded-circle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    </div>
+
+    <div class="row g-4">
+        
+        <div class="col-md-5">
+            <div class="premium-card">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3 text-primary"><i class="fas fa-book fa-lg"></i></div>
+                    <h5 class="fw-bold mb-0">Add New Subject</h5>
+                </div>
+
+                <div class="mb-3">
+                    <label class="fw-bold small text-muted mb-1">Subject Name</label>
+                    <input type="text" id="subName" class="form-control" placeholder="e.g. Mathematics">
+                </div>
+                <div class="mb-4">
+                    <label class="fw-bold small text-muted mb-1">Subject Code (Optional)</label>
+                    <input type="text" id="subCode" class="form-control" placeholder="e.g. MATH101">
+                </div>
+                <button onclick="addSubject()" class="btn btn-primary w-100 py-2 fw-bold" style="border-radius: 10px; background: var(--primary-gradient); border:none;">
+                    <i class="fas fa-plus me-2"></i> Add Subject
+                </button>
+                
+                <hr class="my-4 opacity-25">
+                
+                <h6 class="fw-bold text-secondary mb-3 small text-uppercase">Available Subjects</h6>
+                <div style="max-height: 250px; overflow-y: auto; padding-right: 5px;">
+                    <ul id="subjectList" class="list-group">
+                        </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="premium-card">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-success bg-opacity-10 p-3 rounded-circle me-3 text-success"><i class="fas fa-exchange-alt fa-lg"></i></div>
+                    <h5 class="fw-bold mb-0">Assign Subjects to Class</h5>
+                </div>
+
+                <div class="mb-4">
+                    <label class="fw-bold small text-muted mb-1">Select Class</label>
+                    <select id="classSelect" class="form-select" onchange="loadClassMapping()">
+                        <option value="">-- Choose Class --</option>
+                    </select>
+                </div>
+
+                <div id="mappingSection" style="display:none;">
+                    <div class="p-3 bg-light rounded-3 border mb-3">
+                        <h6 class="fw-bold text-dark mb-3 small">Tick subjects for this class:</h6>
+                        <div id="checkboxList" style="max-height: 300px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            </div>
+                    </div>
+                    <button onclick="saveMapping()" class="btn btn-success w-100 py-2 fw-bold" style="border-radius: 10px;">
+                        <i class="fas fa-save me-2"></i> Save Class Subjects
+                    </button>
+                </div>
+                
+                <div id="emptyState" class="text-center py-5 text-muted opacity-50">
+                    <i class="fas fa-chalkboard fa-3x mb-3"></i>
+                    <p>Select a class above to manage subjects</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Sidebar Toggle
+    function toggleSubmenu(id) { let el = document.getElementById(id); let arr = document.getElementById('arr_'+id); if(el){ if(el.style.display==='block'){el.style.display='none'; if(arr)arr.style.transform='rotate(0deg)';} else{el.style.display='block'; if(arr)arr.style.transform='rotate(90deg)';}}}
+    function toggleSidebar() { let sb = document.getElementById('sidebar'); if(sb) sb.classList.toggle('active'); }
+
+    // 2. PAGE LOAD
+    document.addEventListener("DOMContentLoaded", function() {
+        loadSubjects();
+        loadClasses();
+    });
+
+    // 3. LOGIC FUNCTIONS (Same as before, just UI connected)
+    async function loadSubjects() {
+        try {
+            let res = await fetch("/api/v1/exams/subjects");
+            let data = await res.json();
+            let list = document.getElementById("subjectList");
+            list.innerHTML = "";
+            window.allSubjects = data; 
+            data.forEach(sub => {
+                list.innerHTML += `
+                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
+                    <span class="fw-bold text-dark"><i class="fas fa-book-open text-muted me-2 small"></i>${sub.subject_name}</span>
+                    <span class="badge bg-light text-secondary border">${sub.subject_code || '-'}</span>
+                </li>`;
+            });
+        } catch(e) { console.error("API Error", e); }
+    }
+
+    async function addSubject() {
+        let name = document.getElementById("subName").value;
+        let code = document.getElementById("subCode").value;
+        if(!name) return alert("Subject Name is required!");
+        
+        let res = await fetch("/api/v1/exams/subjects", {
+            method: "POST", headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ subject_name: name, subject_code: code })
+        });
+        if(res.ok) { alert("Subject Added!"); document.getElementById("subName").value = ""; loadSubjects(); }
+        else { alert("Error: Subject might already exist"); }
+    }
+
+    async function loadClasses() {
+        let res = await fetch("/api/v1/masters/classes");
+        let data = await res.json();
+        let sel = document.getElementById("classSelect");
+        data.forEach(cls => { sel.innerHTML += `<option value="${cls.id}">${cls.class_name}</option>`; });
+    }
+
+    async function loadClassMapping() {
+        let classId = document.getElementById("classSelect").value;
+        let div = document.getElementById("mappingSection");
+        let empty = document.getElementById("emptyState");
+        let boxList = document.getElementById("checkboxList");
+
+        if(!classId) { div.style.display = "none"; empty.style.display = "block"; return; }
+        
+        div.style.display = "block"; empty.style.display = "none";
+        boxList.innerHTML = '<div class="spinner-border text-primary" role="status"></div>';
+
+        let res = await fetch(`/api/v1/exams/class-subjects/${classId}`);
+        let existing = await res.json();
+        let mappedIds = existing.map(item => item.subject_id);
+
+        boxList.innerHTML = "";
+        window.allSubjects.forEach(sub => {
+            let isChecked = mappedIds.includes(sub.id) ? "checked" : "";
+            boxList.innerHTML += `
+                <div class="form-check bg-white p-2 rounded border">
+                    <input class="form-check-input subject-checkbox" type="checkbox" value="${sub.id}" id="sub_${sub.id}" ${isChecked} style="cursor:pointer;">
+                    <label class="form-check-label fw-bold small text-secondary" for="sub_${sub.id}" style="cursor:pointer; margin-top:2px;">
+                        ${sub.subject_name}
+                    </label>
+                </div>
+            `;
+        });
+    }
+
+    async function saveMapping() {
+        let classId = document.getElementById("classSelect").value;
+        let checkboxes = document.querySelectorAll(".subject-checkbox:checked");
+        let selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+        let res = await fetch("/api/v1/exams/map-subjects", {
+            method: "POST", headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ class_id: parseInt(classId), subject_ids: selectedIds })
+        });
+
+        if(res.ok) alert("Subjects Assigned Successfully! ✅");
+        else alert("Error Saving Mapping");
+    }
+</script>
+
+</body>
+</html>

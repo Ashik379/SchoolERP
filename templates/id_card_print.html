@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student ID Cards</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            background: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .print-container {
+            width: 210mm;
+            /* A4 Width */
+            background: white;
+            margin: 0 auto;
+            padding: 10mm;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            gap: 10px;
+            /* Space between cards */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            min-height: 297mm;
+            /* A4 Height */
+        }
+
+        .id-card {
+            width: 86mm;
+            height: 54mm;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            page-break-inside: avoid;
+            /* Prevent splitting across pages */
+        }
+
+        /* Card Header */
+        .id-header {
+            background: linear-gradient(135deg, #b71c1c 0%, #d32f2f 100%);
+            color: white;
+            text-align: center;
+            padding: 4px 0;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .school-name {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .school-addr {
+            font-size: 7px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        /* Card Body */
+        .id-body {
+            display: flex;
+            padding: 8px;
+            height: 100%;
+            align-items: center;
+        }
+
+        /* Photo Area */
+        .photo-section {
+            width: 70px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .student-img {
+            width: 60px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 2px solid #b71c1c;
+            background: #f0f0f0;
+        }
+
+        .adm-badge {
+            background: #b71c1c;
+            color: white;
+            font-size: 8px;
+            font-weight: bold;
+            padding: 2px 4px;
+            border-radius: 4px;
+            margin-top: 4px;
+            display: inline-block;
+            -webkit-print-color-adjust: exact;
+        }
+
+        /* Details Area */
+        .info-section {
+            flex: 1;
+            padding-left: 10px;
+            font-size: 10px;
+            line-height: 1.4;
+            color: #333;
+            position: relative;
+        }
+
+        .st-name {
+            font-size: 13px;
+            font-weight: 800;
+            color: #b71c1c;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 2px;
+        }
+
+        .info-row span {
+            font-weight: 700;
+            color: #555;
+            width: 45px;
+            display: inline-block;
+        }
+
+        /* Footer */
+        .id-footer {
+            background: #b71c1c;
+            color: white;
+            text-align: center;
+            font-size: 8px;
+            padding: 3px;
+            margin-top: auto;
+            font-weight: 600;
+            letter-spacing: 1px;
+            -webkit-print-color-adjust: exact;
+        }
+
+        /* QR Code */
+        .qr-box {
+            position: absolute;
+            right: 5px;
+            bottom: 35px;
+            opacity: 0.8;
+        }
+
+        /* Watermark */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 40px;
+            font-weight: bold;
+            color: rgba(0, 0, 0, 0.03);
+            pointer-events: none;
+            z-index: 0;
+            white-space: nowrap;
+        }
+
+        /* Print Button Style */
+        .btn-print {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .btn-print:hover {
+            background: #1d4ed8;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+
+            .print-container {
+                box-shadow: none;
+                margin: 0;
+                padding: 5mm;
+            }
+
+            .btn-print {
+                display: none;
+            }
+
+            .id-card {
+                border: 1px solid #ccc;
+                break-inside: avoid;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button onclick="window.print()" class="btn-print">🖨️ Print ID Cards</button>
+
+    <div class="print-container" id="cardContainer">
+        <div style="width:100%; text-align:center; padding:50px; color:#666;">
+            Loading Student Data...
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const classId = urlParams.get('class_id');
+            const container = document.getElementById('cardContainer');
+
+            if (!classId) {
+                container.innerHTML = "<h3 style='color:red; text-align:center;'>Error: No Class Selected</h3>";
+                return;
+            }
+
+            try {
+                // Fetch data from API
+                let response = await fetch(`/students/api/bulk-ids/${classId}`);
+
+                if (!response.ok) throw new Error("Failed to fetch data");
+
+                let students = await response.json();
+
+                if (students.length === 0) {
+                    container.innerHTML = "<h3 style='color:#666; text-align:center;'>No students found in this class.</h3>";
+                    return;
+                }
+
+                container.innerHTML = ""; // Clear loader
+
+                students.forEach((s, index) => {
+                    let photoUrl = s.student_photo ? `/static/uploads/students/${s.student_photo}` : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+                    let className = s.class_val ? s.class_val.class_name : "-";
+                    let dob = s.dob || "-";
+
+                    let cardHtml = `
+                        <div class="id-card">
+                            <div class="watermark">VIDYA VIKAS</div>
+                            <div class="id-header">
+                                <div class="school-name">VIDYA VIKAS PUBLIC SCHOOL</div>
+                                <div class="school-addr">123, Education Lane, Knowledge City, India</div>
+                            </div>
+                            
+                            <div class="id-body">
+                                <div class="photo-section">
+                                    <img src="${photoUrl}" class="student-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+                                    <div class="adm-badge">${s.admission_no}</div>
+                                </div>
+                                
+                                <div class="info-section">
+                                    <div class="st-name">${s.student_name}</div>
+                                    <div class="info-row"><span>Class:</span> ${className}</div>
+                                    <div class="info-row"><span>Father:</span> ${s.father_name}</div>
+                                    <div class="info-row"><span>DOB:</span> ${dob}</div>
+                                    <div class="info-row"><span>Phone:</span> ${s.mobile_number}</div>
+                                </div>
+
+                                <div class="qr-box" id="qr-${index}"></div>
+                            </div>
+
+                            <div class="id-footer">
+                                ACADEMIC SESSION 2025-26
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += cardHtml;
+
+                    // Generate QR Code
+                    setTimeout(() => {
+                        let qrDiv = document.getElementById(`qr-${index}`);
+                        if (qrDiv) {
+                            new QRCode(qrDiv, {
+                                text: `ID: ${s.admission_no}\nName: ${s.student_name}`,
+                                width: 45,
+                                height: 45,
+                                colorDark: "#000000",
+                                colorLight: "#ffffff",
+                                correctLevel: QRCode.CorrectLevel.H
+                            });
+                        }
+                    }, 100);
+                });
+
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = `<h3 style='color:red; text-align:center;'>Error loading data: ${error.message}</h3>`;
+            }
+        });
+    </script>
+
+</body>
+
+</html>

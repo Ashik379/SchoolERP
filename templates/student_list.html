@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student List | Vidya Vikas ERP</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #f3f4f6;
+            --sidebar-width: 270px;
+            --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --text-dark: #111827;
+            --text-body: #374151;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-body);
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            height: 100vh;
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #111827;
+            background-image: radial-gradient(at 0% 0%, #1f2937 0px, transparent 50%), radial-gradient(at 100% 100%, #000000 0px, transparent 50%);
+            color: #a3aed0;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: 0.3s;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+
+        .brand-box {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .user-profile {
+            background: rgba(255, 255, 255, 0.03);
+            margin: 0 15px 20px;
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            margin: 5px 15px;
+            border-radius: 12px;
+            color: #a3aed0;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.4);
+            transform: translateX(5px);
+        }
+
+        .menu-item i.menu-icon {
+            width: 25px;
+            font-size: 18px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .submenu {
+            background: rgba(0, 0, 0, 0.2);
+            margin: 0 25px;
+            border-radius: 10px;
+            display: none;
+            padding: 5px 0;
+        }
+
+        .submenu a {
+            padding: 10px 15px;
+            display: block;
+            color: #8892b0;
+            text-decoration: none;
+            font-size: 13px;
+            transition: 0.2s;
+            border-radius: 8px;
+        }
+
+        .submenu a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 20px;
+        }
+
+        /* --- CONTENT AREA --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            transition: 0.3s;
+        }
+
+        .glass-header {
+            background: white;
+            border-radius: 15px;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            border-left: 5px solid #1e3c72;
+        }
+
+        /* --- CARDS & TABLE --- */
+        .premium-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 8px;
+            padding: 10px 15px;
+            border: 1px solid #9ca3af;
+            font-weight: 500;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #1e3c72;
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
+        }
+
+        .table-custom {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table-custom thead th {
+            background: #1e3c72;
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .table-custom tbody td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+            color: #111827;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .table-custom tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .student-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e5e7eb;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge-class {
+            background: #e0f2fe;
+            color: #0284c7;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 11px;
+        }
+
+        .badge-active {
+            background: #dcfce7;
+            color: #166534;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            transition: 0.2s;
+            color: white;
+            margin-right: 3px;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .btn-view {
+            background: #3b82f6;
+        }
+
+        .btn-print {
+            background: #6366f1;
+        }
+
+        .btn-fee {
+            background: #10b981;
+        }
+
+        .btn-edit {
+            background: #f59e0b;
+        }
+
+        /* Profile Modal Specifics */
+        .profile-container {
+            position: relative;
+            width: 140px;
+            height: 160px;
+            margin: 0 auto;
+        }
+
+        .profile-img-lg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+            border: 4px solid white;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .edit-photo-btn {
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            background: #1e3c72;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid white;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -270px;
+            }
+
+            .sidebar.active {
+                margin-left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="brand-box">
+            <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
+            <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px; text-transform: uppercase;">ERP
+                Solution 2.0</small>
+        </div>
+        <div class="user-profile">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="45">
+            <div class="ms-3">
+                <h6 class="mb-0 text-white fw-bold">Admin</h6><small class="text-success">● Active</small>
+            </div>
+        </div>
+        <div class="sidebar-menu mt-3">
+            <a href="/" class="menu-item"><span><i class="fas fa-tachometer-alt menu-icon"></i> Dashboard</span></a>
+            <div class="menu-item" onclick="toggleSubmenu('masterSub')"><span><i class="fas fa-database menu-icon"></i>
+                    Master Record</span><i class="fas fa-chevron-right arrow" id="arr_masterSub"></i></div>
+            <div class="submenu" id="masterSub"><a href="/masters/class">Class Master</a><a
+                    href="/masters/section">Section Master</a><a href="/masters/transport">Transport</a><a
+                    href="/masters/ledger">Ledger</a></div>
+
+            <a href="/admission" class="menu-item"><span><i class="fas fa-user-plus menu-icon"></i> Admission</span></a>
+
+            <a href="/students" class="menu-item active"><span><i class="fas fa-users menu-icon"></i>
+                    Students</span></a>
+
+            <div class="menu-item" onclick="toggleSubmenu('attSub')"><span><i class="fas fa-calendar-alt menu-icon"></i>
+                    Attendance</span><i class="fas fa-chevron-right arrow" id="arr_attSub"></i></div>
+            <div class="submenu" id="attSub"><a href="/attendance/entry">Mark Attendance</a><a
+                    href="/attendance/view">View Register</a></div>
+
+            <div class="menu-item" onclick="toggleSubmenu('feeSub')"><span><i class="fas fa-wallet menu-icon"></i>
+                    Fees</span><i class="fas fa-chevron-right arrow" id="arr_feeSub"></i></div>
+            <div class="submenu" id="feeSub">
+                <a href="/fees/collect">Collect Fee</a>
+                <a href="/fees/schedule">Fee Heads</a>
+                <a href="/fees/master">Fee Plans</a>
+                <a href="/fees/history">Fee History</a>
+            </div>
+
+            <div class="menu-item" onclick="toggleSubmenu('examSub')"><span><i
+                        class="fas fa-file-signature menu-icon"></i> Examinations</span><i
+                    class="fas fa-chevron-right arrow" id="arr_examSub"></i></div>
+            <div class="submenu" id="examSub"><a href="/exams/master">Exam Setup</a><a href="/exams/schedule">Date
+                    Sheet</a><a href="/exams/admit-card">Admit Card</a></div>
+
+            <div class="menu-item" onclick="toggleSubmenu('resSub')"><span><i class="fas fa-poll menu-icon"></i>
+                    Results</span><i class="fas fa-chevron-right arrow" id="arr_resSub"></i></div>
+            <div class="submenu" id="resSub"><a href="/results/entry">Marks Entry</a><a
+                    href="/results/print-selection">Report Card</a><a href="/results/manager">Result Manager</a></div>
+
+            <a href="/fees/id-cards-panel" class="menu-item"><span><i class="fas fa-id-badge menu-icon"></i> ID
+                    Cards</span></a>
+            <div class="mt-5 px-3 mb-4"><a href="/auth/logout" class="btn w-100 fw-bold text-white"
+                    style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;"><i
+                        class="fas fa-power-off me-2"></i> Logout</a></div>
+        </div>
+    </div>
+
+    <div class="main-content">
+
+        <div class="glass-header">
+            <div>
+                <h4 class="fw-bold mb-0 text-dark">Student Management</h4>
+                <small class="text-secondary fw-bold">Manage student records and profiles</small>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="/admission" class="btn btn-primary fw-bold shadow-sm"
+                    style="background: var(--primary-gradient); border:none; border-radius: 8px;"><i
+                        class="fas fa-user-plus me-2"></i> New Admission</a>
+                <button class="btn btn-dark d-md-none rounded-circle" onclick="toggleSidebar()"><i
+                        class="fas fa-bars"></i></button>
+            </div>
+        </div>
+
+        <div class="premium-card mb-4" style="border-top: 3px solid #1e3c72;">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label">Filter by Class</label>
+                    <select id="classFilter" class="form-select bg-light" onchange="loadStudents()">
+                        <option value="all">All Classes</option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label">Search Student</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i
+                                class="fas fa-search text-muted"></i></span>
+                        <input type="text" id="searchInput" class="form-control border-start-0 ps-0"
+                            placeholder="Search by Name, Admission No..." onkeyup="loadStudents()">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button onclick="resetFilters()" class="btn btn-secondary w-100 fw-bold"
+                        style="border-radius: 8px;">
+                        <i class="fas fa-sync-alt me-2"></i> Reset Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="premium-card p-0 overflow-hidden">
+            <div class="table-responsive">
+                <table class="table-custom mb-0 text-center">
+                    <thead>
+                        <tr>
+                            <th style="width: 70px;">Photo</th>
+                            <th>Adm No</th>
+                            <th class="text-start ps-3">Student Name</th>
+                            <th class="text-start">Father Name</th>
+                            <th>Class</th>
+                            <th>Mobile</th>
+                            <th>Status</th>
+                            <th class="text-end pe-4" style="width: 180px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        <tr>
+                            <td colspan="8" class="text-center p-5 text-muted">Loading Data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-3 bg-light border-top text-muted small fw-bold" id="recordCount">
+                Showing 0 records
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="viewModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+                <div class="modal-body p-0">
+                    <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3 z-3"
+                        data-bs-dismiss="modal"></button>
+                    <div class="row g-0">
+                        <div class="col-md-4 text-center p-5 text-white position-relative"
+                            style="background: var(--primary-gradient);">
+                            <div class="profile-container mb-3">
+                                <img id="v_photo" src="" class="profile-img-lg"
+                                    onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+                                <input type="file" id="photoInput" style="display: none;" accept="image/*"
+                                    onchange="uploadNewPhoto()">
+                                <div class="edit-photo-btn" onclick="triggerPhotoUpload()" title="Change Photo"><i
+                                        class="fas fa-camera"></i></div>
+                            </div>
+                            <h4 id="v_name" class="fw-bold mb-1"></h4>
+                            <div class="badge bg-white text-dark mb-2 px-3 py-2 rounded-pill" id="v_adm"></div>
+                            <p class="small opacity-75 mb-0">System ID: <span id="v_id"></span></p>
+                            <input type="hidden" id="currentStudentId">
+                        </div>
+
+                        <div class="col-md-8 p-4 bg-white">
+                            <h6 class="text-uppercase fw-bold text-muted mb-4 border-bottom pb-2">Academic & Personal
+                                Info</h6>
+                            <div class="row g-3 text-dark">
+                                <div class="col-6"><small class="text-muted d-block">Class</small><span id="v_class"
+                                        class="fw-bold fs-6"></span></div>
+                                <div class="col-6"><small class="text-muted d-block">Roll No</small><span id="v_roll"
+                                        class="fw-bold"></span></div>
+                                <div class="col-6"><small class="text-muted d-block">Father</small><span id="v_father"
+                                        class="fw-bold"></span></div>
+                                <div class="col-6"><small class="text-muted d-block">Mother</small><span id="v_mother"
+                                        class="fw-bold"></span></div>
+                                <div class="col-6"><small class="text-muted d-block">Mobile</small><span id="v_mobile"
+                                        class="fw-bold text-primary"></span></div>
+                                <div class="col-6"><small class="text-muted d-block">DOB</small><span id="v_dob"
+                                        class="fw-bold"></span></div>
+                                <div class="col-12"><small class="text-muted d-block">Address</small><span
+                                        id="v_address" class="fw-bold"></span></div>
+                            </div>
+                            <div class="mt-4 text-end">
+                                <button type="button" class="btn btn-primary btn-sm px-4 fw-bold" id="modalPrintBtn"
+                                    style="border-radius: 8px;"><i class="fas fa-print me-2"></i> Print Profile</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header text-white" style="background: #f59e0b;">
+                    <h5 class="modal-title fw-bold text-dark"><i class="fas fa-edit me-2"></i> Edit Student Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="editForm">
+                        <input type="hidden" id="e_id">
+                        <div class="row g-3">
+                            <div class="col-md-6"><label class="form-label">Name</label><input type="text" id="e_name"
+                                    class="form-control"></div>
+                            <div class="col-md-6"><label class="form-label">Mobile</label><input type="text"
+                                    id="e_mobile" class="form-control"></div>
+                            <div class="col-md-6"><label class="form-label">Father</label><input type="text"
+                                    id="e_father" class="form-control"></div>
+                            <div class="col-md-6"><label class="form-label">Mother</label><input type="text"
+                                    id="e_mother" class="form-control"></div>
+                            <div class="col-md-4"><label class="form-label">Class</label><select id="e_class"
+                                    class="form-select" onchange="loadSectionsForEdit()"></select></div>
+                            <div class="col-md-4"><label class="form-label">Section</label><select id="e_section"
+                                    class="form-select">
+                                    <option value="">Select Section</option>
+                                </select></div>
+                            <div class="col-md-4"><label class="form-label">Roll No</label><input type="number"
+                                    id="e_roll" class="form-control"></div>
+                            <div class="col-md-4"><label class="form-label">DOB</label><input type="date" id="e_dob"
+                                    class="form-control"></div>
+                            <div class="col-md-4"><label class="form-label">Gender</label><select id="e_gender"
+                                    class="form-select">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select></div>
+                            <div class="col-md-4"><label class="form-label">Category</label><select id="e_category"
+                                    class="form-select">
+                                    <option value="General">General</option>
+                                    <option value="OBC">OBC</option>
+                                    <option value="SC/ST">SC/ST</option>
+                                </select></div>
+                            <div class="col-12"><label class="form-label">Address</label><input type="text"
+                                    id="e_address" class="form-control"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-warning fw-bold text-dark px-4"
+                        onclick="saveStudentChanges()"><i class="fas fa-save me-2"></i> Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSubmenu(id) { let el = document.getElementById(id); let arr = document.getElementById('arr_' + id); if (el) { if (el.style.display === 'block') { el.style.display = 'none'; if (arr) arr.style.transform = 'rotate(0deg)'; } else { el.style.display = 'block'; if (arr) arr.style.transform = 'rotate(90deg)'; } } }
+        function toggleSidebar() { let sb = document.getElementById('sidebar'); if (sb) sb.classList.toggle('active'); }
+
+        document.addEventListener("DOMContentLoaded", function () { loadClasses(); loadStudents(); });
+
+        async function loadClasses() {
+            try {
+                let res = await fetch("/api/v1/masters/classes");
+                let data = await res.json();
+                let sel = document.getElementById("classFilter");
+                data.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.class_name}</option>`; });
+            } catch (e) { }
+        }
+
+        async function loadStudents() {
+            let clsId = document.getElementById("classFilter").value;
+            let search = document.getElementById("searchInput").value;
+            let tbody = document.getElementById('studentTableBody');
+            let countDiv = document.getElementById("recordCount");
+
+            if (!search) tbody.innerHTML = '<tr><td colspan="8" class="text-center p-5"><div class="spinner-border text-primary"></div></td></tr>';
+
+            try {
+                let res = await fetch(`/students/api/filter?class_id=${clsId}&search=${search}`);
+                let students = await res.json();
+                tbody.innerHTML = '';
+
+                if (students.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" class="text-center p-5 text-muted fw-bold">No Students Found</td></tr>';
+                    countDiv.innerText = "Showing 0 records";
+                    return;
+                }
+
+                students.forEach(s => {
+                    let photoUrl = s.student_photo ? `/static/uploads/students/${s.student_photo}` : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+                    let cls = s.class_val ? s.class_val.class_name : 'N/A';
+                    let sec = s.section_val ? s.section_val.section_name : '';
+
+                    tbody.innerHTML += `
+                    <tr>
+                        <td><img src="${photoUrl}" class="student-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'"></td>
+                        <td><span class="fw-bold text-dark">#${s.admission_no}</span></td>
+                        <td class="text-start ps-3"><div class="fw-bold text-dark">${s.student_name}</div></td>
+                        <td class="text-start text-secondary">${s.father_name || '-'}</td>
+                        <td><span class="badge-class">${cls} ${sec}</span></td>
+                        <td class="fw-bold text-secondary">${s.mobile_number}</td>
+                        <td><span class="badge-active">Active</span></td>
+                        <td class="text-end pe-4">
+                            <button class="btn-action btn-view" onclick="viewProfile(${s.id})" title="View"><i class="fas fa-eye"></i></button>
+                            <button class="btn-action btn-print" onclick="printForm(${s.id})" title="Print"><i class="fas fa-print"></i></button>
+                            <button class="btn-action btn-fee" onclick="openFeePage(${s.id})" title="Fee"><i class="fas fa-rupee-sign"></i></button>
+                            <button class="btn-action btn-edit" onclick="openEditModal(${s.id})" title="Edit"><i class="fas fa-pencil-alt"></i></button>
+                        </td>
+                    </tr>`;
+                });
+                countDiv.innerText = `Showing ${students.length} records`;
+            } catch (e) { tbody.innerHTML = '<tr><td colspan="8" class="text-center text-danger">Error Loading Data</td></tr>'; }
+        }
+
+        function resetFilters() { document.getElementById("classFilter").value = "all"; document.getElementById("searchInput").value = ""; loadStudents(); }
+        function printForm(id) { window.open(`/print-admission?id=${id}`, '_blank'); }
+        function openFeePage(id) { window.location.href = `/fees/collect?id=${id}`; }
+
+        async function viewProfile(id) {
+            try {
+                let res = await fetch(`/students/${id}`);
+                let s = await res.json();
+                document.getElementById('currentStudentId').value = s.id;
+                document.getElementById('v_name').innerText = s.student_name;
+                document.getElementById('v_adm').innerText = s.admission_no;
+                document.getElementById('v_id').innerText = s.id;
+                document.getElementById('v_dob').innerText = s.dob || '-';
+                document.getElementById('v_class').innerText = (s.class_val ? s.class_val.class_name : '') + " " + (s.section_val ? s.section_val.section_name : '');
+                document.getElementById('v_roll').innerText = s.roll_no || '-';
+                document.getElementById('v_father').innerText = s.father_name;
+                document.getElementById('v_mother').innerText = s.mother_name;
+                document.getElementById('v_mobile').innerText = s.mobile_number;
+                document.getElementById('v_address').innerText = s.address;
+
+                let photoUrl = s.student_photo ? `/static/uploads/students/${s.student_photo}?t=${new Date().getTime()}` : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+                document.getElementById('v_photo').src = photoUrl;
+                document.getElementById('modalPrintBtn').onclick = function () { printForm(id); };
+
+                new bootstrap.Modal(document.getElementById('viewModal')).show();
+            } catch (e) { alert("Error loading profile"); }
+        }
+
+        function triggerPhotoUpload() { document.getElementById('photoInput').click(); }
+        async function uploadNewPhoto() {
+            let fileInput = document.getElementById('photoInput');
+            let studentId = document.getElementById('currentStudentId').value;
+            if (fileInput.files.length === 0) return;
+            let formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+
+            try {
+                let res = await fetch(`/students/${studentId}/update-photo`, { method: 'POST', body: formData });
+                if (res.ok) {
+                    let data = await res.json();
+                    document.getElementById('v_photo').src = `/static/uploads/students/${data.filename}?t=${new Date().getTime()}`;
+                    loadStudents();
+                } else alert("Upload Failed");
+            } catch (e) { alert("Network Error"); }
+        }
+
+        async function openEditModal(id) {
+            try {
+                await loadEditClasses();
+                let res = await fetch(`/students/${id}`);
+                let s = await res.json();
+
+                document.getElementById("e_id").value = s.id;
+                document.getElementById("e_name").value = s.student_name;
+                document.getElementById("e_mobile").value = s.mobile_number;
+                document.getElementById("e_father").value = s.father_name;
+                document.getElementById("e_mother").value = s.mother_name;
+                document.getElementById("e_class").value = s.class_id;
+                await loadSectionsForEdit();
+                if (s.section_id) document.getElementById("e_section").value = s.section_id;
+                document.getElementById("e_roll").value = s.roll_no;
+                document.getElementById("e_dob").value = s.dob;
+                document.getElementById("e_gender").value = s.gender;
+                document.getElementById("e_category").value = s.category;
+                document.getElementById("e_address").value = s.address;
+
+                new bootstrap.Modal(document.getElementById('editModal')).show();
+            } catch (e) { }
+        }
+
+        async function saveStudentChanges() {
+            let id = document.getElementById("e_id").value;
+            let formData = new FormData(document.getElementById("editForm")); // Shortcut to get all inputs
+            // Note: You might need to manually append specific fields if form names don't match backend exactly, 
+            // but since you had individual appends before, using FormData on the form element is cleaner if names match.
+            // Assuming IDs match previous logic, let's stick to manual append for safety based on your previous code:
+            let fd = new FormData();
+            fd.append("student_name", document.getElementById("e_name").value);
+            fd.append("father_name", document.getElementById("e_father").value);
+            fd.append("mother_name", document.getElementById("e_mother").value);
+            fd.append("mobile_number", document.getElementById("e_mobile").value);
+            fd.append("class_id", document.getElementById("e_class").value);
+            fd.append("section_id", document.getElementById("e_section").value || "");
+            fd.append("roll_no", document.getElementById("e_roll").value || "");
+            fd.append("dob", document.getElementById("e_dob").value || "");
+            fd.append("gender", document.getElementById("e_gender").value);
+            fd.append("category", document.getElementById("e_category").value || "");
+            fd.append("address", document.getElementById("e_address").value || "");
+
+            try {
+                let res = await fetch(`/students/${id}/update`, { method: "POST", body: fd });
+                if (res.ok) { alert("✅ Updated!"); location.reload(); }
+                else alert("Update Failed");
+            } catch (e) { alert("Network Error"); }
+        }
+
+        async function loadEditClasses() {
+            let sel = document.getElementById("e_class");
+            if (sel.options.length > 1) return;
+            let res = await fetch("/api/v1/masters/classes");
+            let data = await res.json();
+            sel.innerHTML = '<option value="">Select Class</option>';
+            data.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.class_name}</option>`; });
+        }
+
+        async function loadSectionsForEdit() {
+            let classId = document.getElementById("e_class").value;
+            let secSel = document.getElementById("e_section");
+            secSel.innerHTML = '<option value="">Select Section</option>';
+            if (!classId) return;
+            let res = await fetch(`/api/v1/masters/sections/${classId}`);
+            let data = await res.json();
+            data.forEach(s => { secSel.innerHTML += `<option value="${s.id}">${s.section_name}</option>`; });
+        }
+    </script>
+
+</body>
+
+</html>

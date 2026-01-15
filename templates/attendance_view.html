@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Register | Vidya Vikas ERP</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #f3f4f6;
+            --sidebar-width: 270px;
+            --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --text-dark: #111827;
+            --text-body: #374151;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-body);
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR (Standard) --- */
+        .sidebar {
+            height: 100vh;
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #111827;
+            background-image: radial-gradient(at 0% 0%, #1f2937 0px, transparent 50%), radial-gradient(at 100% 100%, #000000 0px, transparent 50%);
+            color: #a3aed0;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: 0.3s;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+
+        .brand-box {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .user-profile {
+            background: rgba(255, 255, 255, 0.03);
+            margin: 0 15px 20px;
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            margin: 5px 15px;
+            border-radius: 12px;
+            color: #a3aed0;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.4);
+            transform: translateX(5px);
+        }
+
+        .menu-item i.menu-icon {
+            width: 25px;
+            font-size: 18px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .submenu {
+            background: rgba(0, 0, 0, 0.2);
+            margin: 0 25px;
+            border-radius: 10px;
+            display: none;
+            padding: 5px 0;
+        }
+
+        .submenu a {
+            padding: 10px 15px;
+            display: block;
+            color: #8892b0;
+            text-decoration: none;
+            font-size: 13px;
+            transition: 0.2s;
+            border-radius: 8px;
+        }
+
+        .submenu a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 20px;
+        }
+
+        /* --- CONTENT --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            transition: 0.3s;
+        }
+
+        .glass-header {
+            background: white;
+            border-radius: 15px;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            border-left: 5px solid #1e3c72;
+        }
+
+        .premium-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            height: 100%;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 8px;
+            padding: 10px 15px;
+            border: 1px solid #9ca3af;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #1e3c72;
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
+        }
+
+        label {
+            color: #111827;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        /* --- REGISTER TABLE --- */
+        .table-responsive::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .table-reg {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #e5e7eb;
+            font-size: 12px;
+        }
+
+        .table-reg th {
+            background: #1e3c72;
+            color: white;
+            padding: 10px 5px;
+            text-align: center;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 600;
+        }
+
+        .table-reg td {
+            padding: 8px 2px;
+            text-align: center;
+            border-bottom: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+            vertical-align: middle;
+            font-weight: 500;
+        }
+
+        /* Sticky Name Column */
+        .sticky-col {
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            background: #f9fafb;
+            border-right: 2px solid #d1d5db !important;
+            min-width: 160px;
+            text-align: left !important;
+            padding-left: 10px !important;
+        }
+
+        .sticky-header {
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            background: #111827 !important;
+            min-width: 160px;
+        }
+
+        /* Stats Colors */
+        .stat-p {
+            background: #dcfce7;
+            color: #166534;
+            font-weight: bold;
+        }
+
+        .stat-a {
+            background: #fee2e2;
+            color: #991b1b;
+            font-weight: bold;
+        }
+
+        .stat-perc {
+            background: #1f2937;
+            color: white;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -270px;
+            }
+
+            .sidebar.active {
+                margin-left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="brand-box">
+            <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
+            <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px; text-transform: uppercase;">ERP
+                Solution 2.0</small>
+        </div>
+
+        <div class="user-profile">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="45">
+            <div class="ms-3">
+                <h6 class="mb-0 text-white fw-bold">Administrator</h6><span
+                    class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25"
+                    style="font-size: 10px;">● Active</span>
+            </div>
+        </div>
+
+        <div class="sidebar-menu mt-3">
+            <small class="px-4 text-secondary fw-bold text-uppercase" style="font-size: 11px;">Main Menu</small>
+
+            <a href="/" class="menu-item mt-2"><span><i class="fas fa-tachometer-alt menu-icon"></i>
+                    Dashboard</span></a>
+
+            <div class="menu-item" onclick="toggleSubmenu('masterSub')"><span><i class="fas fa-database menu-icon"></i>
+                    Master Record</span><i class="fas fa-chevron-right arrow" id="arr_masterSub"></i></div>
+            <div class="submenu" id="masterSub"><a href="/masters/class">Class Master</a><a
+                    href="/masters/section">Section Master</a><a href="/masters/transport">Transport</a><a
+                    href="/masters/ledger">Ledger</a></div>
+
+            <a href="/admission" class="menu-item"><span><i class="fas fa-user-plus menu-icon"></i> Admission</span></a>
+            <a href="/students" class="menu-item"><span><i class="fas fa-users menu-icon"></i> Students</span></a>
+
+            <div class="menu-item active" onclick="toggleSubmenu('attSub')"><span><i
+                        class="fas fa-calendar-alt menu-icon"></i> Attendance</span><i class="fas fa-chevron-down arrow"
+                    id="arr_attSub"></i></div>
+            <div class="submenu" id="attSub" style="display: block;">
+                <a href="/attendance/entry">Mark Attendance</a>
+                <a href="/attendance/view" class="text-white fw-bold"
+                    style="background: rgba(255,255,255,0.1); padding-left: 20px;">View Register</a>
+            </div>
+
+            <div class="menu-item" onclick="toggleSubmenu('feeSub')"><span><i class="fas fa-wallet menu-icon"></i>
+                    Fees</span><i class="fas fa-chevron-right arrow" id="arr_feeSub"></i></div>
+            <div class="submenu" id="feeSub"><a href="/fees/collect">Collect Fee</a><a href="/fees/schedule">Fee
+                    Heads</a><a href="/fees/master">Fee Plans</a></div>
+
+            <div class="menu-item" onclick="toggleSubmenu('examSub')"><span><i
+                        class="fas fa-file-signature menu-icon"></i> Examinations</span><i
+                    class="fas fa-chevron-right arrow" id="arr_examSub"></i></div>
+            <div class="submenu" id="examSub"><a href="/exams/master">Exam Setup</a><a href="/exams/schedule">Date
+                    Sheet</a><a href="/exams/admit-card">Admit Card</a></div>
+
+            <div class="menu-item" onclick="toggleSubmenu('resSub')"><span><i class="fas fa-poll menu-icon"></i>
+                    Results</span><i class="fas fa-chevron-right arrow" id="arr_resSub"></i></div>
+            <div class="submenu" id="resSub"><a href="/results/entry">Marks Entry</a><a
+                    href="/results/print-selection">Report Card</a><a href="/results/manager">Result Manager</a></div>
+        </div>
+
+        <a href="/fees/id-cards-panel" class="menu-item"><span><i class="fas fa-id-badge menu-icon"></i> ID
+                Cards</span></a>
+
+        <div class="mt-5 px-3 mb-4"><a href="/auth/logout" class="btn w-100 fw-bold text-white"
+                style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;"><i
+                    class="fas fa-power-off me-2"></i> Logout</a></div>
+    </div>
+    </div>
+
+    <div class="main-content">
+
+        <div class="glass-header">
+            <div>
+                <h4 class="fw-bold mb-0 text-dark">Monthly Register</h4><small class="text-secondary fw-bold">View
+                    monthly attendance report</small>
+            </div>
+            <button class="btn btn-dark d-md-none rounded-circle" onclick="toggleSidebar()"><i
+                    class="fas fa-bars"></i></button>
+        </div>
+
+        <div class="premium-card mb-4" style="border-top: 3px solid #1e3c72;">
+            <div class="row align-items-end g-3">
+                <div class="col-md-4">
+                    <label>Select Class</label>
+                    <select id="classSelect" class="form-select bg-light">
+                        <option value="">-- Choose Class --</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Select Month</label>
+                    <input type="month" id="monthInput" class="form-control bg-light">
+                </div>
+                <div class="col-md-4">
+                    <button onclick="loadRegister()" class="btn btn-primary w-100 fw-bold py-2"
+                        style="background: #1e3c72; border:none; border-radius: 8px;">
+                        <i class="fas fa-search me-2"></i> View Register
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="premium-card p-0 overflow-hidden" id="regCard" style="display:none;">
+            <div class="table-responsive">
+                <table class="table-reg">
+                    <thead>
+                        <tr id="tableHeader"></tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+            <div class="p-3 bg-light d-flex gap-3 small fw-bold border-top">
+                <span class="text-success"><i class="fas fa-circle"></i> Present (P)</span>
+                <span class="text-danger"><i class="fas fa-circle"></i> Absent (A)</span>
+                <span class="text-warning"><i class="fas fa-circle"></i> Holiday (H)</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSubmenu(id) { let el = document.getElementById(id); let arr = document.getElementById('arr_' + id); if (el) { if (el.style.display === 'block') { el.style.display = 'none'; if (arr) arr.style.transform = 'rotate(0deg)'; } else { el.style.display = 'block'; if (arr) arr.style.transform = 'rotate(90deg)'; } } }
+        function toggleSidebar() { let sb = document.getElementById('sidebar'); if (sb) sb.classList.toggle('active'); }
+
+        // Init
+        document.getElementById('monthInput').value = new Date().toISOString().slice(0, 7);
+
+        document.addEventListener("DOMContentLoaded", async function () {
+            let res = await fetch("/api/v1/masters/classes");
+            let data = await res.json();
+            let sel = document.getElementById("classSelect");
+            data.forEach(c => sel.innerHTML += `<option value="${c.id}">${c.class_name}</option>`);
+        });
+
+        async function loadRegister() {
+            let clsId = document.getElementById("classSelect").value;
+            let month = document.getElementById("monthInput").value;
+            if (!clsId || !month) return alert("Select Class and Month!");
+
+            let thead = document.getElementById("tableHeader");
+            let tbody = document.getElementById("tableBody");
+            document.getElementById("regCard").style.display = "block";
+            tbody.innerHTML = "<tr><td colspan='35' class='p-4 text-center text-muted fw-bold'>Loading Data...</td></tr>";
+
+            try {
+                let res = await fetch(`/attendance/get-register?class_id=${clsId}&month=${month}`);
+                let data = await res.json();
+
+                // 1. Build Header
+                let headerHTML = `<th class="sticky-header">Student Name</th>`;
+                data.days.forEach(d => { headerHTML += `<th style="min-width:32px;">${d}</th>`; });
+                headerHTML += `<th class="bg-success">P</th><th class="bg-danger">A</th><th class="bg-dark">%</th>`;
+                thead.innerHTML = headerHTML;
+
+                // 2. Build Body
+                tbody.innerHTML = "";
+                if (data.report.length === 0) {
+                    tbody.innerHTML = "<tr><td colspan='35' class='p-4 text-center text-danger fw-bold'>No Data Found</td></tr>";
+                    return;
+                }
+
+                data.report.forEach(row => {
+                    let tr = `<tr>
+                    <td class="sticky-col">
+                        <div class="text-dark fw-bold">${row.name}</div>
+                        <small class="text-muted">Roll: ${row.roll || '-'}</small>
+                    </td>`;
+
+                    row.days.forEach(status => {
+                        let cellHtml = "";
+                        if (status.startsWith("H:")) {
+                            let reason = status.split(":")[1].substring(0, 3);
+                            cellHtml = `<td class="bg-warning text-dark p-0" title="${status.split(":")[1]}" style="font-size:10px; font-weight:800; cursor:help;">${reason}</td>`;
+                        } else {
+                            let color = status === "P" ? "text-success fw-bold" : (status === "A" ? "text-danger fw-bold" : "text-muted");
+                            cellHtml = `<td class="${color}">${status === "P" ? "P" : (status === "A" ? "A" : "-")}</td>`;
+                        }
+                        tr += cellHtml;
+                    });
+
+                    tr += `<td class="stat-p">${row.present}</td><td class="stat-a">${row.absent}</td><td class="stat-perc">${row.perc}%</td></tr>`;
+                    tbody.innerHTML += tr;
+                });
+
+            } catch (e) { tbody.innerHTML = "<tr><td colspan='35' class='text-danger p-3'>Error loading data</td></tr>"; }
+        }
+    </script>
+
+</body>
+
+</html>
