@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, Form, responses
+from fastapi import APIRouter, Depends, HTTPException, Request, Form, responses, Response
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from database import get_db
@@ -22,10 +22,12 @@ def login_page(request: Request):
 
 # 2. Login Process Route (POST)
 @router.post("/login")
-def process_login(data: LoginSchema, db: Session = Depends(get_db)):
+def process_login(response: Response, data: LoginSchema, db: Session = Depends(get_db)):
     # --- ADMIN LOGIN LOGIC ---
     if data.role == "admin":
         if data.username == "admin" and data.password == "admin":
+            # ✅ Login successful! Cookie set kar rahe hain (Middleware ke liye)
+            response.set_cookie(key="user_token", value="admin_access", max_age=86400) # 24 Hours valid
             return {"status": "success", "redirect_url": "/"}
         else:
             return {"status": "error", "detail": "Galat Password Hai Bhai!"}
@@ -38,22 +40,21 @@ def process_login(data: LoginSchema, db: Session = Depends(get_db)):
         ).first()
 
         if student:
+            # ✅ Student ke liye bhi cookie set kar rahe hain
+            response.set_cookie(key="user_token", value=f"student_{student.id}", max_age=86400)
             return {"status": "success", "redirect_url": f"/students/portal/{student.id}"}
         else:
             return {"status": "error", "detail": "Admission No ya Mobile No galat hai!"}
     
     return {"status": "error", "detail": "Role samajh nahi aaya"}
 
-# 3. Logout Route (GET) - ✅ FIXED Screenshot (416) Error
+# 3. Logout Route (GET)
 @router.get("/logout")
-def logout(request: Request):
+def logout():
     """
-    User ko logout karke wapas login page par bhejta hai.
-    Agar aap Cookies ya JWT use kar rahe hain, toh unhe yahan delete karein.
+    User ko logout karke wapas login page par bhejta hai aur cookie delete karta hai.
     """
     response = responses.RedirectResponse(url="/auth/login", status_code=302)
-    
-    # Optional: Agar session cookie clear karni ho toh:
-    # response.delete_cookie("access_token")
-    
+    # ✅ Cookie delete kar di taaki login khatam ho jaye
+    response.delete_cookie("user_token")
     return response
