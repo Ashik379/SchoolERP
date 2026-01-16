@@ -1,0 +1,460 @@
+{% extends "base_clean.html" %}
+{% block title %}{{ student.student_name }} - Full Profile{% endblock %}
+
+{% block content %}
+<style>
+    .profile-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        padding: 30px;
+        border-radius: 15px;
+        color: white;
+        margin-bottom: 25px;
+    }
+
+    .profile-photo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 4px solid white;
+        object-fit: cover;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+        text-align: center;
+        transition: transform 0.2s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .stat-card h3 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .stat-card p {
+        color: #666;
+        font-size: 13px;
+        margin: 0;
+    }
+
+    .section-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px 25px;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1e3c72;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title i {
+        font-size: 18px;
+    }
+
+    .info-row {
+        display: flex;
+        padding: 10px 0;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        width: 40%;
+        color: #888;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .info-value {
+        width: 60%;
+        color: #333;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .fee-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+    }
+
+    .fee-table th {
+        background: #f8f9fa;
+        padding: 12px 15px;
+        text-align: left;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #666;
+    }
+
+    .fee-table td {
+        background: #fff;
+        padding: 12px 15px;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+    }
+
+    .fee-table tr td:first-child {
+        border-left: 1px solid #eee;
+        border-radius: 8px 0 0 8px;
+    }
+
+    .fee-table tr td:last-child {
+        border-right: 1px solid #eee;
+        border-radius: 0 8px 8px 0;
+    }
+
+    .badge-success-soft {
+        background: #d4edda;
+        color: #155724;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+    }
+
+    .badge-danger-soft {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+    }
+
+    .badge-info-soft {
+        background: #d1ecf1;
+        color: #0c5460;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+    }
+
+    .attendance-bar {
+        height: 8px;
+        background: #e9ecef;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 10px;
+    }
+
+    .attendance-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #28a745, #20c997);
+        border-radius: 4px;
+    }
+
+    .result-subject {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .result-subject:last-child {
+        border-bottom: none;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <img src="{{ student.student_photo if student.student_photo and student.student_photo.startswith('http') else ('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') }}"
+                    class="profile-photo" alt="Student Photo">
+            </div>
+            <div class="col">
+                <h2 class="mb-1 fw-bold">{{ student.student_name }}</h2>
+                <p class="mb-1 opacity-75"><i class="fas fa-id-card me-2"></i>{{ student.admission_no }}</p>
+                <p class="mb-0 opacity-75">
+                    <i class="fas fa-graduation-cap me-2"></i>
+                    {{ student.class_val.class_name if student.class_val else 'N/A' }}
+                    {% if student.section_val %} - {{ student.section_val.section_name }}{% endif %}
+                    | Roll No: {{ student.roll_no or 'N/A' }}
+                </p>
+            </div>
+            <div class="col-auto">
+                <span class="badge {{ 'bg-success' if student.status else 'bg-danger' }} px-3 py-2"
+                    style="font-size: 14px;">
+                    {{ 'ACTIVE' if student.status else 'INACTIVE' }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3 col-6 mb-3">
+            <div class="stat-card">
+                <h3 class="text-primary">{{ attendance.percent }}%</h3>
+                <p>Attendance</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="stat-card">
+                <h3 class="text-success">₹{{ "{:,.0f}".format(fees.total_paid) }}</h3>
+                <p>Total Paid</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="stat-card">
+                <h3 class="text-danger">₹{{ "{:,.0f}".format(fees.balance) }}</h3>
+                <p>Balance Due</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="stat-card">
+                <h3 class="text-info">{{ student.academic_session }}</h3>
+                <p>Academic Session</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-lg-6">
+            <!-- Personal Information -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-user text-primary"></i> Personal Information</div>
+                <div class="info-row">
+                    <div class="info-label">Full Name</div>
+                    <div class="info-value">{{ student.student_name }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Date of Birth</div>
+                    <div class="info-value">{{ student.dob.strftime('%d %B %Y') if student.dob else 'N/A' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Gender</div>
+                    <div class="info-value">{{ student.gender or 'N/A' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Blood Group</div>
+                    <div class="info-value">{{ student.blood_group or 'N/A' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Category</div>
+                    <div class="info-value">{{ student.category or 'General' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Religion</div>
+                    <div class="info-value">{{ student.religion or 'N/A' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Caste</div>
+                    <div class="info-value">{{ student.caste or 'N/A' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Aadhaar No</div>
+                    <div class="info-value">{{ student.aadhaar_no or 'N/A' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">APAAR ID</div>
+                    <div class="info-value">{{ student.apaar_id or 'N/A' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">PAN Number</div>
+                    <div class="info-value">{{ student.pan_no or 'N/A' }}</div>
+                </div>
+            </div>
+
+            <!-- Parents Information -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-users text-success"></i> Parents Information</div>
+                <div class="info-row">
+                    <div class="info-label">Father's Name</div>
+                    <div class="info-value">{{ student.father_name }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Father's Mobile</div>
+                    <div class="info-value">{{ student.father_mobile or student.mobile_number }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Father's Occupation</div>
+                    <div class="info-value">{{ student.father_occupation or 'N/A' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Father's Aadhaar</div>
+                    <div class="info-value">{{ student.father_aadhaar or 'N/A' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Mother's Name</div>
+                    <div class="info-value">{{ student.mother_name }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Mother's Occupation</div>
+                    <div class="info-value">{{ student.mother_occupation or 'N/A' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Mother's Aadhaar</div>
+                    <div class="info-value">{{ student.mother_aadhaar or 'N/A' }}</div>
+                </div>
+            </div>
+
+            <!-- Address & Transport -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-map-marker-alt text-danger"></i> Address & Transport</div>
+                <div class="info-row">
+                    <div class="info-label">Address</div>
+                    <div class="info-value">{{ student.address or 'N/A' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">City</div>
+                    <div class="info-value">{{ student.city or 'N/A' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Previous School</div>
+                    <div class="info-value">{{ student.previous_school or 'N/A' }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Transport Status</div>
+                    <div class="info-value">
+                        {% if student.transport_opted %}
+                        <span class="badge-success-soft">Opted</span>
+                        {% if student.transport_val %}
+                        - {{ student.transport_val.pickup_point_name }}
+                        {% endif %}
+                        {% else %}
+                        <span class="badge-info-soft">Not Opted</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-6">
+            <!-- Attendance Summary -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-calendar-check text-info"></i> Attendance Summary</div>
+                <div class="row text-center mb-3">
+                    <div class="col-4">
+                        <h4 class="text-success mb-0">{{ attendance.present }}</h4>
+                        <small class="text-muted">Present</small>
+                    </div>
+                    <div class="col-4">
+                        <h4 class="text-danger mb-0">{{ attendance.absent }}</h4>
+                        <small class="text-muted">Absent</small>
+                    </div>
+                    <div class="col-4">
+                        <h4 class="text-primary mb-0">{{ attendance.total }}</h4>
+                        <small class="text-muted">Total Days</small>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="fw-bold">Attendance Rate</span>
+                    <span class="fw-bold text-{{ 'success' if attendance.percent >= 75 else 'danger' }}">{{
+                        attendance.percent }}%</span>
+                </div>
+                <div class="attendance-bar">
+                    <div class="attendance-bar-fill" style="width: {{ attendance.percent }}%;"></div>
+                </div>
+            </div>
+
+            <!-- Fee Summary -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-rupee-sign text-warning"></i> Fee Summary</div>
+                <div class="row text-center mb-3">
+                    <div class="col-6">
+                        <h4 class="text-success mb-0">₹{{ "{:,.0f}".format(fees.total_paid) }}</h4>
+                        <small class="text-muted">Total Paid</small>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-danger mb-0">₹{{ "{:,.0f}".format(fees.balance) }}</h4>
+                        <small class="text-muted">Balance Due</small>
+                    </div>
+                </div>
+
+                {% if fees.transactions %}
+                <h6 class="fw-bold mb-3 mt-4">Recent Payments</h6>
+                <table class="fee-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Mode</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for txn in fees.transactions[:5] %}
+                        <tr>
+                            <td>{{ txn.payment_date.strftime('%d %b %Y') if txn.payment_date else 'N/A' }}</td>
+                            <td class="fw-bold text-success">₹{{ "{:,.0f}".format(txn.amount_paid) }}</td>
+                            <td><span class="badge-info-soft">{{ txn.payment_mode or 'Cash' }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% if fees.transactions|length > 5 %}
+                <div class="text-center mt-3">
+                    <a href="/students/fees/{{ student.id }}" class="btn btn-outline-primary btn-sm">View All
+                        Transactions</a>
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="text-center text-muted py-4">
+                    <i class="fas fa-receipt fa-2x mb-2"></i>
+                    <p class="mb-0">No payment records found</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Exam Results -->
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-award text-purple"></i> Exam Results</div>
+                {% if result_visible and results %}
+                {% for exam_name, subjects in results.items() %}
+                <h6 class="fw-bold text-primary mb-3">{{ exam_name }}</h6>
+                {% for sub in subjects %}
+                <div class="result-subject">
+                    <span>{{ sub.subject }}</span>
+                    <span class="fw-bold">{{ sub.obtained }}/{{ sub.max }}</span>
+                </div>
+                {% endfor %}
+                {% endfor %}
+                {% elif not result_visible %}
+                <div class="text-center text-muted py-4">
+                    <i class="fas fa-lock fa-2x mb-2"></i>
+                    <p class="mb-0">Results not published yet</p>
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-4">
+                    <i class="fas fa-clipboard-list fa-2x mb-2"></i>
+                    <p class="mb-0">No exam records found</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="text-center mt-4 mb-5">
+        <a href="/students" class="btn btn-outline-secondary me-2"><i class="fas fa-arrow-left me-1"></i> Back to
+            Students</a>
+        <a href="/fees/collect?id={{ student.id }}" class="btn btn-success me-2"><i class="fas fa-rupee-sign me-1"></i>
+            Collect Fee</a>
+        <a href="/students/attendance/{{ student.id }}" class="btn btn-info"><i class="fas fa-calendar me-1"></i> View
+            Attendance</a>
+    </div>
+</div>
+{% endblock %}

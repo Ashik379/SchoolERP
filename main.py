@@ -12,6 +12,8 @@ from models import communication
 from routers import dashboard, masters, students, fees, collection, results, auth, attendance, website, communication
 from routers.exams import router as exams_router 
 from routers import student_api
+from routers import bulk_import
+from routers import student_lifecycle
 
 # --- IMPORT MODELS ---
 from models.students import Student
@@ -92,6 +94,8 @@ app.include_router(auth.router)
 app.include_router(website.router)
 app.include_router(communication.router)
 app.include_router(student_api.router)
+app.include_router(bulk_import.router)
+app.include_router(student_lifecycle.router)
 
 # ===========================
 #   WEB PAGES (Admin Panel)

@@ -39,6 +39,11 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 #   1. SPECIFIC ROUTES (UPAR RAKHEIN)
 # ===============================
 
+# --- Bulk Import Page Route (Must be before /{id} routes) ---
+@router.get("/bulk-import", response_class=HTMLResponse)
+def bulk_import_page(request: Request):
+    return templates.TemplateResponse("bulk_import.html", {"request": request})
+
 # --- Bulk ID Card Page Route (Moved to Top) ---
 @router.get("/id_cards", response_class=HTMLResponse)
 def id_card_print_page(request: Request, class_id: Optional[int] = None, id: Optional[int] = None):
@@ -432,6 +437,80 @@ def student_profile_view(request: Request, id: int, db: Session = Depends(get_db
     return templates.TemplateResponse("student_profile_view.html", {
         "request": request,
         "student": student
+    })
+
+
+# COMPREHENSIVE STUDENT PROFILE (All Details + Fees)
+@router.get("/{id}/profile", response_class=HTMLResponse)
+def student_full_profile(request: Request, id: int, db: Session = Depends(get_db)):
+    """Complete student profile with ALL details including fees, attendance, and results"""
+    
+    # 1. Fetch student with relationships
+    student = db.query(Student).filter(Student.id == id).options(
+        joinedload(Student.class_val),
+        joinedload(Student.section_val),
+        joinedload(Student.transport_val)
+    ).first()
+    
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    
+    # 2. Attendance Summary
+    total_days = db.query(StudentAttendance).filter(StudentAttendance.student_id == id).count()
+    present_days = db.query(StudentAttendance).filter(
+        StudentAttendance.student_id == id, 
+        StudentAttendance.status == 'P'
+    ).count()
+    absent_days = db.query(StudentAttendance).filter(
+        StudentAttendance.student_id == id, 
+        StudentAttendance.status == 'A'
+    ).count()
+    attendance_percent = round((present_days / total_days) * 100, 1) if total_days > 0 else 0
+    
+    # 3. Fee Transactions
+    fee_transactions = db.query(FeeTransaction).filter(
+        FeeTransaction.student_id == id
+    ).order_by(FeeTransaction.payment_date.desc()).all()
+    
+    total_paid = sum(t.amount_paid for t in fee_transactions)
+    total_due = student.current_balance or 0
+    
+    # 4. Exam Results (if visible)
+    results_data = {}
+    class_info = db.query(ClassMaster).filter(ClassMaster.id == student.class_id).first()
+    result_visible = class_info and class_info.is_result_published and not student.is_result_withheld
+    
+    if result_visible:
+        marks_records = db.query(StudentMark).filter(StudentMark.student_id == id)\
+            .options(joinedload(StudentMark.subject_val), joinedload(StudentMark.exam_val))\
+            .all()
+        
+        for mark in marks_records:
+            exam_name = mark.exam_val.exam_name if mark.exam_val else "Other"
+            if exam_name not in results_data:
+                results_data[exam_name] = []
+            results_data[exam_name].append({
+                "subject": mark.subject_val.subject_name if mark.subject_val else "Unknown",
+                "obtained": mark.marks_obtained,
+                "max": mark.max_marks
+            })
+    
+    return templates.TemplateResponse("student_full_profile.html", {
+        "request": request,
+        "student": student,
+        "attendance": {
+            "total": total_days,
+            "present": present_days,
+            "absent": absent_days,
+            "percent": attendance_percent
+        },
+        "fees": {
+            "transactions": fee_transactions,
+            "total_paid": total_paid,
+            "balance": total_due
+        },
+        "results": results_data,
+        "result_visible": result_visible
     })
 
 # ===============================

@@ -66,7 +66,7 @@ def student_login(login_data: StudentLogin, db: Session = Depends(get_db)):
     ).first()
 
     if not student:
-        raise HTTPException(status_code=401, detail="Galat Admission No ya Mobile Number")
+        raise HTTPException(status_code=401, detail="Invalid Admission No or Mobile Number")
 
     access_token = create_access_token(data={"sub": str(student.id), "role": "student"})
     return {"access_token": access_token, "token_type": "bearer"}

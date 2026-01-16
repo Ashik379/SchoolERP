@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Import Students | Vidya Vikas ERP</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #f3f4f6;
+            --sidebar-width: 270px;
+            --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --text-dark: #111827;
+            --text-body: #374151;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-body);
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            height: 100vh;
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #111827;
+            background-image: radial-gradient(at 0% 0%, #1f2937 0px, transparent 50%), radial-gradient(at 100% 100%, #000000 0px, transparent 50%);
+            color: #a3aed0;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: 0.3s;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+
+        .brand-box {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .user-profile {
+            background: rgba(255, 255, 255, 0.03);
+            margin: 0 15px 20px;
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            margin: 5px 15px;
+            border-radius: 12px;
+            color: #a3aed0;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.4);
+            transform: translateX(5px);
+        }
+
+        .menu-item i.menu-icon {
+            width: 25px;
+            font-size: 18px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .submenu {
+            background: rgba(0, 0, 0, 0.2);
+            margin: 0 25px;
+            border-radius: 10px;
+            display: none;
+            padding: 5px 0;
+        }
+
+        .submenu a {
+            padding: 10px 15px;
+            display: block;
+            color: #8892b0;
+            text-decoration: none;
+            font-size: 13px;
+            transition: 0.2s;
+            border-radius: 8px;
+        }
+
+        .submenu a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 20px;
+        }
+
+        /* --- CONTENT AREA --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            transition: 0.3s;
+        }
+
+        .glass-header {
+            background: white;
+            border-radius: 15px;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            border-left: 5px solid #1e3c72;
+        }
+
+        /* --- CARD STYLES --- */
+        .premium-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+        }
+
+        .section-header {
+            color: #1e3c72;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+
+        /* --- UPLOAD ZONE --- */
+        .upload-zone {
+            border: 3px dashed #d1d5db;
+            border-radius: 15px;
+            padding: 50px 30px;
+            text-align: center;
+            background: #fafafa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-zone:hover,
+        .upload-zone.dragover {
+            border-color: #1e3c72;
+            background: rgba(30, 60, 114, 0.05);
+        }
+
+        .upload-zone i {
+            font-size: 60px;
+            color: #9ca3af;
+            margin-bottom: 15px;
+        }
+
+        .upload-zone h4 {
+            color: #4b5563;
+            font-weight: 600;
+        }
+
+        .upload-zone p {
+            color: #9ca3af;
+            margin-bottom: 0;
+        }
+
+        /* --- RESULT CARDS --- */
+        .result-card {
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .result-card.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .result-card.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .result-card .count {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .result-card .label {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* --- ERROR TABLE --- */
+        .error-table {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .error-table table {
+            margin-bottom: 0;
+        }
+
+        .error-table th {
+            background: #1e3c72;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+
+        .btn-upload {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+            transition: 0.3s;
+        }
+
+        .btn-upload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(30, 60, 114, 0.3);
+            color: white;
+        }
+
+        .btn-upload:disabled {
+            background: #9ca3af;
+            transform: none;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .template-info {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 1px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -270px;
+            }
+
+            .sidebar.active {
+                margin-left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="brand-box">
+            <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
+            <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px; text-transform: uppercase;">ERP
+                Solution 2.0</small>
+        </div>
+        <div class="user-profile">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="45">
+            <div class="ms-3">
+                <h6 class="mb-0 text-white fw-bold">Admin</h6><small class="text-success">● Active</small>
+            </div>
+        </div>
+        <div class="sidebar-menu mt-3">
+            <a href="/" class="menu-item"><span><i class="fas fa-tachometer-alt menu-icon"></i> Dashboard</span></a>
+
+            <div class="menu-item" onclick="toggleSubmenu('masterSub')"><span><i class="fas fa-database menu-icon"></i>
+                    Master Record</span><i class="fas fa-chevron-right arrow" id="arr_masterSub"></i></div>
+            <div class="submenu" id="masterSub"><a href="/masters/class">Class Master</a><a
+                    href="/masters/section">Section Master</a><a href="/masters/transport">Transport</a><a
+                    href="/masters/ledger">Ledger</a></div>
+
+            <a href="/admission" class="menu-item"><span><i class="fas fa-user-plus menu-icon"></i> Admission</span></a>
+            <a href="/students" class="menu-item"><span><i class="fas fa-users menu-icon"></i> Students</span></a>
+            <a href="/students/bulk-import" class="menu-item active"><span><i class="fas fa-file-excel menu-icon"></i>
+                    Bulk Import</span></a>
+
+            <div class="menu-item" onclick="toggleSubmenu('attSub')"><span><i class="fas fa-calendar-alt menu-icon"></i>
+                    Attendance</span><i class="fas fa-chevron-right arrow" id="arr_attSub"></i></div>
+            <div class="submenu" id="attSub"><a href="/attendance/entry">Mark Attendance</a><a
+                    href="/attendance/view">View Register</a></div>
+
+            <div class="menu-item" onclick="toggleSubmenu('feeSub')"><span><i class="fas fa-wallet menu-icon"></i>
+                    Fees</span><i class="fas fa-chevron-right arrow" id="arr_feeSub"></i></div>
+            <div class="submenu" id="feeSub"><a href="/fees/collect">Collect Fee</a><a href="/fees/schedule">Fee
+                    Heads</a><a href="/fees/master">Fee Plans</a><a href="/fees/history">Fee History</a></div>
+
+            <div class="mt-5 px-3 mb-4"><a href="/auth/logout" class="btn w-100 fw-bold text-white"
+                    style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;"><i
+                        class="fas fa-power-off me-2"></i> Logout</a></div>
+        </div>
+    </div>
+
+    <div class="main-content">
+
+        <div class="glass-header">
+            <div>
+                <h4 class="fw-bold mb-0 text-dark"><i class="fas fa-file-excel text-success me-2"></i>Bulk Import
+                    Students</h4>
+                <small class="text-secondary fw-bold">Upload an Excel file to import multiple students at once</small>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-dark d-md-none rounded-circle" onclick="toggleSidebar()"><i
+                        class="fas fa-bars"></i></button>
+                <a href="/students" class="btn btn-outline-dark fw-bold" style="border-radius: 8px;"><i
+                        class="fas fa-arrow-left me-2"></i> Back to List</a>
+            </div>
+        </div>
+
+        <div class="premium-card">
+            <!-- Upload Section -->
+            <div id="uploadSection">
+                <h5 class="section-header"><i class="fas fa-cloud-upload-alt me-2"></i> Upload Excel File</h5>
+
+                <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-file-excel"></i>
+                    <h4>Drop Excel File Here</h4>
+                    <p>or click to browse (.xlsx, .xls)</p>
+                    <input type="file" id="fileInput" accept=".xlsx,.xls" hidden onchange="handleFile(event)">
+                </div>
+
+                <div id="fileInfo" class="mt-3 text-center" style="display: none;">
+                    <span class="badge bg-success fs-6 px-4 py-2"><i class="fas fa-file-excel me-2"></i><span
+                            id="fileName"></span></span>
+                    <button class="btn btn-sm btn-outline-danger ms-2" onclick="clearFile()"><i
+                            class="fas fa-times"></i></button>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button class="btn btn-upload" id="uploadBtn" onclick="uploadFile()" disabled>
+                        <i class="fas fa-upload me-2"></i> IMPORT STUDENTS
+                    </button>
+                </div>
+
+                <div id="loadingSpinner" class="text-center mt-4" style="display: none;">
+                    <div class="spinner-border text-primary" style="width: 50px; height: 50px;"></div>
+                    <p class="mt-3 text-muted fw-bold">Processing... Please wait</p>
+                </div>
+
+                <!-- Template Info -->
+                <div class="template-info">
+                    <h6 class="fw-bold text-primary mb-3"><i class="fas fa-info-circle me-2"></i>Excel Template
+                        Information</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>Required Columns:</strong></p>
+                            <ul class="list-unstyled text-dark">
+                                <li><i class="fas fa-check text-success me-2"></i>student_name</li>
+                                <li><i class="fas fa-check text-success me-2"></i>class_name (e.g., "Class 5")</li>
+                                <li><i class="fas fa-check text-success me-2"></i>father_name</li>
+                                <li><i class="fas fa-check text-success me-2"></i>mother_name</li>
+                                <li><i class="fas fa-check text-success me-2"></i>mobile_number</li>
+                                <li><i class="fas fa-check text-success me-2"></i>gender (Male/Female)</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>Optional Columns:</strong></p>
+                            <ul class="list-unstyled text-muted small">
+                                <li>section_name, roll_no, academic_year, dob, category, religion, caste</li>
+                                <li>father_mobile, father_occupation, mother_occupation</li>
+                                <li>aadhaar_no, blood_group, apaar_id, pan_no</li>
+                                <li>father_aadhaar, mother_aadhaar, address, city</li>
+                                <li>previous_school, transport_route, student_photo</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="alert alert-warning mb-0 mt-3">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Note:</strong> Admission numbers will be auto-generated. Any values in an "admission_no"
+                        column will be ignored.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section (Hidden Initially) -->
+            <div id="resultSection" style="display: none;">
+                <h5 class="section-header"><i class="fas fa-chart-bar me-2"></i> Import Results</h5>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="result-card" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
+                            <div class="count" id="totalRows">0</div>
+                            <div class="label">Total Rows</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="result-card success">
+                            <div class="count" id="successCount">0</div>
+                            <div class="label">Imported Successfully</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="result-card error">
+                            <div class="count" id="errorCount">0</div>
+                            <div class="label">Errors / Skipped</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="errorDetails" style="display: none;">
+                    <h6 class="fw-bold text-danger mb-3"><i class="fas fa-exclamation-circle me-2"></i>Error Details
+                    </h6>
+                    <div class="error-table">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">Row #</th>
+                                    <th>Error Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="errorTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button class="btn btn-outline-primary btn-lg me-2" onclick="resetUpload()">
+                        <i class="fas fa-redo me-2"></i> Import More
+                    </button>
+                    <a href="/students" class="btn btn-success btn-lg">
+                        <i class="fas fa-users me-2"></i> View Students
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function toggleSubmenu(id) {
+            let el = document.getElementById(id);
+            let arr = document.getElementById('arr_' + id);
+            if (el) {
+                if (el.style.display === 'block') {
+                    el.style.display = 'none';
+                    if (arr) arr.style.transform = 'rotate(0deg)';
+                } else {
+                    el.style.display = 'block';
+                    if (arr) arr.style.transform = 'rotate(90deg)';
+                }
+            }
+        }
+
+        function toggleSidebar() {
+            let sb = document.getElementById('sidebar');
+            if (sb) sb.classList.toggle('active');
+        }
+
+        let selectedFile = null;
+
+        // Drag & Drop Support
+        const uploadZone = document.getElementById('uploadZone');
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
+                selectedFile = file;
+                showFileInfo(file.name);
+            } else {
+                Swal.fire('Invalid File', 'Please upload an Excel file (.xlsx or .xls)', 'warning');
+            }
+        });
+
+        function handleFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedFile = file;
+                showFileInfo(file.name);
+            }
+        }
+
+        function showFileInfo(name) {
+            document.getElementById('fileName').textContent = name;
+            document.getElementById('fileInfo').style.display = 'block';
+            document.getElementById('uploadBtn').disabled = false;
+        }
+
+        function clearFile() {
+            selectedFile = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('fileInfo').style.display = 'none';
+            document.getElementById('uploadBtn').disabled = true;
+        }
+
+        async function uploadFile() {
+            if (!selectedFile) {
+                Swal.fire('No File', 'Please select an Excel file first', 'warning');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('uploadBtn').style.display = 'none';
+            document.getElementById('loadingSpinner').style.display = 'block';
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            try {
+                const response = await fetch('/bulk-import/students', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showResults(result);
+                } else {
+                    Swal.fire('Import Failed', result.detail || 'An error occurred during import', 'error');
+                    resetLoading();
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                Swal.fire('Network Error', 'Could not connect to server', 'error');
+                resetLoading();
+            }
+        }
+
+        function resetLoading() {
+            document.getElementById('uploadBtn').style.display = 'inline-block';
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
+
+        function showResults(result) {
+            // Hide upload section, show results
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'block';
+
+            // Update counts
+            document.getElementById('totalRows').textContent = result.total_rows;
+            document.getElementById('successCount').textContent = result.imported_count;
+            document.getElementById('errorCount').textContent = result.error_count;
+
+            // Show error details if any
+            if (result.errors && result.errors.length > 0) {
+                document.getElementById('errorDetails').style.display = 'block';
+                const tbody = document.getElementById('errorTableBody');
+                tbody.innerHTML = '';
+
+                result.errors.forEach(err => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                    <td class="text-center fw-bold">${err.row}</td>
+                    <td class="text-danger">${err.error}</td>
+                `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // Success message
+            if (result.imported_count > 0) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Import Complete!',
+                    html: `Successfully imported <b>${result.imported_count}</b> students.${result.error_count > 0 ? `<br><span class="text-danger">${result.error_count} rows had errors.</span>` : ''}`,
+                    confirmButtonColor: '#1e3c72'
+                });
+            }
+        }
+
+        function resetUpload() {
+            document.getElementById('uploadSection').style.display = 'block';
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('errorDetails').style.display = 'none';
+            document.getElementById('errorTableBody').innerHTML = '';
+            clearFile();
+            resetLoading();
+        }
+    </script>
+</body>
+
+</html>
