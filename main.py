@@ -30,15 +30,22 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Digital School ERP")
 
-# ✅ SECURITY MIDDLEWARE (Strictly Admin Only)
+# ==========================================
+# ✅ SECURITY MIDDLEWARE (THE FIX IS HERE)
+# ==========================================
 @app.middleware("http")
 async def auth_middleware(request: Request, call_next):
     # In paths ko hamesha allow karna hai
     allowed_paths = ["/auth/login", "/api/v1/auth/login"]
     path = request.url.path
 
-    # Static files aur Student API ko chhod kar baki sab check karega
-    if path not in allowed_paths and not path.startswith("/static") and not path.startswith("/api/v1/student"):
+    # ✅ CHANGE: Maine yahan '/api/v1/website' add kar diya hai.
+    # Ab Website ka data lene ke liye backend password nahi mangega.
+    if path not in allowed_paths \
+       and not path.startswith("/static") \
+       and not path.startswith("/api/v1/student") \
+       and not path.startswith("/api/v1/website"):  # 👈 YE LINE ZAROORI HAI
+       
         token = request.cookies.get("user_token")
         
         # 🚨 LOCK: Agar token nahi hai YA token 'admin_access' nahi hai, toh bahar pheko
@@ -48,15 +55,17 @@ async def auth_middleware(request: Request, call_next):
     response = await call_next(request)
     return response
 
+# ==========================================
+# ✅ CORS MIDDLEWARE (Website Allowed)
+# ==========================================
 origins = [
     "http://localhost:3000",
     "https://vvic-erp.onrender.com",
     "https://vvicstudent.vercel.app",        # Student Portal
-    "https://vidyavikas-psi.vercel.app",     # ✅ YE WALA MISSING THA (Ise Add karo)
-    "https://vidyavikas-psi.vercel.app/"     # (Safety ke liye slash wala bhi daal do)
-
+    "https://vidyavikas-psi.vercel.app",     # Main Website
+    "https://vidyavikas-psi.vercel.app/"     # Safety Slash
 ]
-# ✅ CORS MIDDLEWARE
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -85,7 +94,7 @@ app.include_router(communication.router)
 app.include_router(student_api.router)
 
 # ===========================
-#   WEB PAGES (Baki sab same hai)
+#   WEB PAGES (Admin Panel)
 # ===========================
 
 @app.get("/", response_class=HTMLResponse)
