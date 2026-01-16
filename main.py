@@ -48,10 +48,15 @@ async def auth_middleware(request: Request, call_next):
     response = await call_next(request)
     return response
 
+origins = [
+    "https://vvic-erp.onrender.com",                            # Local testing ke liye
+    "https://aapka-admin-erp.onrender.com",            # Aapka Admin ERP link
+    "https://vvicstudent.vercel.app" # ✅ Apna Vercel link yahan dalo
+]
 # ✅ CORS MIDDLEWARE
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"], 
     allow_headers=["*"], 
