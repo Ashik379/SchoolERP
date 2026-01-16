@@ -17,14 +17,26 @@ import calendar
 from models.exams import StudentMark, Subject, ExamType
 from models.transactions import FeeTransaction 
 
+# ✅ 1. Cloudinary Import
+import cloudinary
+import cloudinary.uploader
+
+# ✅ 2. Apna Cloudinary Config Yahan Set Karo (Keys wahi same hain jo website.py mein thi)
+cloudinary.config( 
+   cloud_name = "dwe5az2ec",    # 👈 Yahan apna Cloud Name dalo
+  api_key = "862764192254549",          # 👈 Yahan apni API Key dalo
+  api_secret = "wkAdLdjkNg4Xsb88MzAfcAcPcE4"     # 👈 Yahan apna API Secret dalo
+)
+
 templates = Jinja2Templates(directory="templates")
 router = APIRouter(prefix="/students", tags=["Students"]) 
 
+# Ab Local folder ki zaroorat nahi, par safe side ke liye rakha hai
 UPLOAD_DIR = "static/uploads/students"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # ===============================
-#  1. SPECIFIC ROUTES (UPAR RAKHEIN)
+#   1. SPECIFIC ROUTES (UPAR RAKHEIN)
 # ===============================
 
 # --- Bulk ID Card Page Route (Moved to Top) ---
@@ -61,10 +73,10 @@ def filter_students(class_id: str = "", search: str = "", db: Session = Depends(
     return query.all()
 
 # ===============================
-#  2. STUDENT CRUD OPERATIONS
+#   2. STUDENT CRUD OPERATIONS
 # ===============================
 
-# ADD STUDENT
+# ADD STUDENT (Updated for Cloudinary) ☁️
 @router.post("/")
 async def add_student(
     student_name: str = Form(...),
@@ -103,17 +115,15 @@ async def add_student(
 ):
     admission_no = f"ADM-{random.randint(10000, 99999)}"
 
-    # Save Photo
-    photo_filename = None
+    # ✅ CLOUDINARY UPLOAD LOGIC
+    photo_url = None
     if student_photo:
         try:
-            file_ext = student_photo.filename.split(".")[-1]
-            photo_filename = f"{admission_no}.{file_ext}"
-            file_path = os.path.join(UPLOAD_DIR, photo_filename)
-            with open(file_path, "wb") as buffer:
-                shutil.copyfileobj(student_photo.file, buffer)
+            # File ko Cloudinary par bhejo
+            result = cloudinary.uploader.upload(student_photo.file, folder="vvic_students")
+            photo_url = result.get("secure_url") # Ye URL kabhi delete nahi hoga
         except Exception as e:
-            print(f"Error saving photo: {e}")
+            print(f"Cloudinary Upload Error: {e}")
 
     new_student = Student(
         admission_no=admission_no,
@@ -141,7 +151,9 @@ async def add_student(
         previous_school=previous_school,
         transport_opted=transport_opted,
         pickup_point_id=pickup_point_id,
-        student_photo=photo_filename,
+        
+        student_photo=photo_url, # ✅ Ab Database mein URL save hoga
+        
         current_balance=0.0,
 
         # New Fields Mapping
@@ -161,7 +173,7 @@ async def add_student(
         raise HTTPException(status_code=500, detail=str(e))
 
 # ===============================
-#  3. DYNAMIC ID ROUTES (NICHE RAKHEIN)
+#   3. DYNAMIC ID ROUTES (NICHE RAKHEIN)
 # ===============================
 
 # GET SINGLE STUDENT (Note: This catches anything like /students/123)
@@ -201,29 +213,23 @@ def delete_student(id: int, db: Session = Depends(get_db)):
         db.commit()
     return {"message": "Deleted"}
 
-# UPDATE PHOTO
+# UPDATE PHOTO (Updated for Cloudinary) ☁️
 @router.post("/{id}/update-photo")
 async def update_student_photo(id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
     student = db.query(Student).filter(Student.id == id).first()
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
     
-    if student.student_photo:
-        old_path = os.path.join(UPLOAD_DIR, student.student_photo)
-        if os.path.exists(old_path):
-            os.remove(old_path)
-    
+    # Cloudinary Upload
     try:
-        file_ext = file.filename.split(".")[-1]
-        new_filename = f"{student.admission_no}.{file_ext}"
-        file_path = os.path.join(UPLOAD_DIR, new_filename)
+        result = cloudinary.uploader.upload(file.file, folder="vvic_students")
+        new_url = result.get("secure_url")
         
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-            
-        student.student_photo = new_filename
+        # Database Update
+        student.student_photo = new_url
         db.commit()
-        return {"message": "Photo Updated", "filename": new_filename}
+        
+        return {"message": "Photo Updated", "filename": new_url}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -429,7 +435,7 @@ def student_profile_view(request: Request, id: int, db: Session = Depends(get_db
     })
 
 # ===============================
-#  4. RESULT WITHHOLD API
+#   4. RESULT WITHHOLD API
 # ===============================
 
 # Toggle Student Result Hold
