@@ -11,6 +11,7 @@ from models import communication
 # --- IMPORT ROUTERS (APIs) ---
 from routers import dashboard, masters, students, fees, collection, results, auth, attendance, website, communication
 from routers.exams import router as exams_router 
+from routers import student_api
 
 # --- IMPORT MODELS ---
 from models.students import Student
@@ -29,17 +30,19 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Digital School ERP")
 
-# ✅ SECURITY MIDDLEWARE (Added for Login Check)
+# ✅ SECURITY MIDDLEWARE (Strictly Admin Only)
 @app.middleware("http")
 async def auth_middleware(request: Request, call_next):
-    # In paths ko bina login ke allow karna hai
+    # In paths ko hamesha allow karna hai
     allowed_paths = ["/auth/login", "/api/v1/auth/login"]
     path = request.url.path
 
-    # Agar user logged in nahi hai aur protected page access kar raha hai
-    if path not in allowed_paths and not path.startswith("/static"):
+    # Static files aur Student API ko chhod kar baki sab check karega
+    if path not in allowed_paths and not path.startswith("/static") and not path.startswith("/api/v1/student"):
         token = request.cookies.get("user_token")
-        if not token:
+        
+        # 🚨 LOCK: Agar token nahi hai YA token 'admin_access' nahi hai, toh bahar pheko
+        if not token or token != "admin_access":
             return RedirectResponse(url="/auth/login")
     
     response = await call_next(request)
@@ -71,28 +74,24 @@ app.include_router(attendance.router)
 app.include_router(auth.router) 
 app.include_router(website.router)
 app.include_router(communication.router)
+app.include_router(student_api.router)
 
 # ===========================
-#   WEB PAGES (HTML ROUTES)
+#   WEB PAGES (Baki sab same hai)
 # ===========================
 
-# 1. Dashboard
 @app.get("/", response_class=HTMLResponse)
 def dashboard_ui(request: Request, db: Session = Depends(get_db)):
     student_count = db.query(Student).count()
     class_count = db.query(ClassMaster).count()
     route_count = db.query(TransportMaster).count()
     recent_students = db.query(Student).order_by(Student.id.desc()).limit(5).all()
-
     return templates.TemplateResponse("index.html", {
-        "request": request,
-        "total_students": student_count,
-        "total_classes": class_count,
-        "total_routes": route_count,
+        "request": request, "total_students": student_count, 
+        "total_classes": class_count, "total_routes": route_count, 
         "recent_students": recent_students
     })
 
-# admission page, student list, etc... (Baqi saare routes niche same hain)
 @app.get("/admission", response_class=HTMLResponse)
 def admission_page(request: Request):
     return templates.TemplateResponse("student_add.html", {"request": request})
