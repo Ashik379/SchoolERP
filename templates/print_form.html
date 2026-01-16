@@ -1,238 +1,384 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Admission Form | Digital Public School</title>
     <style>
-        @page { size: A4; margin: 10mm; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f0f0f0; -webkit-print-color-adjust: exact; }
-        
+        @page {
+            size: A4;
+            margin: 10mm;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            background: #f0f0f0;
+            -webkit-print-color-adjust: exact;
+        }
+
         .print-container {
-            width: 210mm; min-height: 297mm; background: white; margin: 20px auto; padding: 15px;
-            box-sizing: border-box; border: 1px solid #ddd; position: relative;
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            margin: 20px auto;
+            padding: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            position: relative;
         }
 
         /* --- HEADER SECTION --- */
-        .header-section { border-bottom: 3px solid #b71c1c; padding-bottom: 10px; margin-bottom: 15px; text-align: center; position: relative; }
-        .school-name { font-size: 36px; font-weight: 900; color: #b71c1c; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
-        .school-address { font-size: 14px; font-weight: 600; color: #333; margin: 5px 0; }
-        .school-contact { font-size: 13px; color: #555; font-weight: bold; }
-        
-        .logo-box { position: absolute; left: 10px; top: 10px; width: 90px; height: 90px; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .logo-box img { max-width: 100%; max-height: 100%; }
+        .header-section {
+            border-bottom: 3px solid #b71c1c;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            position: relative;
+        }
 
-        .form-title { 
-            background: #b71c1c; color: white; text-align: center; padding: 8px; 
-            font-weight: bold; font-size: 18px; margin-bottom: 15px; text-transform: uppercase; 
+        .school-name {
+            font-size: 36px;
+            font-weight: 900;
+            color: #b71c1c;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .school-address {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin: 5px 0;
+        }
+
+        .school-contact {
+            font-size: 13px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .logo-box {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            width: 90px;
+            height: 90px;
+            border: 1px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .logo-box img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .form-title {
+            background: #b71c1c;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
         }
 
         /* --- DATA TABLE --- */
-        .data-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-        .data-table td { border: 1px solid #1a237e; padding: 8px 10px; font-size: 13px; vertical-align: middle; }
-        .label { font-weight: bold; color: #1a237e; width: 150px; background: #f9f9f9; }
-        .value { color: #000; font-weight: 600; text-transform: uppercase; }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
 
-        .photo-cell { width: 140px; text-align: center; }
-        .student-photo { width: 130px; height: 155px; border: 1px solid #000; object-fit: cover; }
+        .data-table td {
+            border: 1px solid #1a237e;
+            padding: 8px 10px;
+            font-size: 13px;
+            vertical-align: middle;
+        }
 
-        .section-head { background: #f1f1f1; font-weight: bold; color: #b71c1c; padding: 6px 12px; border: 1px solid #1a237e; border-bottom: none; font-size: 14px; text-transform: uppercase; }
+        .label {
+            font-weight: bold;
+            color: #1a237e;
+            width: 150px;
+            background: #f9f9f9;
+        }
 
-        .footer-sig { margin-top: 60px; display: flex; justify-content: space-around; }
-        .sig-box { text-align: center; width: 220px; border-top: 1.5px solid #000; padding-top: 5px; font-weight: bold; font-size: 14px; }
+        .value {
+            color: #000;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
 
-        .no-print { position: fixed; top: 20px; right: 20px; background: #b71c1c; color: white; padding: 12px 24px; border: none; cursor: pointer; font-weight: bold; border-radius: 5px; z-index: 1000; }
+        .photo-cell {
+            width: 140px;
+            text-align: center;
+        }
+
+        .student-photo {
+            width: 130px;
+            height: 155px;
+            border: 1px solid #000;
+            object-fit: cover;
+        }
+
+        .section-head {
+            background: #f1f1f1;
+            font-weight: bold;
+            color: #b71c1c;
+            padding: 6px 12px;
+            border: 1px solid #1a237e;
+            border-bottom: none;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .footer-sig {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .sig-box {
+            text-align: center;
+            width: 220px;
+            border-top: 1.5px solid #000;
+            padding-top: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .no-print {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #b71c1c;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            z-index: 1000;
+        }
 
         @media print {
-            body { background: white; }
-            .print-container { margin: 0; border: none; box-shadow: none; width: 100%; }
-            .no-print { display: none; }
+            body {
+                background: white;
+            }
+
+            .print-container {
+                margin: 0;
+                border: none;
+                box-shadow: none;
+                width: 100%;
+            }
+
+            .no-print {
+                display: none;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<button class="no-print" onclick="window.print()">🖨️ PRINT FORM</button>
+    <button class="no-print" onclick="window.print()">🖨️ PRINT FORM</button>
 
-<div class="print-container">
-    <div class="header-section">
-        <div class="logo-box" onclick="document.getElementById('logoInput').click()">
-            <img id="schoolLogo" src="https://via.placeholder.com/90?text=Logo" alt="Logo">
-            <input type="file" id="logoInput" style="display: none;" accept="image/*" onchange="previewLogo(event)">
+    <div class="print-container">
+        <div class="header-section">
+            <div class="logo-box" onclick="document.getElementById('logoInput').click()">
+                <img id="schoolLogo" src="https://via.placeholder.com/90?text=Logo" alt="Logo">
+                <input type="file" id="logoInput" style="display: none;" accept="image/*" onchange="previewLogo(event)">
+            </div>
+            <div style="font-size: 11px; font-weight: bold; text-align: center; margin-bottom: 5px;">
+                Affiliated to CBSE (10+2), New Delhi | Affiliation No: 2133682 | School Code: 71796
+            </div>
+            <h1 class="school-name">DIGITAL PUBLIC SCHOOL</h1>
+            <p class="school-address">Mubarakpur Gangauli Ghazipur, Uttar Pradesh</p>
+            <p class="school-contact">Mob: 9988776655, 9988776644 | Email: info@dpsghazipur.com</p>
         </div>
-        <div style="font-size: 11px; font-weight: bold; text-align: center; margin-bottom: 5px;">
-            Affiliated to CBSE (10+2), New Delhi | Affiliation No: 2133682 | School Code: 71796
+
+        <div class="form-title">
+            SESSION: <span id="p_session">2025-2026</span> | ADMISSION FORM
         </div>
-        <h1 class="school-name">DIGITAL PUBLIC SCHOOL</h1>
-        <p class="school-address">Mubarakpur Gangauli Ghazipur, Uttar Pradesh</p>
-        <p class="school-contact">Mob: 9988776655, 9988776644 | Email: info@dpsghazipur.com</p>
+
+        <div class="section-head">Personal Information</div>
+        <table class="data-table">
+            <tr>
+                <td class="label">Admission No.</td>
+                <td class="value" id="p_adm_no" style="font-size: 16px; color: #b71c1c;"></td>
+                <td class="label">Admission Date</td>
+                <td class="value" id="p_adm_date">N/A</td>
+                <td rowspan="5" class="photo-cell">
+                    <img id="p_photo" src="" class="student-photo"
+                        onerror="this.src='https://via.placeholder.com/130x160?text=PHOTO'">
+                </td>
+            </tr>
+            <tr>
+                <td class="label">Student Name</td>
+                <td class="value" colspan="3" id="p_name"></td>
+            </tr>
+            <tr>
+                <td class="label">Class & Section</td>
+                <td class="value" id="p_class"></td>
+                <td class="label">Roll Number</td>
+                <td class="value" id="p_roll"></td>
+            </tr>
+            <tr>
+                <td class="label">Date of Birth</td>
+                <td class="value" id="p_dob"></td>
+                <td class="label">Gender</td>
+                <td class="value" id="p_gender"></td>
+            </tr>
+            <tr>
+                <td class="label">Aadhaar No.</td>
+                <td class="value" id="p_adhar"></td>
+                <td class="label">Category</td>
+                <td class="value" id="p_category"></td>
+            </tr>
+            <tr>
+                <td class="label">Religion</td>
+                <td class="value" id="p_religion"></td>
+                <td class="label">Caste</td>
+                <td class="value" colspan="2" id="p_caste"></td>
+            </tr>
+        </table>
+
+        <div class="section-head">Parental Information</div>
+        <table class="data-table">
+            <tr>
+                <td class="label">Father's Name</td>
+                <td class="value" id="p_father"></td>
+                <td class="label">Occupation</td>
+                <td class="value" id="p_f_occ"></td>
+            </tr>
+            <tr>
+                <td class="label">Mother's Name</td>
+                <td class="value" id="p_mother"></td>
+                <td class="label">Occupation</td>
+                <td class="value" id="p_m_occ"></td>
+            </tr>
+            <tr>
+                <td class="label">Mobile Number</td>
+                <td class="value" id="p_mobile"></td>
+                <td class="label">Alt. Contact</td>
+                <td class="value" id="p_f_mobile"></td>
+            </tr>
+            <tr>
+                <td class="label">Full Address</td>
+                <td class="value" colspan="3" id="p_address"></td>
+            </tr>
+        </table>
+
+        <div class="section-head">Academic & Transport</div>
+        <table class="data-table">
+            <tr>
+                <td class="label">Previous School</td>
+                <td class="value" colspan="3" id="p_prev_school"></td>
+            </tr>
+            <tr>
+                <td class="label">Transport Opted</td>
+                <td class="value" id="p_transport_opt"></td>
+                <td class="label">Pickup Point</td>
+                <td class="value" id="p_pickup"></td>
+            </tr>
+        </table>
+
+        <div style="font-size: 11px; margin-top: 5px; color: #444; font-style: italic;">
+            * Note: Please attach a copy of Aadhaar Card, Birth Certificate, and Transfer Certificate (if applicable).
+        </div>
+
+        <div class="footer-sig">
+            <div class="sig-box">Student Signature</div>
+            <div class="sig-box">Parent's Signature</div>
+            <div class="sig-box">Principal Signature</div>
+        </div>
     </div>
 
-    <div class="form-title">
-        SESSION: <span id="p_session">2025-2026</span> | ADMISSION FORM
-    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentId = urlParams.get('id');
 
-    <div class="section-head">Personal Information</div>
-    <table class="data-table">
-        <tr>
-            <td class="label">Admission No.</td>
-            <td class="value" id="p_adm_no" style="font-size: 16px; color: #b71c1c;"></td>
-            <td class="label">Admission Date</td>
-            <td class="value" id="p_adm_date">N/A</td>
-            <td rowspan="5" class="photo-cell">
-                <img id="p_photo" src="" class="student-photo" onerror="this.src='https://via.placeholder.com/130x160?text=PHOTO'">
-            </td>
-        </tr>
-        <tr>
-            <td class="label">Student Name</td>
-            <td class="value" colspan="3" id="p_name"></td>
-        </tr>
-        <tr>
-            <td class="label">Class & Section</td>
-            <td class="value" id="p_class"></td>
-            <td class="label">Roll Number</td>
-            <td class="value" id="p_roll"></td>
-        </tr>
-        <tr>
-            <td class="label">Date of Birth</td>
-            <td class="value" id="p_dob"></td>
-            <td class="label">Gender</td>
-            <td class="value" id="p_gender"></td>
-        </tr>
-        <tr>
-            <td class="label">Aadhaar No.</td>
-            <td class="value" id="p_adhar"></td>
-            <td class="label">Category</td>
-            <td class="value" id="p_category"></td>
-        </tr>
-        <tr>
-            <td class="label">Religion</td>
-            <td class="value" id="p_religion"></td>
-            <td class="label">Caste</td>
-            <td class="value" colspan="2" id="p_caste"></td>
-        </tr>
-    </table>
-
-    <div class="section-head">Parental Information</div>
-    <table class="data-table">
-        <tr>
-            <td class="label">Father's Name</td>
-            <td class="value" id="p_father"></td>
-            <td class="label">Occupation</td>
-            <td class="value" id="p_f_occ"></td>
-        </tr>
-        <tr>
-            <td class="label">Mother's Name</td>
-            <td class="value" id="p_mother"></td>
-            <td class="label">Occupation</td>
-            <td class="value" id="p_m_occ"></td>
-        </tr>
-        <tr>
-            <td class="label">Mobile Number</td>
-            <td class="value" id="p_mobile"></td>
-            <td class="label">Alt. Contact</td>
-            <td class="value" id="p_f_mobile"></td>
-        </tr>
-        <tr>
-            <td class="label">Full Address</td>
-            <td class="value" colspan="3" id="p_address"></td>
-        </tr>
-    </table>
-
-    <div class="section-head">Academic & Transport</div>
-    <table class="data-table">
-        <tr>
-            <td class="label">Previous School</td>
-            <td class="value" colspan="3" id="p_prev_school"></td>
-        </tr>
-        <tr>
-            <td class="label">Transport Opted</td>
-            <td class="value" id="p_transport_opt"></td>
-            <td class="label">Pickup Point</td>
-            <td class="value" id="p_pickup"></td>
-        </tr>
-    </table>
-
-    <div style="font-size: 11px; margin-top: 5px; color: #444; font-style: italic;">
-        * Note: Please attach a copy of Aadhaar Card, Birth Certificate, and Transfer Certificate (if applicable).
-    </div>
-
-    <div class="footer-sig">
-        <div class="sig-box">Student Signature</div>
-        <div class="sig-box">Parent's Signature</div>
-        <div class="sig-box">Principal Signature</div>
-    </div>
-</div>
-
-<script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const studentId = urlParams.get('id');
-
-    function previewLogo(event) {
-        const reader = new FileReader();
-        reader.onload = function() {
-            document.getElementById('schoolLogo').src = reader.result;
-            localStorage.setItem('schoolLogo', reader.result);
-        };
-        reader.readAsDataURL(event.target.files[0]);
-    }
-
-    if(localStorage.getItem('schoolLogo')) {
-        document.getElementById('schoolLogo').src = localStorage.getItem('schoolLogo');
-    }
-
-    async function loadPrintData() {
-        if (!studentId) return;
-        
-        try {
-            // ✅ Sahi URL prefix use ho raha hai
-            let res = await fetch(`/students/${studentId}`); 
-            let s = await res.json();
-
-            // Mapping all fields
-            document.getElementById('p_session').innerText = s.academic_session || '2025-2026';
-            document.getElementById('p_adm_no').innerText = s.admission_no;
-            document.getElementById('p_adm_date').innerText = s.admission_date || 'N/A';
-
-            document.getElementById('p_name').innerText = s.student_name;
-            
-            // ✅ Class aur Section loading fix
-            let className = s.class_val ? s.class_val.class_name : '-';
-            let sectionName = s.section_val ? s.section_val.section_name : '-';
-            document.getElementById('p_class').innerText = className + " / " + sectionName;
-            
-            document.getElementById('p_roll').innerText = s.roll_no || '-';
-            document.getElementById('p_dob').innerText = s.dob || '-';
-            document.getElementById('p_gender').innerText = s.gender || '-';
-            document.getElementById('p_adhar').innerText = s.aadhaar_no || '-';
-            document.getElementById('p_category').innerText = s.category || '-';
-            document.getElementById('p_religion').innerText = s.religion || '-';
-            document.getElementById('p_caste').innerText = s.caste || '-';
-
-            document.getElementById('p_father').innerText = s.father_name;
-            document.getElementById('p_f_occ').innerText = s.father_occupation || '-';
-            document.getElementById('p_mother').innerText = s.mother_name;
-            document.getElementById('p_m_occ').innerText = s.mother_occupation || '-';
-            document.getElementById('p_mobile').innerText = s.mobile_number;
-            document.getElementById('p_f_mobile').innerText = s.father_mobile || '-';
-            document.getElementById('p_address').innerText = s.address;
-
-            document.getElementById('p_prev_school').innerText = s.previous_school || 'N/A';
-            document.getElementById('p_transport_opt').innerText = s.transport_opted ? "YES" : "NO";
-            
-            // ✅ Pickup Point loading fix
-            let pickup = (s.transport_opted && s.transport_val) ? s.transport_val.pickup_point_name : "N/A";
-            document.getElementById('p_pickup').innerText = pickup;
-
-            if(s.student_photo) {
-                document.getElementById('p_photo').src = `/static/uploads/students/${s.student_photo}`;
-            }
-
-        } catch (error) {
-            console.error("Fetch error:", error);
+        function previewLogo(event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                document.getElementById('schoolLogo').src = reader.result;
+                localStorage.setItem('schoolLogo', reader.result);
+            };
+            reader.readAsDataURL(event.target.files[0]);
         }
-    }
 
-    loadPrintData();
-</script>
+        if (localStorage.getItem('schoolLogo')) {
+            document.getElementById('schoolLogo').src = localStorage.getItem('schoolLogo');
+        }
+
+        async function loadPrintData() {
+            if (!studentId) return;
+
+            try {
+                // ✅ Sahi URL prefix use ho raha hai
+                let res = await fetch(`/students/${studentId}`);
+                let s = await res.json();
+
+                // Mapping all fields
+                document.getElementById('p_session').innerText = s.academic_session || '2025-2026';
+                document.getElementById('p_adm_no').innerText = s.admission_no;
+                document.getElementById('p_adm_date').innerText = s.admission_date || 'N/A';
+
+                document.getElementById('p_name').innerText = s.student_name;
+
+                // ✅ Class aur Section loading fix
+                let className = s.class_val ? s.class_val.class_name : '-';
+                let sectionName = s.section_val ? s.section_val.section_name : '-';
+                document.getElementById('p_class').innerText = className + " / " + sectionName;
+
+                document.getElementById('p_roll').innerText = s.roll_no || '-';
+                document.getElementById('p_dob').innerText = s.dob || '-';
+                document.getElementById('p_gender').innerText = s.gender || '-';
+                document.getElementById('p_adhar').innerText = s.aadhaar_no || '-';
+                document.getElementById('p_category').innerText = s.category || '-';
+                document.getElementById('p_religion').innerText = s.religion || '-';
+                document.getElementById('p_caste').innerText = s.caste || '-';
+
+                document.getElementById('p_father').innerText = s.father_name;
+                document.getElementById('p_f_occ').innerText = s.father_occupation || '-';
+                document.getElementById('p_mother').innerText = s.mother_name;
+                document.getElementById('p_m_occ').innerText = s.mother_occupation || '-';
+                document.getElementById('p_mobile').innerText = s.mobile_number;
+                document.getElementById('p_f_mobile').innerText = s.father_mobile || '-';
+                document.getElementById('p_address').innerText = s.address;
+
+                document.getElementById('p_prev_school').innerText = s.previous_school || 'N/A';
+                document.getElementById('p_transport_opt').innerText = s.transport_opted ? "YES" : "NO";
+
+                // ✅ Pickup Point loading fix
+                let pickup = (s.transport_opted && s.transport_val) ? s.transport_val.pickup_point_name : "N/A";
+                document.getElementById('p_pickup').innerText = pickup;
+
+                // --- UPDATED PHOTO LOGIC (CLOUDINARY SUPPORT) ---
+                if (s.student_photo) {
+                    if (s.student_photo.startsWith('http')) {
+                        // Cloudinary URL
+                        document.getElementById('p_photo').src = s.student_photo;
+                    } else {
+                        // Local File
+                        document.getElementById('p_photo').src = `/static/uploads/students/${s.student_photo}`;
+                    }
+                }
+
+            } catch (error) {
+                console.error("Fetch error:", error);
+            }
+        }
+
+        loadPrintData();
+    </script>
 </body>
+
 </html>

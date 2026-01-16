@@ -583,7 +583,21 @@
                 }
 
                 students.forEach(s => {
-                    let photoUrl = s.student_photo ? `/static/uploads/students/${s.student_photo}` : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+                    // --- UPDATED LOGIC FOR CLOUDINARY SUPPORT ---
+                    let photoUrl;
+                    if (s.student_photo) {
+                        // Check if it's already a full URL (Cloudinary)
+                        if (s.student_photo.startsWith('http')) {
+                            photoUrl = s.student_photo;
+                        } else {
+                            // Old local fallback
+                            photoUrl = `/static/uploads/students/${s.student_photo}`;
+                        }
+                    } else {
+                        // Default Avatar
+                        photoUrl = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+                    }
+
                     let cls = s.class_val ? s.class_val.class_name : 'N/A';
                     let sec = s.section_val ? s.section_val.section_name : '';
 
@@ -628,7 +642,20 @@
                 document.getElementById('v_mobile').innerText = s.mobile_number;
                 document.getElementById('v_address').innerText = s.address;
 
-                let photoUrl = s.student_photo ? `/static/uploads/students/${s.student_photo}?t=${new Date().getTime()}` : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+                // --- UPDATED LOGIC FOR CLOUDINARY SUPPORT IN MODAL ---
+                let photoUrl;
+                if (s.student_photo) {
+                    if (s.student_photo.startsWith('http')) {
+                        // Cloudinary URL - No caching issues usually, but adding timestamp to be safe if updated recently
+                        photoUrl = s.student_photo;
+                    } else {
+                        // Local file
+                        photoUrl = `/static/uploads/students/${s.student_photo}?t=${new Date().getTime()}`;
+                    }
+                } else {
+                    photoUrl = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+                }
+
                 document.getElementById('v_photo').src = photoUrl;
                 document.getElementById('modalPrintBtn').onclick = function () { printForm(id); };
 
@@ -648,7 +675,17 @@
                 let res = await fetch(`/students/${studentId}/update-photo`, { method: 'POST', body: formData });
                 if (res.ok) {
                     let data = await res.json();
-                    document.getElementById('v_photo').src = `/static/uploads/students/${data.filename}?t=${new Date().getTime()}`;
+
+                    // --- UPDATED UPLOAD SUCCESS LOGIC ---
+                    // Assuming backend now returns the full Cloudinary URL in 'filename' or 'url' key
+                    // If it returns a full URL, we use it directly.
+                    let newPhoto = data.filename || data.url;
+                    if (newPhoto.startsWith('http')) {
+                        document.getElementById('v_photo').src = newPhoto;
+                    } else {
+                        document.getElementById('v_photo').src = `/static/uploads/students/${newPhoto}?t=${new Date().getTime()}`;
+                    }
+
                     loadStudents();
                 } else alert("Upload Failed");
             } catch (e) { alert("Network Error"); }
@@ -681,9 +718,6 @@
         async function saveStudentChanges() {
             let id = document.getElementById("e_id").value;
             let formData = new FormData(document.getElementById("editForm")); // Shortcut to get all inputs
-            // Note: You might need to manually append specific fields if form names don't match backend exactly, 
-            // but since you had individual appends before, using FormData on the form element is cleaner if names match.
-            // Assuming IDs match previous logic, let's stick to manual append for safety based on your previous code:
             let fd = new FormData();
             fd.append("student_name", document.getElementById("e_name").value);
             fd.append("father_name", document.getElementById("e_father").value);

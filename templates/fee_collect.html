@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fee Collection | Vidya Vikas ERP</title>
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -18,435 +19,717 @@
             --text-body: #374151;
         }
 
-        body { font-family: 'Outfit', sans-serif; background-color: var(--bg-body); color: var(--text-body); overflow-x: hidden; font-size: 14px; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-body);
+            overflow-x: hidden;
+            font-size: 14px;
+        }
 
         /* --- SIDEBAR --- */
         .sidebar {
-            height: 100vh; width: var(--sidebar-width); position: fixed; top: 0; left: 0;
-            background: #111827; background-image: radial-gradient(at 0% 0%, #1f2937 0px, transparent 50%), radial-gradient(at 100% 100%, #000000 0px, transparent 50%);
-            color: #a3aed0; z-index: 1000; overflow-y: auto; transition: 0.3s;
+            height: 100vh;
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #111827;
+            background-image: radial-gradient(at 0% 0%, #1f2937 0px, transparent 50%), radial-gradient(at 100% 100%, #000000 0px, transparent 50%);
+            color: #a3aed0;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: 0.3s;
         }
-        .sidebar::-webkit-scrollbar { width: 4px; }
-        .sidebar::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
-        .brand-box { padding: 30px 20px; text-align: center; }
-        .user-profile { background: rgba(255,255,255,0.03); margin: 0 15px 20px; padding: 15px; border-radius: 15px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+
+        .brand-box {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .user-profile {
+            background: rgba(255, 255, 255, 0.03);
+            margin: 0 15px 20px;
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
 
         .menu-item {
-            padding: 12px 20px; margin: 5px 15px; border-radius: 12px; color: #a3aed0; text-decoration: none;
-            display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; font-weight: 500; font-size: 14px; cursor: pointer;
+            padding: 12px 20px;
+            margin: 5px 15px;
+            border-radius: 12px;
+            color: #a3aed0;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
         }
-        .menu-item:hover, .menu-item.active { background: var(--primary-gradient); color: white; box-shadow: 0 5px 15px rgba(30, 60, 114, 0.4); transform: translateX(5px); }
-        .menu-item i.menu-icon { width: 25px; font-size: 18px; text-align: center; margin-right: 10px; }
-        .submenu { background: rgba(0,0,0,0.2); margin: 0 25px; border-radius: 10px; display: none; padding: 5px 0; }
-        .submenu a { padding: 10px 15px; display: block; color: #8892b0; text-decoration: none; font-size: 13px; transition: 0.2s; border-radius: 8px; }
-        .submenu a:hover { color: white; background: rgba(255,255,255,0.05); padding-left: 20px; }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.4);
+            transform: translateX(5px);
+        }
+
+        .menu-item i.menu-icon {
+            width: 25px;
+            font-size: 18px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .submenu {
+            background: rgba(0, 0, 0, 0.2);
+            margin: 0 25px;
+            border-radius: 10px;
+            display: none;
+            padding: 5px 0;
+        }
+
+        .submenu a {
+            padding: 10px 15px;
+            display: block;
+            color: #8892b0;
+            text-decoration: none;
+            font-size: 13px;
+            transition: 0.2s;
+            border-radius: 8px;
+        }
+
+        .submenu a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+            padding-left: 20px;
+        }
 
         /* --- CONTENT AREA --- */
-        .main-content { margin-left: var(--sidebar-width); padding: 30px; transition: 0.3s; }
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            transition: 0.3s;
+        }
+
         .glass-header {
-            background: white; border-radius: 15px; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; border-left: 5px solid #1e3c72;
+            background: white;
+            border-radius: 15px;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            border-left: 5px solid #1e3c72;
         }
 
         /* --- SEARCH BOX --- */
-        .search-container { position: relative; margin-bottom: 20px; }
-        .search-input { 
-            height: 50px; border-radius: 12px; border: 2px solid #1e3c72; 
-            padding-left: 20px; font-size: 16px; font-weight: 600; 
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
         }
-        .search-results { 
-            position: absolute; top: 100%; left: 0; width: 100%; background: white; 
-            z-index: 999; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-            display: none; overflow: hidden; margin-top: 5px; border: 1px solid #ddd;
+
+        .search-input {
+            height: 50px;
+            border-radius: 12px;
+            border: 2px solid #1e3c72;
+            padding-left: 20px;
+            font-size: 16px;
+            font-weight: 600;
         }
-        .search-item { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid #f0f0f0; transition: 0.2s; color: #333; }
-        .search-item:hover { background-color: #f0f7ff; color: #1e3c72; font-weight: 600; }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: white;
+            z-index: 999;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            display: none;
+            overflow: hidden;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .search-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: 0.2s;
+            color: #333;
+        }
+
+        .search-item:hover {
+            background-color: #f0f7ff;
+            color: #1e3c72;
+            font-weight: 600;
+        }
 
         /* --- PREMIUM PANELS --- */
-        .premium-card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb; margin-bottom: 20px; }
-        .label-text { font-weight: 700; color: #6b7280; font-size: 11px; text-transform: uppercase; }
-        .val-text { font-weight: 700; color: #111827; font-size: 14px; }
-        .date-box { background: #7c3aed; color: white; padding: 5px 12px; border-radius: 6px; font-weight: bold; }
+        .premium-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 20px;
+        }
+
+        .label-text {
+            font-weight: 700;
+            color: #6b7280;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .val-text {
+            font-weight: 700;
+            color: #111827;
+            font-size: 14px;
+        }
+
+        .date-box {
+            background: #7c3aed;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
 
         /* --- STRIP & TABLE --- */
-        .month-strip { background: #f9fafb; padding: 15px; border-radius: 12px; border: 1px solid #e5e7eb; display: flex; align-items: center; flex-wrap: wrap; gap: 15px; }
-        .month-chk { font-weight: 600; color: #374151; cursor: pointer; display: flex; align-items: center; gap: 5px; }
-        
-        .fee-table { width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; }
-        .fee-table th { background: #1e3c72; color: white; padding: 12px; font-weight: 600; text-transform: uppercase; font-size: 12px; }
-        .fee-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; background: #fff; vertical-align: middle; color: #111827; font-weight: 500; }
+        .month-strip {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .month-chk {
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .fee-table {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        .fee-table th {
+            background: #1e3c72;
+            color: white;
+            padding: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .fee-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            background: #fff;
+            vertical-align: middle;
+            color: #111827;
+            font-weight: 500;
+        }
 
         /* --- FOOTER CALCULATION --- */
-        .calc-input { font-weight: 800; text-align: center; font-size: 16px; border: 2px solid #d1d5db; height: 45px; border-radius: 8px; }
-        .big-green-box { background: #059669 !important; color: white !important; font-size: 24px; height: 60px; border: none; }
-        .big-red-box { background: #dc2626 !important; color: white !important; font-size: 24px; height: 60px; border: none; }
-        .header-box-label { background: #111827; color: white; text-align: center; padding: 4px; font-size: 11px; font-weight: bold; border-radius: 8px 8px 0 0; }
+        .calc-input {
+            font-weight: 800;
+            text-align: center;
+            font-size: 16px;
+            border: 2px solid #d1d5db;
+            height: 45px;
+            border-radius: 8px;
+        }
 
-        #loadingOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 2000; text-align: center; padding-top: 20vh; }
-        
-        @media (max-width: 768px) { .sidebar { margin-left: -270px; } .sidebar.active { margin-left: 0; } .main-content { margin-left: 0; } }
+        .big-green-box {
+            background: #059669 !important;
+            color: white !important;
+            font-size: 24px;
+            height: 60px;
+            border: none;
+        }
+
+        .big-red-box {
+            background: #dc2626 !important;
+            color: white !important;
+            font-size: 24px;
+            height: 60px;
+            border: none;
+        }
+
+        .header-box-label {
+            background: #111827;
+            color: white;
+            text-align: center;
+            padding: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 8px 8px 0 0;
+        }
+
+        #loadingOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 2000;
+            text-align: center;
+            padding-top: 20vh;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -270px;
+            }
+
+            .sidebar.active {
+                margin-left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-<div id="loadingOverlay">
-    <div class="spinner-grow text-primary" role="status"></div>
-    <div class="fw-bold mt-2 text-primary">Processing Student Data...</div>
-</div>
+    <div id="loadingOverlay">
+        <div class="spinner-grow text-primary" role="status"></div>
+        <div class="fw-bold mt-2 text-primary">Processing Student Data...</div>
+    </div>
 
-<div class="sidebar" id="sidebar">
-    <div class="brand-box">
-        <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
-        <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px; text-transform: uppercase;">ERP Solution 2.0</small>
-    </div>
-    <div class="user-profile">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="45">
-        <div class="ms-3"><h6 class="mb-0 text-white fw-bold">Accountant</h6><span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25" style="font-size: 10px;">● Online</span></div>
-    </div>
-    <div class="sidebar-menu mt-3">
-        <a href="/" class="menu-item"><span><i class="fas fa-tachometer-alt menu-icon"></i> Dashboard</span></a>
-        <a href="/students" class="menu-item"><span><i class="fas fa-users menu-icon"></i> Student List</span></a>
-        <a href="/fees/collect" class="menu-item active"><span><i class="fas fa-rupee-sign menu-icon"></i> Fee Collection</span></a>
-        <div class="mt-5 px-3">
-            <a href="/auth/logout" class="btn w-100 fw-bold text-white" style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;"><i class="fas fa-power-off me-2"></i> Logout</a>
+    <div class="sidebar" id="sidebar">
+        <div class="brand-box">
+            <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
+            <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px; text-transform: uppercase;">ERP
+                Solution 2.0</small>
+        </div>
+        <div class="user-profile">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="45">
+            <div class="ms-3">
+                <h6 class="mb-0 text-white fw-bold">Accountant</h6><span
+                    class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25"
+                    style="font-size: 10px;">● Online</span>
+            </div>
+        </div>
+        <div class="sidebar-menu mt-3">
+            <a href="/" class="menu-item"><span><i class="fas fa-tachometer-alt menu-icon"></i> Dashboard</span></a>
+            <a href="/students" class="menu-item"><span><i class="fas fa-users menu-icon"></i> Student List</span></a>
+            <a href="/fees/collect" class="menu-item active"><span><i class="fas fa-rupee-sign menu-icon"></i> Fee
+                    Collection</span></a>
+            <div class="mt-5 px-3">
+                <a href="/auth/logout" class="btn w-100 fw-bold text-white"
+                    style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;"><i
+                        class="fas fa-power-off me-2"></i> Logout</a>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="main-content">
-    <div class="glass-header">
-        <h4 class="fw-bold mb-0"><i class="fas fa-money-check-alt me-2 text-primary"></i>Fee Collection Panel</h4>
-        <div class="d-flex align-items-center gap-3">
-            <div class="date-box" id="todayDate"></div>
-            <button class="btn btn-dark d-md-none rounded-circle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="main-content">
+        <div class="glass-header">
+            <h4 class="fw-bold mb-0"><i class="fas fa-money-check-alt me-2 text-primary"></i>Fee Collection Panel</h4>
+            <div class="d-flex align-items-center gap-3">
+                <div class="date-box" id="todayDate"></div>
+                <button class="btn btn-dark d-md-none rounded-circle" onclick="toggleSidebar()"><i
+                        class="fas fa-bars"></i></button>
+            </div>
         </div>
-    </div>
 
-    <div class="search-container">
-        <input type="text" id="searchInput" class="form-control search-input shadow-sm" placeholder="🔍 Search Student by Name, Admission No or ID..." onkeyup="searchStudent()" autocomplete="off">
-        <div id="searchDropdown" class="search-results"></div>
-    </div>
+        <div class="search-container">
+            <input type="text" id="searchInput" class="form-control search-input shadow-sm"
+                placeholder="🔍 Search Student by Name, Admission No or ID..." onkeyup="searchStudent()"
+                autocomplete="off">
+            <div id="searchDropdown" class="search-results"></div>
+        </div>
 
-    <div id="mainPanel" style="display:none;">
-        <div class="premium-card" style="border-top: 4px solid #1e3c72;">
-            <div class="row align-items-center">
-                <div class="col-md-auto">
-                    <img id="pPhoto" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="80" height="80" class="rounded shadow-sm border" style="object-fit: cover;">
-                </div>
-                <div class="col">
-                    <div class="row g-3">
-                        <div class="col-md-3"><span class="label-text">Student Name</span><br><span class="val-text text-primary" id="pName">-</span></div>
-                        <div class="col-md-3"><span class="label-text">Father Name</span><br><span class="val-text" id="pFather">-</span></div>
-                        <div class="col-md-2"><span class="label-text">Class (Sec)</span><br><span class="val-text text-danger" id="pClass">-</span></div>
-                        <div class="col-md-2"><span class="label-text">Admission No</span><br><span class="val-text" id="pAdm">-</span></div>
-                        <div class="col-md-2 text-end"><button class="btn btn-sm btn-outline-secondary fw-bold" onclick="location.reload()"><i class="fas fa-sync"></i> Clear</button></div>
+        <div id="mainPanel" style="display:none;">
+            <div class="premium-card" style="border-top: 4px solid #1e3c72;">
+                <div class="row align-items-center">
+                    <div class="col-md-auto">
+                        <img id="pPhoto" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="80"
+                            height="80" class="rounded shadow-sm border" style="object-fit: cover;">
                     </div>
-                    <div class="row g-3 mt-1">
-                        <div class="col-md-3"><span class="label-text">Mobile Number</span><br><span class="val-text" id="pMobile">-</span></div>
-                        <div class="col-md-3"><span class="label-text">System ID</span><br><span class="val-text text-muted" id="pId">-</span></div>
-                        <div class="col-md-6">
-                            <span class="label-text text-danger">Previous Outstanding Balance</span>
-                            <input type="number" id="oldBalance" class="form-control form-control-sm fw-bold text-danger" value="0" readonly style="background:#fff5f5; border: 1px solid #feb2b2;">
+                    <div class="col">
+                        <div class="row g-3">
+                            <div class="col-md-3"><span class="label-text">Student Name</span><br><span
+                                    class="val-text text-primary" id="pName">-</span></div>
+                            <div class="col-md-3"><span class="label-text">Father Name</span><br><span class="val-text"
+                                    id="pFather">-</span></div>
+                            <div class="col-md-2"><span class="label-text">Class (Sec)</span><br><span
+                                    class="val-text text-danger" id="pClass">-</span></div>
+                            <div class="col-md-2"><span class="label-text">Admission No</span><br><span class="val-text"
+                                    id="pAdm">-</span></div>
+                            <div class="col-md-2 text-end"><button class="btn btn-sm btn-outline-secondary fw-bold"
+                                    onclick="location.reload()"><i class="fas fa-sync"></i> Clear</button></div>
+                        </div>
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-3"><span class="label-text">Mobile Number</span><br><span
+                                    class="val-text" id="pMobile">-</span></div>
+                            <div class="col-md-3"><span class="label-text">System ID</span><br><span
+                                    class="val-text text-muted" id="pId">-</span></div>
+                            <div class="col-md-6">
+                                <span class="label-text text-danger">Previous Outstanding Balance</span>
+                                <input type="number" id="oldBalance"
+                                    class="form-control form-control-sm fw-bold text-danger" value="0" readonly
+                                    style="background:#fff5f5; border: 1px solid #feb2b2;">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="premium-card">
-            <div class="month-strip">
-                <span class="fw-bold text-dark"><i class="fas fa-calendar-check me-2"></i> Select Months:</span>
-                <label class="month-chk"><input type="checkbox" onclick="toggleAll(this)"> <span class="badge bg-dark">All</span></label>
-                <label class="month-chk"><input type="checkbox" class="m-chk" value="Apr"> Apr</label>
-                <label class="month-chk"><input type="checkbox" class="m-chk" value="May"> May</label>
-                <label class="month-chk"><input type="checkbox" class="m-chk" value="Jun"> Jun</label>
-                <label class="month-chk"><input type="checkbox" class="m-chk" value="Jul"> Jul</label>
-                <label class="month-chk"><input type="checkbox" class="m-chk" value="Aug"> Aug</label>
-                <label class="month-chk"><input type="checkbox" class="m-chk" value="Sep"> Sep</label>
-                <label class="month-chk"><input type="checkbox" class="m-chk" value="Oct"> Oct</label>
-                <label class="month-chk"><input type="checkbox" class="m-chk" value="Nov"> Nov</label>
-                <label class="month-chk"><input type="checkbox" class="m-chk" value="Dec"> Dec</label>
-                <label class="month-chk"><input type="checkbox" class="m-chk" value="Jan"> Jan</label>
-                <label class="month-chk"><input type="checkbox" class="m-chk" value="Feb"> Feb</label>
-                <label class="month-chk"><input type="checkbox" class="m-chk" value="Mar"> Mar</label>
-                <button class="btn btn-primary fw-bold ms-auto px-4" onclick="fetchDues()"><i class="fas fa-bolt me-2"></i> Get Fee Details</button>
-            </div>
-        </div>
-
-        <div class="premium-card p-0 overflow-hidden">
-            <table class="fee-table mb-0">
-                <thead>
-                    <tr>
-                        <th width="80" class="text-center">Select</th>
-                        <th>Fee Head Details</th>
-                        <th>Billing Month</th>
-                        <th class="text-end">Amount (₹)</th>
-                    </tr>
-                </thead>
-                <tbody id="feeTableBody">
-                    <tr><td colspan="4" class="text-center p-5 text-muted fw-bold">Select months and click 'Get Fee Details' to load dues.</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="premium-card shadow-lg" style="background: #f8fafc; border-top: 4px solid #059669;">
-            <div class="row g-3">
-                <div class="col-md-2">
-                    <div class="header-box-label">Current Dues</div>
-                    <input type="number" id="totalFee" class="form-control calc-input bg-white" value="0" readonly>
-                </div>
-                <div class="col-md-2">
-                    <div class="header-box-label">Late Fee / Add.</div>
-                    <input type="number" id="addFee" class="form-control calc-input" value="0" onkeyup="calculateNet()">
-                </div>
-                <div class="col-md-2">
-                    <div class="header-box-label">Concession %</div>
-                    <input type="number" id="concPer" class="form-control calc-input" value="0" onkeyup="calculateDiscount()">
-                </div>
-                <div class="col-md-2">
-                    <div class="header-box-label">Conc. Amt</div>
-                    <input type="number" id="concAmt" class="form-control calc-input" value="0" onkeyup="calculateNet()">
-                </div>
-                <div class="col-md-2">
-                    <div class="header-box-label">Net Total (Current)</div>
-                    <input type="number" id="netFee" class="form-control calc-input text-primary" value="0" readonly style="background:#eef2ff;">
-                </div>
-                <div class="col-md-2">
-                    <div class="header-box-label" style="background:#059669;">Amt. Received</div>
-                    <input type="number" id="amountPaid" class="form-control big-green-box" value="0" onkeyup="calculateBalance()">
+            <div class="premium-card">
+                <div class="month-strip">
+                    <span class="fw-bold text-dark"><i class="fas fa-calendar-check me-2"></i> Select Months:</span>
+                    <label class="month-chk"><input type="checkbox" onclick="toggleAll(this)"> <span
+                            class="badge bg-dark">All</span></label>
+                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Apr"> Apr</label>
+                    <label class="month-chk"><input type="checkbox" class="m-chk" value="May"> May</label>
+                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Jun"> Jun</label>
+                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Jul"> Jul</label>
+                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Aug"> Aug</label>
+                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Sep"> Sep</label>
+                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Oct"> Oct</label>
+                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Nov"> Nov</label>
+                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Dec"> Dec</label>
+                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Jan"> Jan</label>
+                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Feb"> Feb</label>
+                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Mar"> Mar</label>
+                    <button class="btn btn-primary fw-bold ms-auto px-4" onclick="fetchDues()"><i
+                            class="fas fa-bolt me-2"></i> Get Fee Details</button>
                 </div>
             </div>
 
-            <div class="row g-3 mt-2 align-items-end">
-                <div class="col-md-2">
-                    <label class="label-text">Payment Mode</label>
-                    <select class="form-select fw-bold" id="payMode" style="height:45px; border:2px solid #d1d5db;">
-                        <option value="Cash">💵 Cash</option>
-                        <option value="UPI">📱 UPI / QR</option>
-                        <option value="Cheque">🏦 Cheque</option>
-                        <option value="Bank Transfer">🏛️ Bank Transfer</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="label-text">Remarks / Transaction Details</label>
-                    <input type="text" id="remarks" class="form-control" placeholder="Optional notes..." style="height:45px;">
-                </div>
-                <div class="col-md-3">
-                    <div class="header-box-label" style="background:#dc2626;">Remaining Balance</div>
-                    <input type="number" id="newBalance" class="form-control big-red-box" value="0" readonly>
-                </div>
-                <div class="col-md-3">
-                    <div class="d-flex gap-2 mb-2 justify-content-center">
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="sendSms"><label class="form-check-label small fw-bold">SMS</label></div>
-                        <div class="form-check"><input class="form-check-input" type="checkbox" checked id="sendWa"><label class="form-check-label small fw-bold">WhatsApp</label></div>
+            <div class="premium-card p-0 overflow-hidden">
+                <table class="fee-table mb-0">
+                    <thead>
+                        <tr>
+                            <th width="80" class="text-center">Select</th>
+                            <th>Fee Head Details</th>
+                            <th>Billing Month</th>
+                            <th class="text-end">Amount (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="feeTableBody">
+                        <tr>
+                            <td colspan="4" class="text-center p-5 text-muted fw-bold">Select months and click 'Get Fee
+                                Details' to load dues.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="premium-card shadow-lg" style="background: #f8fafc; border-top: 4px solid #059669;">
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <div class="header-box-label">Current Dues</div>
+                        <input type="number" id="totalFee" class="form-control calc-input bg-white" value="0" readonly>
                     </div>
-                    <button class="btn btn-success w-100 fw-bold btn-lg shadow" onclick="submitPayment()" style="height:60px; background:#059669; border:none; font-size: 20px;">
-                        <i class="fas fa-file-invoice-dollar me-2"></i> SUBMIT & PRINT
-                    </button>
+                    <div class="col-md-2">
+                        <div class="header-box-label">Late Fee / Add.</div>
+                        <input type="number" id="addFee" class="form-control calc-input" value="0"
+                            onkeyup="calculateNet()">
+                    </div>
+                    <div class="col-md-2">
+                        <div class="header-box-label">Concession %</div>
+                        <input type="number" id="concPer" class="form-control calc-input" value="0"
+                            onkeyup="calculateDiscount()">
+                    </div>
+                    <div class="col-md-2">
+                        <div class="header-box-label">Conc. Amt</div>
+                        <input type="number" id="concAmt" class="form-control calc-input" value="0"
+                            onkeyup="calculateNet()">
+                    </div>
+                    <div class="col-md-2">
+                        <div class="header-box-label">Net Total (Current)</div>
+                        <input type="number" id="netFee" class="form-control calc-input text-primary" value="0" readonly
+                            style="background:#eef2ff;">
+                    </div>
+                    <div class="col-md-2">
+                        <div class="header-box-label" style="background:#059669;">Amt. Received</div>
+                        <input type="number" id="amountPaid" class="form-control big-green-box" value="0"
+                            onkeyup="calculateBalance()">
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-2 align-items-end">
+                    <div class="col-md-2">
+                        <label class="label-text">Payment Mode</label>
+                        <select class="form-select fw-bold" id="payMode" style="height:45px; border:2px solid #d1d5db;">
+                            <option value="Cash">💵 Cash</option>
+                            <option value="UPI">📱 UPI / QR</option>
+                            <option value="Cheque">🏦 Cheque</option>
+                            <option value="Bank Transfer">🏛️ Bank Transfer</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="label-text">Remarks / Transaction Details</label>
+                        <input type="text" id="remarks" class="form-control" placeholder="Optional notes..."
+                            style="height:45px;">
+                    </div>
+                    <div class="col-md-3">
+                        <div class="header-box-label" style="background:#dc2626;">Remaining Balance</div>
+                        <input type="number" id="newBalance" class="form-control big-red-box" value="0" readonly>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex gap-2 mb-2 justify-content-center">
+                            <div class="form-check"><input class="form-check-input" type="checkbox" checked
+                                    id="sendSms"><label class="form-check-label small fw-bold">SMS</label></div>
+                            <div class="form-check"><input class="form-check-input" type="checkbox" checked
+                                    id="sendWa"><label class="form-check-label small fw-bold">WhatsApp</label></div>
+                        </div>
+                        <button class="btn btn-success w-100 fw-bold btn-lg shadow" onclick="submitPayment()"
+                            style="height:60px; background:#059669; border:none; font-size: 20px;">
+                            <i class="fas fa-file-invoice-dollar me-2"></i> SUBMIT & PRINT
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    // --- SIDEBAR TOGGLE ---
-    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+    <script>
+        // --- SIDEBAR TOGGLE ---
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
 
-    // --- SAME LOGIC AS PROVIDED BY YOU (NO CHANGES) ---
-    let currentStudentId = null;
-    let currentDuesData = [];
-    let studentOldBalance = 0;
+        // --- SAME LOGIC AS PROVIDED BY YOU (NO CHANGES) ---
+        let currentStudentId = null;
+        let currentDuesData = [];
+        let studentOldBalance = 0;
 
-    document.getElementById('todayDate').innerText = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        document.getElementById('todayDate').innerText = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
-    function checkUrlParams() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const studentId = urlParams.get('id');
-        if (studentId) {
-            document.getElementById('loadingOverlay').style.display = 'block';
-            fetch(`/students/${studentId}`)
-                .then(res => res.json())
-                .then(data => {
-                    selectStudent(data);
-                    document.getElementById('loadingOverlay').style.display = 'none';
-                })
-                .catch(err => {
-                    console.error(err);
-                    document.getElementById('loadingOverlay').style.display = 'none';
+        function checkUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const studentId = urlParams.get('id');
+            if (studentId) {
+                document.getElementById('loadingOverlay').style.display = 'block';
+                fetch(`/students/${studentId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        selectStudent(data);
+                        document.getElementById('loadingOverlay').style.display = 'none';
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        document.getElementById('loadingOverlay').style.display = 'none';
+                    });
+            }
+        }
+
+        async function searchStudent() {
+            let q = document.getElementById('searchInput').value;
+            let drop = document.getElementById('searchDropdown');
+            if (q.length < 2) { drop.style.display = 'none'; return; }
+
+            let res = await fetch(`/students/api/filter?search=${q}`);
+            let data = await res.json();
+
+            drop.innerHTML = '';
+            if (data.length > 0) {
+                drop.style.display = 'block';
+                data.forEach(s => {
+                    let balText = s.current_balance > 0 ? `<span class='text-danger ms-2 fw-bold'>Due: ₹${s.current_balance}</span>` : '';
+                    let studentData = JSON.stringify(s).replace(/'/g, "&apos;");
+                    drop.innerHTML += `<div class="search-item" onclick='selectStudent(${studentData})'><strong>${s.student_name}</strong> (${s.class_val?.class_name || 'N/A'}) ${balText}</div>`;
                 });
+            }
         }
-    }
 
-    async function searchStudent() {
-        let q = document.getElementById('searchInput').value;
-        let drop = document.getElementById('searchDropdown');
-        if(q.length < 2) { drop.style.display = 'none'; return; }
-        
-        let res = await fetch(`/students/api/filter?search=${q}`);
-        let data = await res.json();
-        
-        drop.innerHTML = '';
-        if(data.length > 0) {
-            drop.style.display = 'block';
-            data.forEach(s => {
-                let balText = s.current_balance > 0 ? `<span class='text-danger ms-2 fw-bold'>Due: ₹${s.current_balance}</span>` : '';
-                let studentData = JSON.stringify(s).replace(/'/g, "&apos;");
-                drop.innerHTML += `<div class="search-item" onclick='selectStudent(${studentData})'><strong>${s.student_name}</strong> (${s.class_val?.class_name || 'N/A'}) ${balText}</div>`;
+        function selectStudent(s) {
+            currentStudentId = s.id;
+            document.getElementById('searchDropdown').style.display = 'none';
+            document.getElementById('mainPanel').style.display = 'block';
+            document.getElementById('searchInput').value = '';
+
+            document.getElementById('pName').innerText = s.student_name;
+            document.getElementById('pFather').innerText = s.father_name;
+
+            let className = (s.class_val && s.class_val.class_name) ? s.class_val.class_name : '-';
+            let sectionName = (s.section_val && s.section_val.section_name) ? s.section_val.section_name : '';
+            document.getElementById('pClass').innerText = className + (sectionName ? ' (' + sectionName + ')' : '');
+
+            document.getElementById('pAdm').innerText = s.admission_no;
+            document.getElementById('pId').innerText = s.id;
+            document.getElementById('pMobile').innerText = s.mobile_number;
+
+            // --- UPDATED PHOTO LOGIC FOR CLOUDINARY ---
+            let photoElement = document.getElementById('pPhoto');
+            if (s.student_photo) {
+                // Check if Cloudinary URL (starts with http) or local file
+                if (s.student_photo.startsWith('http')) {
+                    photoElement.src = s.student_photo;
+                } else {
+                    photoElement.src = "/static/uploads/students/" + s.student_photo;
+                }
+            } else {
+                photoElement.src = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+            }
+
+            studentOldBalance = s.current_balance || 0;
+            document.getElementById('oldBalance').value = studentOldBalance;
+        }
+
+        async function fetchDues() {
+            document.getElementById('loadingOverlay').style.display = 'block';
+            let months = [];
+            document.querySelectorAll('.m-chk:checked').forEach(c => months.push(c.value));
+            if (months.length === 0) {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                return alert("Select Month first!");
+            }
+            let res = await fetch('/api/v1/collection/get-dues', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ student_id: currentStudentId, months: months })
             });
-        }
-    }
-
-    function selectStudent(s) {
-        currentStudentId = s.id;
-        document.getElementById('searchDropdown').style.display = 'none';
-        document.getElementById('mainPanel').style.display = 'block';
-        document.getElementById('searchInput').value = '';
-        
-        document.getElementById('pName').innerText = s.student_name;
-        document.getElementById('pFather').innerText = s.father_name;
-        
-        let className = (s.class_val && s.class_val.class_name) ? s.class_val.class_name : '-';
-        let sectionName = (s.section_val && s.section_val.section_name) ? s.section_val.section_name : '';
-        document.getElementById('pClass').innerText = className + (sectionName ? ' (' + sectionName + ')' : '');
-
-        document.getElementById('pAdm').innerText = s.admission_no;
-        document.getElementById('pId').innerText = s.id;
-        document.getElementById('pMobile').innerText = s.mobile_number;
-        
-        let photoElement = document.getElementById('pPhoto');
-        if(s.student_photo) { photoElement.src = "/static/uploads/students/" + s.student_photo; } 
-        else { photoElement.src = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"; }
-
-        studentOldBalance = s.current_balance || 0;
-        document.getElementById('oldBalance').value = studentOldBalance;
-    }
-
-    async function fetchDues() {
-        document.getElementById('loadingOverlay').style.display = 'block';
-        let months = [];
-        document.querySelectorAll('.m-chk:checked').forEach(c => months.push(c.value));
-        if(months.length === 0) {
+            let response = await res.json();
+            currentDuesData = response.dues;
+            studentOldBalance = response.old_balance;
+            document.getElementById('oldBalance').value = studentOldBalance;
+            renderFeeTable();
             document.getElementById('loadingOverlay').style.display = 'none';
-            return alert("Select Month first!");
         }
-        let res = await fetch('/api/v1/collection/get-dues', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ student_id: currentStudentId, months: months })
-        });
-        let response = await res.json();
-        currentDuesData = response.dues;
-        studentOldBalance = response.old_balance; 
-        document.getElementById('oldBalance').value = studentOldBalance;
-        renderFeeTable();
-        document.getElementById('loadingOverlay').style.display = 'none';
-    }
 
-    function renderFeeTable() {
-        let tbody = document.getElementById('feeTableBody');
-        tbody.innerHTML = '';
-        let initialTotal = 0;
-        if(currentDuesData.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center p-3 text-muted">No Fees found (or already paid)</td></tr>';
+        function renderFeeTable() {
+            let tbody = document.getElementById('feeTableBody');
+            tbody.innerHTML = '';
+            let initialTotal = 0;
+            if (currentDuesData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center p-3 text-muted">No Fees found (or already paid)</td></tr>';
+            }
+            currentDuesData.forEach((d) => {
+                let isPaid = d.status === 'Paid';
+                let checkHtml = isPaid ? `<span class="badge bg-success">PAID</span>` : `<input type="checkbox" class="form-check-input fee-row-check" data-amount="${d.amount}" data-month="${d.month}" checked onchange="recalculateTotal()">`;
+                if (!isPaid) initialTotal += d.amount;
+                tbody.innerHTML += `<tr class="${isPaid ? 'bg-light text-muted' : ''}"><td class="text-center">${checkHtml}</td><td>${d.fee_head}</td><td><span class="badge bg-secondary">${d.month}</span></td><td class="text-end fw-bold">₹ ${d.amount}</td></tr>`;
+            });
+            updateFooterValues(initialTotal);
         }
-        currentDuesData.forEach((d) => {
-            let isPaid = d.status === 'Paid';
-            let checkHtml = isPaid ? `<span class="badge bg-success">PAID</span>` : `<input type="checkbox" class="form-check-input fee-row-check" data-amount="${d.amount}" data-month="${d.month}" checked onchange="recalculateTotal()">`;
-            if (!isPaid) initialTotal += d.amount;
-            tbody.innerHTML += `<tr class="${isPaid ? 'bg-light text-muted' : ''}"><td class="text-center">${checkHtml}</td><td>${d.fee_head}</td><td><span class="badge bg-secondary">${d.month}</span></td><td class="text-end fw-bold">₹ ${d.amount}</td></tr>`;
-        });
-        updateFooterValues(initialTotal);
-    }
 
-    function recalculateTotal() {
-        let total = 0;
-        document.querySelectorAll('.fee-row-check:checked').forEach(chk => { total += parseFloat(chk.getAttribute('data-amount')); });
-        updateFooterValues(total);
-    }
-    function updateFooterValues(total) {
-        document.getElementById('totalFee').value = total;
-        document.getElementById('addFee').value = 0;
-        document.getElementById('concAmt').value = 0;
-        document.getElementById('concPer').value = 0;
-        calculateNet();
-    }
-    function calculateNet() {
-        let total = parseFloat(document.getElementById('totalFee').value) || 0;
-        let add = parseFloat(document.getElementById('addFee').value) || 0;
-        let conc = parseFloat(document.getElementById('concAmt').value) || 0;
-        let grandTotal = (total + add + studentOldBalance) - conc;
-        document.getElementById('netFee').value = total + add - conc;
-        document.getElementById('amountPaid').value = grandTotal;
-        calculateBalance();
-    }
-    function calculateBalance() {
-        let net = parseFloat(document.getElementById('netFee').value) || 0;
-        let old = parseFloat(document.getElementById('oldBalance').value) || 0;
-        let paid = parseFloat(document.getElementById('amountPaid').value) || 0;
-        document.getElementById('newBalance').value = (net + old - paid).toFixed(2);
-    }
-    function calculateDiscount() {
-        let total = parseFloat(document.getElementById('totalFee').value) || 0;
-        let add = parseFloat(document.getElementById('addFee').value) || 0;
-        let per = parseFloat(document.getElementById('concPer').value) || 0;
-        document.getElementById('concAmt').value = Math.round(((total + add) * per) / 100);
-        calculateNet();
-    }
+        function recalculateTotal() {
+            let total = 0;
+            document.querySelectorAll('.fee-row-check:checked').forEach(chk => { total += parseFloat(chk.getAttribute('data-amount')); });
+            updateFooterValues(total);
+        }
+        function updateFooterValues(total) {
+            document.getElementById('totalFee').value = total;
+            document.getElementById('addFee').value = 0;
+            document.getElementById('concAmt').value = 0;
+            document.getElementById('concPer').value = 0;
+            calculateNet();
+        }
+        function calculateNet() {
+            let total = parseFloat(document.getElementById('totalFee').value) || 0;
+            let add = parseFloat(document.getElementById('addFee').value) || 0;
+            let conc = parseFloat(document.getElementById('concAmt').value) || 0;
+            let grandTotal = (total + add + studentOldBalance) - conc;
+            document.getElementById('netFee').value = total + add - conc;
+            document.getElementById('amountPaid').value = grandTotal;
+            calculateBalance();
+        }
+        function calculateBalance() {
+            let net = parseFloat(document.getElementById('netFee').value) || 0;
+            let old = parseFloat(document.getElementById('oldBalance').value) || 0;
+            let paid = parseFloat(document.getElementById('amountPaid').value) || 0;
+            document.getElementById('newBalance').value = (net + old - paid).toFixed(2);
+        }
+        function calculateDiscount() {
+            let total = parseFloat(document.getElementById('totalFee').value) || 0;
+            let add = parseFloat(document.getElementById('addFee').value) || 0;
+            let per = parseFloat(document.getElementById('concPer').value) || 0;
+            document.getElementById('concAmt').value = Math.round(((total + add) * per) / 100);
+            calculateNet();
+        }
 
-    async function submitPayment() {
-    let currentNet = parseFloat(document.getElementById('netFee').value) || 0;
-    let amountPaid = parseFloat(document.getElementById('amountPaid').value) || 0;
-    let oldBal = parseFloat(document.getElementById('oldBalance').value) || 0;
-    
-    if(amountPaid <= 0) return alert("Please enter amount received!");
+        async function submitPayment() {
+            let currentNet = parseFloat(document.getElementById('netFee').value) || 0;
+            let amountPaid = parseFloat(document.getElementById('amountPaid').value) || 0;
+            let oldBal = parseFloat(document.getElementById('oldBalance').value) || 0;
 
-    // ✅ NAYA LOGIC: Selected Rows se head aur month uthana
-    let itemsToSubmit = [];
-    let paidMonths = [];
-    
-    document.querySelectorAll('.fee-row-check:checked').forEach(chk => {
-        let row = chk.closest('tr');
-        itemsToSubmit.push({
-            head: row.cells[1].innerText,           // e.g. Tution Fees
-            month: row.cells[2].innerText.trim(),  // e.g. Mar
-            amount: parseFloat(chk.getAttribute('data-amount'))
-        });
-        
-        let m = chk.getAttribute('data-month');
-        if(!paidMonths.includes(m)) paidMonths.push(m);
-    });
+            if (amountPaid <= 0) return alert("Please enter amount received!");
 
-    // ✅ Payload taiyar karein
-    let payload = { 
-        student_id: currentStudentId, 
-        total_amount: currentNet, 
-        net_payable: currentNet, 
-        paid_amount: amountPaid, 
-        balance: parseFloat(document.getElementById('newBalance').value), 
-        payment_mode: document.getElementById('payMode').value, 
-        remarks: document.getElementById('remarks').value, 
-        paid_months_list: paidMonths,
-        items: itemsToSubmit // ✅ Ye items backend ki receipt_data mein jayenge
-    };
+            // ✅ NAYA LOGIC: Selected Rows se head aur month uthana
+            let itemsToSubmit = [];
+            let paidMonths = [];
 
-    let res = await fetch('/api/v1/collection/pay-full', { 
-        method: 'POST', 
-        headers: {'Content-Type': 'application/json'}, 
-        body: JSON.stringify(payload) 
-    });
-    
-    if(res.ok) { 
-        let data = await res.json(); 
-        alert("✅ Payment Successful!"); 
-        // Seedha receipt print page khulega
-        window.open('/print/receipt?id=' + data.receipt_no, '_blank'); 
-        location.reload(); 
-    } else { 
-        alert("Error Saving Payment. Please try again."); 
-    }
-}
-</script>
+            document.querySelectorAll('.fee-row-check:checked').forEach(chk => {
+                let row = chk.closest('tr');
+                itemsToSubmit.push({
+                    head: row.cells[1].innerText,           // e.g. Tution Fees
+                    month: row.cells[2].innerText.trim(),  // e.g. Mar
+                    amount: parseFloat(chk.getAttribute('data-amount'))
+                });
+
+                let m = chk.getAttribute('data-month');
+                if (!paidMonths.includes(m)) paidMonths.push(m);
+            });
+
+            // ✅ Payload taiyar karein
+            let payload = {
+                student_id: currentStudentId,
+                total_amount: currentNet,
+                net_payable: currentNet,
+                paid_amount: amountPaid,
+                balance: parseFloat(document.getElementById('newBalance').value),
+                payment_mode: document.getElementById('payMode').value,
+                remarks: document.getElementById('remarks').value,
+                paid_months_list: paidMonths,
+                items: itemsToSubmit // ✅ Ye items backend ki receipt_data mein jayenge
+            };
+
+            let res = await fetch('/api/v1/collection/pay-full', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                let data = await res.json();
+                alert("✅ Payment Successful!");
+                // Seedha receipt print page khulega
+                window.open('/print/receipt?id=' + data.receipt_no, '_blank');
+                location.reload();
+            } else {
+                alert("Error Saving Payment. Please try again.");
+            }
+        }
+    </script>
 
 </body>
+
 </html>
