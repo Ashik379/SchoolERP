@@ -57,6 +57,7 @@ def get_filtered_students(
     db: Session = Depends(get_db)
 ):
     """Get filtered student list with status tabs"""
+    # Eager load class and section to avoid N+1 queries
     query = db.query(Student).options(
         joinedload(Student.class_val),
         joinedload(Student.section_val)
@@ -67,7 +68,6 @@ def get_filtered_students(
         query = query.filter(Student.status == True)
     elif status_filter == "inactive":
         query = query.filter(Student.status == False)
-    # "all" shows both
     
     # Class filter
     if class_id:
@@ -93,6 +93,10 @@ def get_filtered_students(
     # Format response
     result = []
     for s in students:
+        # ✅ PHOTO FETCHING LOGIC ADDED HERE
+        # Agar photo NULL hai to empty string bhejenge taaki frontend error na de
+        photo_url = s.student_photo if s.student_photo else ""
+
         result.append({
             "id": s.id,
             "admission_no": s.admission_no,
@@ -102,7 +106,7 @@ def get_filtered_students(
             "roll_no": s.roll_no,
             "status": s.status,
             "academic_session": s.academic_session,
-            "student_photo": s.student_photo,
+            "student_photo": photo_url,  # Cloudinary URL yahan aayega
             "class_id": s.class_id,
             "section_id": s.section_id,
             "class_name": s.class_val.class_name if s.class_val else "N/A",
@@ -134,7 +138,6 @@ def toggle_student_status(student_id: int, db: Session = Depends(get_db)):
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
     
-    # Toggle status
     student.status = not student.status
     db.commit()
     db.refresh(student)
@@ -154,12 +157,11 @@ def bulk_promote_students(request: PromoteRequest, db: Session = Depends(get_db)
     if not request.student_ids:
         raise HTTPException(status_code=400, detail="No students selected")
     
-    # Verify target class exists
     target_class = db.query(ClassMaster).filter(ClassMaster.id == request.target_class_id).first()
     if not target_class:
         raise HTTPException(status_code=400, detail="Target class not found")
     
-    # Get first section of target class (required since section_id is NOT NULL)
+    # Get first section of target class
     first_section = db.query(SectionMaster).filter(
         SectionMaster.class_id == request.target_class_id
     ).first()
@@ -170,7 +172,6 @@ def bulk_promote_students(request: PromoteRequest, db: Session = Depends(get_db)
             detail=f"No sections defined for {target_class.class_name}. Please create a section first."
         )
     
-    # Get students to promote
     students = db.query(Student).filter(Student.id.in_(request.student_ids)).all()
     
     if not students:
@@ -178,11 +179,10 @@ def bulk_promote_students(request: PromoteRequest, db: Session = Depends(get_db)
     
     promoted_count = 0
     for student in students:
-        # Only promote Active students
         if student.status:
             student.class_id = request.target_class_id
             student.academic_session = request.new_academic_session
-            student.section_id = first_section.id  # Assign to first section of target class
+            student.section_id = first_section.id 
             
             if request.reset_roll_no:
                 student.roll_no = None
@@ -207,14 +207,12 @@ def safe_delete_student(student_id: int, db: Session = Depends(get_db)):
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
     
-    # 🔒 SAFETY CHECK: Block deletion of Active students
     if student.status == True:
         raise HTTPException(
             status_code=400, 
             detail="Active students cannot be deleted. Mark them as Inactive first."
         )
     
-    # Safe to delete - student is Inactive
     student_name = student.student_name
     db.delete(student)
     db.commit()
@@ -232,13 +230,11 @@ def bulk_delete_inactive_students(request: BulkDeleteRequest, db: Session = Depe
     if not request.student_ids:
         raise HTTPException(status_code=400, detail="No students selected")
     
-    # Get students
     students = db.query(Student).filter(Student.id.in_(request.student_ids)).all()
     
     if not students:
         raise HTTPException(status_code=400, detail="No valid students found")
     
-    # Check if any Active students in selection
     active_students = [s for s in students if s.status == True]
     if active_students:
         active_names = ", ".join([s.student_name for s in active_students[:3]])
@@ -247,7 +243,6 @@ def bulk_delete_inactive_students(request: BulkDeleteRequest, db: Session = Depe
             detail=f"Cannot delete Active students: {active_names}. Mark them as Inactive first."
         )
     
-    # All students are Inactive - safe to delete
     deleted_count = 0
     for student in students:
         db.delete(student)
