@@ -762,6 +762,20 @@
         // CALCULATIONS
         // =====================
         function recalculateTotal() {
+            // ✅ FIX: Sync month strip checkboxes with fee table checkboxes
+            document.querySelectorAll('.m-chk').forEach(monthChk => {
+                let month = monthChk.value;
+                let isMonthChecked = monthChk.checked;
+
+                // Find all fee rows for this month and check/uncheck them
+                document.querySelectorAll('.fee-row-check').forEach(rowChk => {
+                    if (rowChk.getAttribute('data-month') === month) {
+                        rowChk.checked = isMonthChecked;
+                    }
+                });
+            });
+
+            // Now calculate total from checked fee rows
             let total = 0;
             document.querySelectorAll('.fee-row-check:checked').forEach(chk => {
                 total += parseFloat(chk.getAttribute('data-amount'));
