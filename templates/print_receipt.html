@@ -1,145 +1,401 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Professional Fee Receipt - Vidya Vikas</title>
+    <title>Fee Receipt - Vidya Vikas Inter College</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-        
-        body { background: #f0f0f0; font-family: 'Roboto', sans-serif; margin: 0; padding: 0; }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e0e0e0;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
         .a4-page {
-            width: 210mm; height: 297mm; background: #fff; margin: 10px auto;
-            display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
-            border: 1px solid #ddd; box-sizing: border-box;
+            width: 210mm;
+            min-height: 297mm;
+            background: #fff;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            padding: 10mm;
+            gap: 5mm;
         }
 
         .receipt-card {
-            border: 1px solid #000; padding: 10px; position: relative;
-            display: flex; flex-direction: column; overflow: hidden;
+            border: 2px solid #1e3c72;
+            border-radius: 8px;
+            padding: 12px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: white;
         }
-        
+
         .copy-tag {
-            position: absolute; top: 0; right: 0; background: #000; color: #fff;
-            font-size: 9px; padding: 2px 8px; text-transform: uppercase; font-weight: bold;
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+            font-size: 8px;
+            padding: 3px 10px;
+            text-transform: uppercase;
+            font-weight: bold;
+            border-radius: 0 6px 0 8px;
         }
 
-        .header-section { text-align: center; margin-bottom: 5px; border-bottom: 2px solid #000; }
-        .school-name { font-size: 16px; font-weight: 800; color: #000080; margin: 0; }
-        .school-address { font-size: 9px; font-weight: bold; }
+        .header-section {
+            text-align: center;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #1e3c72;
+        }
 
-        .info-table { width: 100%; font-size: 10px; margin-bottom: 5px; }
-        .info-table td { padding: 1px 0; font-weight: bold; }
-        .info-table span { color: #000; font-weight: normal; border-bottom: 1px dotted #000; }
+        .school-name {
+            font-size: 16px;
+            font-weight: 800;
+            color: #1e3c72;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-        .fee-table { width: 100%; font-size: 10px; margin-top: 5px; border: 1px solid #000; height: 140px; }
-        .fee-table th { background: #f2f2f2; border: 1px solid #000; text-align: center; text-transform: uppercase; font-size: 8px; }
-        .fee-table td { border-left: 1px solid #000; border-right: 1px solid #000; padding: 2px 5px; vertical-align: middle; }
-        .fee-table .total-row { border-top: 1px solid #000; font-weight: bold; background: #f2f2f2; }
-        
-        .month-badge { background: #6c757d; color: white; padding: 1px 4px; border-radius: 3px; font-size: 8px; font-weight: bold; }
+        .school-address {
+            font-size: 9px;
+            color: #666;
+            margin: 3px 0;
+        }
 
-        .footer-section { display: flex; font-size: 10px; margin-top: 8px; align-items: flex-end; }
-        .qr-section { flex: 1; }
-        .summary-section { flex: 2; }
-        
-        .calc-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 1px 0; }
-        .calc-row.grand-total { border-top: 1px solid #000; font-weight: bold; font-size: 11px; }
+        .receipt-title {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #fff;
+            display: inline-block;
+            padding: 3px 20px;
+            font-size: 10px;
+            font-weight: bold;
+            border-radius: 3px;
+            margin-top: 5px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            font-size: 10px;
+            margin-bottom: 8px;
+        }
+
+        .info-item {
+            display: flex;
+        }
+
+        .info-label {
+            font-weight: 700;
+            color: #555;
+            min-width: 70px;
+        }
+
+        .info-value {
+            color: #000;
+            font-weight: 500;
+            border-bottom: 1px dotted #999;
+            flex: 1;
+            padding-left: 5px;
+        }
+
+        .info-full {
+            grid-column: span 2;
+        }
+
+        .fee-table {
+            width: 100%;
+            font-size: 9px;
+            border-collapse: collapse;
+            margin: 8px 0;
+            flex: 1;
+        }
+
+        .fee-table th {
+            background: #f0f4f8;
+            border: 1px solid #ddd;
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 8px;
+            padding: 5px 4px;
+            color: #1e3c72;
+            font-weight: 700;
+        }
+
+        .fee-table td {
+            border: 1px solid #ddd;
+            padding: 4px 6px;
+            vertical-align: middle;
+        }
+
+        .fee-table .total-row {
+            background: #f0f4f8;
+            font-weight: bold;
+        }
+
+        .fee-table .total-row td {
+            border-top: 2px solid #1e3c72;
+        }
+
+        .amount-words {
+            background: #f8f9fa;
+            padding: 5px 8px;
+            font-size: 9px;
+            border-radius: 4px;
+            margin: 5px 0;
+            border-left: 3px solid #1e3c72;
+        }
+
+        .amount-words strong {
+            color: #1e3c72;
+        }
+
+        .footer-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            font-size: 9px;
+            margin-top: auto;
+            padding-top: 8px;
+            border-top: 1px dashed #ddd;
+        }
+
+        .payment-info {
+            text-align: left;
+            font-size: 9px;
+        }
+
+        .payment-mode {
+            background: #e8f5e9;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: 600;
+            color: #2e7d32;
+            display: inline-block;
+        }
+
+        .signature-box {
+            text-align: right;
+        }
+
+        .signature-line {
+            border-top: 1px solid #000;
+            width: 100px;
+            margin-left: auto;
+            margin-bottom: 3px;
+        }
+
+        .summary-box {
+            background: #f8f9fa;
+            padding: 6px;
+            border-radius: 4px;
+            font-size: 9px;
+            margin: 5px 0;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+            border-bottom: 1px dotted #ddd;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-row.grand-total {
+            font-weight: bold;
+            font-size: 11px;
+            color: #1e3c72;
+            border-top: 1px solid #1e3c72;
+            margin-top: 3px;
+            padding-top: 5px;
+        }
+
+        .no-print {
+            margin-bottom: 20px;
+        }
 
         @media print {
-            body { background: #fff; }
-            .a4-page { margin: 0; border: none; }
-            .no-print { display: none; }
+            body {
+                background: #fff;
+                padding: 0;
+            }
+
+            .a4-page {
+                margin: 0;
+                box-shadow: none;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            @page {
+                margin: 0;
+                size: A4;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<div class="text-center my-3 no-print">
-    <button class="btn btn-dark fw-bold" onclick="window.print()">🖨 PRINT 4 COPIES</button>
-</div>
+    <div class="text-center no-print">
+        <button class="btn btn-dark fw-bold px-4" onclick="window.print()">
+            <i class="bi bi-printer"></i> 🖨 PRINT RECEIPT
+        </button>
+        <button class="btn btn-outline-secondary fw-bold px-4 ms-2" onclick="window.close()">
+            ✕ Close
+        </button>
+    </div>
 
-<div class="a4-page" id="printArea">
-    <div class="receipt-card" id="card-0-S"></div>
-    <div class="receipt-card" id="card-0-O"></div>
-    <div class="receipt-card" id="card-1-S"></div>
-    <div class="receipt-card" id="card-1-O"></div>
-</div>
+    <div class="a4-page" id="printArea">
+        <div class="receipt-card" id="card-0-S"></div>
+        <div class="receipt-card" id="card-0-O"></div>
+        <div class="receipt-card" id="card-1-S"></div>
+        <div class="receipt-card" id="card-1-O"></div>
+    </div>
 
-<script>
-    async function loadReceipts() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const idStr = urlParams.get('id');
-        if(!idStr) return;
-        
-        const ids = idStr.split(',');
-        for(let i=0; i < ids.length; i++) {
-            try {
-                let res = await fetch(`/api/v1/collection/receipt/${ids[i]}`);
-                let data = await res.json();
-                renderCard(data, `card-${i}-S`, "Student Copy");
-                renderCard(data, `card-${i}-O`, "Office Copy");
-            } catch(e) { console.error("Error", ids[i]); }
+    <script>
+        async function loadReceipts() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const idStr = urlParams.get('id');
+            if (!idStr) {
+                alert("No receipt ID provided");
+                return;
+            }
+
+            const ids = idStr.split(',');
+
+            for (let i = 0; i < Math.min(ids.length, 2); i++) {
+                try {
+                    // Try new API first
+                    let res = await fetch(`/api/v1/fee-ledger/receipt/${ids[i]}`);
+
+                    if (!res.ok) {
+                        // Fallback to old API
+                        res = await fetch(`/api/v1/collection/receipt/${ids[i]}`);
+                    }
+
+                    if (res.ok) {
+                        let data = await res.json();
+                        renderCard(data, `card-${i}-S`, "Student Copy");
+                        renderCard(data, `card-${i}-O`, "Office Copy");
+                    }
+                } catch (e) {
+                    console.error("Error fetching receipt:", ids[i], e);
+                }
+            }
         }
-    }
 
-    function renderCard(data, containerId, copyType) {
-        const t = data.txn;
-        const s = data.student;
-        const items = data.breakup || []; 
-        const container = document.getElementById(containerId);
+        function renderCard(data, containerId, copyType) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
 
-        let rowsHtml = "";
-        if(items.length > 0) {
-            items.forEach((item, idx) => {
-                // Particulars ke saath Month bhi dikhega
-                rowsHtml += `<tr>
-                    <td class="text-center">${idx+1}</td>
-                    <td>${item.head}</td>
-                    <td class="text-center"><span class="month-badge">${item.month}</span></td>
-                    <td class="text-end">${item.amount.toFixed(2)}</td>
-                </tr>`;
-            });
-        } else {
-            rowsHtml = `<tr><td class="text-center">1</td><td>School Fee / Tution Fee</td><td class="text-center">-</td><td class="text-end">${t.total_amount.toFixed(2)}</td></tr>`;
-        }
+            // Handle both old and new API formats
+            const receiptNo = data.receipt_no || `VV-${data.txn?.id || '?'}`;
+            const date = data.date || data.txn?.payment_date || new Date().toLocaleDateString();
+            const student = data.student || {};
+            const items = data.items || data.breakup || [];
+            const totalAmount = data.total_amount || data.txn?.total_amount || 0;
+            const discount = data.discount || data.txn?.discount || 0;
+            const fine = data.fine || 0;
+            const paidAmount = data.paid_amount || data.txn?.amount_paid || 0;
+            const paymentMode = data.payment_mode || data.txn?.payment_mode || 'Cash';
+            const amountInWords = data.amount_in_words || numberToWords(paidAmount);
+            const months = data.months || data.formatted_months || [];
 
-        container.innerHTML = `
+            // Build items rows
+            let rowsHtml = "";
+            if (items.length > 0) {
+                items.forEach((item, idx) => {
+                    const head = item.head || item.particulars || 'Fee';
+                    const amount = item.amount || 0;
+                    rowsHtml += `
+                    <tr>
+                        <td class="text-center">${idx + 1}</td>
+                        <td>${head}</td>
+                        <td class="text-end">₹${amount.toLocaleString()}</td>
+                    </tr>
+                `;
+                });
+            } else {
+                rowsHtml = `
+                <tr>
+                    <td class="text-center">1</td>
+                    <td>School Fee</td>
+                    <td class="text-end">₹${totalAmount.toLocaleString()}</td>
+                </tr>
+            `;
+            }
+
+            // Format months display
+            const monthsDisplay = Array.isArray(months) ? months.join(', ') : months;
+
+            container.innerHTML = `
             <div class="copy-tag">${copyType}</div>
+            
             <div class="header-section">
-                <p class="school-name">VIDYA VIKAS INTER COLLEGE</p>
-                <p class="school-address">Laxmiganj, Kushinagar, Uttar Pradesh</p>
-                <div style="background:#000; color:#fff; display:inline-block; padding:2px 15px; font-size:10px; font-weight:bold;">FEES RECEIPT</div>
+                <div class="school-name">VIDYA VIKAS INTER COLLEGE</div>
+                <div class="school-address">Laxmiganj, Kushinagar, Uttar Pradesh - 274402</div>
+                <div class="school-address">📞 9876543210 | 📧 info@vvic.edu.in</div>
+                <div class="receipt-title">FEE RECEIPT</div>
             </div>
 
-            <table class="info-table">
-                <tr>
-                    <td>Receipt No: <span>VV-${t.id}</span></td>
-                    <td class="text-end">Date: <span>${t.payment_date}</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2">Student: <span>${s.student_name}</span></td>
-                </tr>
-                <tr>
-                    <td>Adm No: <span>${s.admission_no}</span></td>
-                    <td class="text-end">Class: <span>${s.class_val?.class_name || ''}</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2">Father: <span>${s.father_name}</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2">Months: <span>${data.formatted_months}</span></td>
-                </tr>
-            </table>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Receipt No:</span>
+                    <span class="info-value" style="font-weight:700; color:#1e3c72;">${receiptNo}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Date:</span>
+                    <span class="info-value">${date}</span>
+                </div>
+                <div class="info-item info-full">
+                    <span class="info-label">Student:</span>
+                    <span class="info-value" style="font-weight:700;">${student.name || '-'}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Adm No:</span>
+                    <span class="info-value">${student.admission_no || '-'}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Class:</span>
+                    <span class="info-value">${student.class_name || '-'}${student.section_name ? ' (' + student.section_name + ')' : ''}</span>
+                </div>
+                <div class="info-item info-full">
+                    <span class="info-label">Father:</span>
+                    <span class="info-value">${student.father_name || '-'}</span>
+                </div>
+                <div class="info-item info-full">
+                    <span class="info-label">Month(s):</span>
+                    <span class="info-value">${monthsDisplay || 'Current Session'}</span>
+                </div>
+            </div>
 
             <table class="fee-table">
                 <thead>
                     <tr>
-                        <th width="8%">S.N</th>
-                        <th width="50%">PARTICULARS</th>
-                        <th width="17%">MONTH</th>
-                        <th width="25%">AMOUNT (RS)</th>
+                        <th width="10%">S.N</th>
+                        <th width="65%">PARTICULARS</th>
+                        <th width="25%">AMOUNT</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -147,38 +403,93 @@
                 </tbody>
                 <tfoot>
                     <tr class="total-row">
-                        <td colspan="3" class="text-end">TOTAL AMOUNT</td>
-                        <td class="text-end">${t.total_amount.toFixed(2)}</td>
+                        <td colspan="2" class="text-end">TOTAL</td>
+                        <td class="text-end">₹${totalAmount.toLocaleString()}</td>
                     </tr>
                 </tfoot>
             </table>
 
-            <div class="footer-section">
-                <div class="qr-section">
-                    <div id="qr-${containerId}"></div>
-                    <div style="font-size:8px; margin-top:5px;">Mode: <b>${t.payment_mode}</b></div>
-                </div>
-                <div class="summary-section">
-                    <div class="calc-row"><span>Total Payable:</span> <span>₹${t.net_payable}</span></div>
-                    <div class="calc-row" style="color:green;"><span>Amount Paid:</span> <span>₹${t.amount_paid}</span></div>
-                    <div class="calc-row grand-total" style="color:red;"><span>Balance Due:</span> <span>₹${t.balance_amount}</span></div>
+            <div class="summary-box">
+                ${discount > 0 ? `<div class="summary-row"><span>Discount:</span><span style="color:#059669;">- ₹${discount.toLocaleString()}</span></div>` : ''}
+                ${fine > 0 ? `<div class="summary-row"><span>Fine/Late Fee:</span><span style="color:#dc2626;">+ ₹${fine.toLocaleString()}</span></div>` : ''}
+                <div class="summary-row grand-total">
+                    <span>AMOUNT PAID:</span>
+                    <span>₹${paidAmount.toLocaleString()}</span>
                 </div>
             </div>
-            
-            <div class="d-flex justify-content-between mt-auto" style="font-size:9px; border-top:1px solid #eee; padding-top:5px;">
-                <span>* System Generated Receipt</span>
-                <span class="fw-bold">Authorised Signature</span>
+
+            <div class="amount-words">
+                <strong>In Words:</strong> ${amountInWords}
+            </div>
+
+            <div class="footer-section">
+                <div class="payment-info">
+                    <span style="color:#666;">Payment Mode:</span>
+                    <span class="payment-mode">${paymentMode}</span>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <div style="font-weight:600;">Authorised Signatory</div>
+                    <div style="color:#999; font-size:7px; margin-top:3px;">This is a computer generated receipt</div>
+                </div>
             </div>
         `;
+        }
 
-        new QRCode(document.getElementById(`qr-${containerId}`), {
-            text: `VV-ERP|${t.id}|${s.student_name}|${t.amount_paid}`,
-            width: 45, height: 45
-        });
-    }
+        function numberToWords(num) {
+            const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
+                "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen",
+                "Seventeen", "Eighteen", "Nineteen"];
+            const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
 
-    loadReceipts();
-</script>
+            num = Math.floor(num);
+            if (num === 0) return "Zero Rupees Only";
+            if (num < 0) return "Invalid Amount";
+
+            let result = "";
+
+            if (num >= 10000000) {
+                result += numberToWordsHelper(Math.floor(num / 10000000)) + " Crore ";
+                num %= 10000000;
+            }
+            if (num >= 100000) {
+                result += numberToWordsHelper(Math.floor(num / 100000)) + " Lakh ";
+                num %= 100000;
+            }
+            if (num >= 1000) {
+                result += numberToWordsHelper(Math.floor(num / 1000)) + " Thousand ";
+                num %= 1000;
+            }
+            if (num >= 100) {
+                result += ones[Math.floor(num / 100)] + " Hundred ";
+                num %= 100;
+            }
+            if (num >= 20) {
+                result += tens[Math.floor(num / 10)] + " ";
+                num %= 10;
+            }
+            if (num > 0) {
+                result += ones[num] + " ";
+            }
+
+            return result.trim() + " Rupees Only";
+        }
+
+        function numberToWordsHelper(num) {
+            const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
+                "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen",
+                "Seventeen", "Eighteen", "Nineteen"];
+            const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+
+            if (num < 20) return ones[num];
+            if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? " " + ones[num % 10] : "");
+            return ones[Math.floor(num / 100)] + " Hundred" + (num % 100 ? " " + numberToWordsHelper(num % 100) : "");
+        }
+
+        // Load receipts on page load
+        loadReceipts();
+    </script>
 
 </body>
+
 </html>

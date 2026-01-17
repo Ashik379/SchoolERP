@@ -14,6 +14,7 @@ from routers.exams import router as exams_router
 from routers import student_api
 from routers import bulk_import
 from routers import student_lifecycle
+from routers import fee_ledger  # ✅ NEW Fee Ledger Router
 
 # --- IMPORT MODELS ---
 from models.students import Student
@@ -26,6 +27,7 @@ from models.attendance import StudentAttendance
 from models.holidays import Holiday 
 from models.website import WebsiteUpdate, StudentTopper 
 from models.communication import MessageLog 
+from models.fee_models import FeeHeadMaster, FeeStructure, StudentFeeLedger, ReceiptCounter  # ✅ NEW Fee Models
 
 # --- CREATE DATABASE TABLES ---
 Base.metadata.create_all(bind=engine)
@@ -96,6 +98,7 @@ app.include_router(communication.router)
 app.include_router(student_api.router)
 app.include_router(bulk_import.router)
 app.include_router(student_lifecycle.router)
+app.include_router(fee_ledger.router)  # ✅ NEW Fee Ledger Router
 
 # ===========================
 #   WEB PAGES (Admin Panel)

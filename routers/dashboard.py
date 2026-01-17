@@ -6,6 +6,7 @@ from database import get_db
 from models.students import Student
 from models.attendance import StudentAttendance
 from models.transactions import FeeTransaction
+from models.fee_models import StudentFeeLedger  # ✅ NEW: Import StudentFeeLedger
 from models.masters import ClassMaster, TransportMaster 
 from datetime import date
 
@@ -24,14 +25,18 @@ def dashboard_view(request: Request, db: Session = Depends(get_db)):
     except: total_routes = 0
     
     # 2. Financials
-    # ✅ FIX: Today's Collection Logic Added
+    # ✅ FIX: Include BOTH old FeeTransaction AND new StudentFeeLedger
     today = date.today()
     try:
-        todays_collection = db.query(func.sum(FeeTransaction.amount_paid))\
-            .filter(FeeTransaction.payment_date == today).scalar()
-        # Agar None hai (koi transaction nahi), toh 0.0 karein
-        if todays_collection is None:
-            todays_collection = 0.0
+        # Old table collection
+        old_collection = db.query(func.sum(FeeTransaction.amount_paid))\
+            .filter(FeeTransaction.payment_date == today).scalar() or 0.0
+        
+        # New ledger collection
+        new_collection = db.query(func.sum(StudentFeeLedger.paid_amount))\
+            .filter(StudentFeeLedger.transaction_date == today).scalar() or 0.0
+        
+        todays_collection = old_collection + new_collection
     except:
         todays_collection = 0.0
 

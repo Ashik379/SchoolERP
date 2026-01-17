@@ -17,6 +17,8 @@
             --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             --text-dark: #111827;
             --text-body: #374151;
+            --success-color: #059669;
+            --danger-color: #dc2626;
         }
 
         body {
@@ -96,30 +98,6 @@
             margin-right: 10px;
         }
 
-        .submenu {
-            background: rgba(0, 0, 0, 0.2);
-            margin: 0 25px;
-            border-radius: 10px;
-            display: none;
-            padding: 5px 0;
-        }
-
-        .submenu a {
-            padding: 10px 15px;
-            display: block;
-            color: #8892b0;
-            text-decoration: none;
-            font-size: 13px;
-            transition: 0.2s;
-            border-radius: 8px;
-        }
-
-        .submenu a:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.05);
-            padding-left: 20px;
-        }
-
         /* --- CONTENT AREA --- */
         .main-content {
             margin-left: var(--sidebar-width);
@@ -167,6 +145,8 @@
             overflow: hidden;
             margin-top: 5px;
             border: 1px solid #ddd;
+            max-height: 400px;
+            overflow-y: auto;
         }
 
         .search-item {
@@ -214,7 +194,29 @@
             font-weight: bold;
         }
 
-        /* --- STRIP & TABLE --- */
+        .due-badge {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+        }
+
+        /* --- MONTH STRIP --- */
         .month-strip {
             background: #f9fafb;
             padding: 15px;
@@ -223,7 +225,7 @@
             display: flex;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 10px;
         }
 
         .month-chk {
@@ -233,8 +235,22 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: 0.2s;
         }
 
+        .month-chk:has(input:checked) {
+            background: #dbeafe;
+            color: #1e3c72;
+        }
+
+        .month-chk.paid-month {
+            opacity: 0.5;
+            text-decoration: line-through;
+        }
+
+        /* --- FEE TABLE --- */
         .fee-table {
             width: 100%;
             border-radius: 12px;
@@ -258,6 +274,15 @@
             vertical-align: middle;
             color: #111827;
             font-weight: 500;
+        }
+
+        .fee-table tr.paid-row {
+            background: #f0fdf4 !important;
+        }
+
+        .fee-table tr.paid-row td {
+            background: #f0fdf4 !important;
+            color: #6b7280;
         }
 
         /* --- FOOTER CALCULATION --- */
@@ -303,10 +328,20 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.9);
             z-index: 2000;
             text-align: center;
             padding-top: 20vh;
+        }
+
+        .current-month-badge {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 8px;
         }
 
         @media (max-width: 768px) {
@@ -329,7 +364,7 @@
 
     <div id="loadingOverlay">
         <div class="spinner-grow text-primary" role="status"></div>
-        <div class="fw-bold mt-2 text-primary">Processing Student Data...</div>
+        <div class="fw-bold mt-2 text-primary">Processing...</div>
     </div>
 
     <div class="sidebar" id="sidebar">
@@ -341,8 +376,8 @@
         <div class="user-profile">
             <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="45">
             <div class="ms-3">
-                <h6 class="mb-0 text-white fw-bold">Accountant</h6><span
-                    class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25"
+                <h6 class="mb-0 text-white fw-bold">Accountant</h6>
+                <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25"
                     style="font-size: 10px;">● Online</span>
             </div>
         </div>
@@ -351,10 +386,13 @@
             <a href="/students" class="menu-item"><span><i class="fas fa-users menu-icon"></i> Student List</span></a>
             <a href="/fees/collect" class="menu-item active"><span><i class="fas fa-rupee-sign menu-icon"></i> Fee
                     Collection</span></a>
+            <a href="/fees/history" class="menu-item"><span><i class="fas fa-history menu-icon"></i> Fee
+                    History</span></a>
             <div class="mt-5 px-3">
                 <a href="/auth/logout" class="btn w-100 fw-bold text-white"
-                    style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;"><i
-                        class="fas fa-power-off me-2"></i> Logout</a>
+                    style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;">
+                    <i class="fas fa-power-off me-2"></i> Logout
+                </a>
             </div>
         </div>
     </div>
@@ -363,20 +401,25 @@
         <div class="glass-header">
             <h4 class="fw-bold mb-0"><i class="fas fa-money-check-alt me-2 text-primary"></i>Fee Collection Panel</h4>
             <div class="d-flex align-items-center gap-3">
+                <span class="current-month-badge"><i class="fas fa-calendar me-1"></i><span
+                        id="currentMonth">-</span></span>
                 <div class="date-box" id="todayDate"></div>
-                <button class="btn btn-dark d-md-none rounded-circle" onclick="toggleSidebar()"><i
-                        class="fas fa-bars"></i></button>
+                <button class="btn btn-dark d-md-none rounded-circle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </div>
 
+        <!-- SEARCH BAR -->
         <div class="search-container">
             <input type="text" id="searchInput" class="form-control search-input shadow-sm"
-                placeholder="🔍 Search Student by Name, Admission No or ID..." onkeyup="searchStudent()"
-                autocomplete="off">
+                placeholder="🔍 Search Student by Name, Admission No..." onkeyup="searchStudent()" autocomplete="off">
             <div id="searchDropdown" class="search-results"></div>
         </div>
 
+        <!-- MAIN PANEL (Hidden by default) -->
         <div id="mainPanel" style="display:none;">
+            <!-- STUDENT PROFILE CARD -->
             <div class="premium-card" style="border-top: 4px solid #1e3c72;">
                 <div class="row align-items-center">
                     <div class="col-md-auto">
@@ -385,74 +428,81 @@
                     </div>
                     <div class="col">
                         <div class="row g-3">
-                            <div class="col-md-3"><span class="label-text">Student Name</span><br><span
-                                    class="val-text text-primary" id="pName">-</span></div>
-                            <div class="col-md-3"><span class="label-text">Father Name</span><br><span class="val-text"
-                                    id="pFather">-</span></div>
-                            <div class="col-md-2"><span class="label-text">Class (Sec)</span><br><span
-                                    class="val-text text-danger" id="pClass">-</span></div>
-                            <div class="col-md-2"><span class="label-text">Admission No</span><br><span class="val-text"
-                                    id="pAdm">-</span></div>
-                            <div class="col-md-2 text-end"><button class="btn btn-sm btn-outline-secondary fw-bold"
-                                    onclick="location.reload()"><i class="fas fa-sync"></i> Clear</button></div>
+                            <div class="col-md-3">
+                                <span class="label-text">Student Name</span><br>
+                                <span class="val-text text-primary" id="pName">-</span>
+                            </div>
+                            <div class="col-md-3">
+                                <span class="label-text">Father Name</span><br>
+                                <span class="val-text" id="pFather">-</span>
+                            </div>
+                            <div class="col-md-2">
+                                <span class="label-text">Class (Sec)</span><br>
+                                <span class="val-text text-danger" id="pClass">-</span>
+                            </div>
+                            <div class="col-md-2">
+                                <span class="label-text">Admission No</span><br>
+                                <span class="val-text" id="pAdm">-</span>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <button class="btn btn-sm btn-outline-secondary fw-bold" onclick="location.reload()">
+                                    <i class="fas fa-sync"></i> Clear
+                                </button>
+                            </div>
                         </div>
                         <div class="row g-3 mt-1">
-                            <div class="col-md-3"><span class="label-text">Mobile Number</span><br><span
-                                    class="val-text" id="pMobile">-</span></div>
-                            <div class="col-md-3"><span class="label-text">System ID</span><br><span
-                                    class="val-text text-muted" id="pId">-</span></div>
-                            <div class="col-md-6">
-                                <span class="label-text text-danger">Previous Outstanding Balance</span>
-                                <input type="number" id="oldBalance"
-                                    class="form-control form-control-sm fw-bold text-danger" value="0" readonly
-                                    style="background:#fff5f5; border: 1px solid #feb2b2;">
+                            <div class="col-md-3">
+                                <span class="label-text">Mobile Number</span><br>
+                                <span class="val-text" id="pMobile">-</span>
+                            </div>
+                            <div class="col-md-3">
+                                <span class="label-text">System ID</span><br>
+                                <span class="val-text text-muted" id="pId">-</span>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <div class="due-badge" id="dueBox">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>Total Due: ₹<span
+                                        id="totalDueDisplay">0</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- MONTH SELECTION -->
             <div class="premium-card">
-                <div class="month-strip">
-                    <span class="fw-bold text-dark"><i class="fas fa-calendar-check me-2"></i> Select Months:</span>
-                    <label class="month-chk"><input type="checkbox" onclick="toggleAll(this)"> <span
-                            class="badge bg-dark">All</span></label>
-                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Apr"> Apr</label>
-                    <label class="month-chk"><input type="checkbox" class="m-chk" value="May"> May</label>
-                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Jun"> Jun</label>
-                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Jul"> Jul</label>
-                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Aug"> Aug</label>
-                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Sep"> Sep</label>
-                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Oct"> Oct</label>
-                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Nov"> Nov</label>
-                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Dec"> Dec</label>
-                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Jan"> Jan</label>
-                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Feb"> Feb</label>
-                    <label class="month-chk"><input type="checkbox" class="m-chk" value="Mar"> Mar</label>
-                    <button class="btn btn-primary fw-bold ms-auto px-4" onclick="fetchDues()"><i
-                            class="fas fa-bolt me-2"></i> Get Fee Details</button>
+                <div class="month-strip" id="monthStrip">
+                    <span class="fw-bold text-dark"><i class="fas fa-calendar-check me-2"></i>Select Months:</span>
+                    <label class="month-chk"><input type="checkbox" id="selectAllMonths" onclick="toggleAll(this)">
+                        <span class="badge bg-dark">All</span></label>
+                    <!-- Months will be dynamically added -->
                 </div>
             </div>
 
+            <!-- FEE TABLE -->
             <div class="premium-card p-0 overflow-hidden">
                 <table class="fee-table mb-0">
                     <thead>
                         <tr>
-                            <th width="80" class="text-center">Select</th>
-                            <th>Fee Head Details</th>
-                            <th>Billing Month</th>
+                            <th width="60" class="text-center">Select</th>
+                            <th>Fee Head</th>
+                            <th>Month</th>
                             <th class="text-end">Amount (₹)</th>
+                            <th class="text-center">Status</th>
                         </tr>
                     </thead>
                     <tbody id="feeTableBody">
                         <tr>
-                            <td colspan="4" class="text-center p-5 text-muted fw-bold">Select months and click 'Get Fee
-                                Details' to load dues.</td>
+                            <td colspan="5" class="text-center p-5 text-muted fw-bold">
+                                Search and select a student to view dues
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
+            <!-- CALCULATION FOOTER -->
             <div class="premium-card shadow-lg" style="background: #f8fafc; border-top: 4px solid #059669;">
                 <div class="row g-3">
                     <div class="col-md-2">
@@ -460,22 +510,17 @@
                         <input type="number" id="totalFee" class="form-control calc-input bg-white" value="0" readonly>
                     </div>
                     <div class="col-md-2">
-                        <div class="header-box-label">Late Fee / Add.</div>
-                        <input type="number" id="addFee" class="form-control calc-input" value="0"
+                        <div class="header-box-label">Late Fee / Fine</div>
+                        <input type="number" id="fineAmt" class="form-control calc-input" value="0"
                             onkeyup="calculateNet()">
                     </div>
                     <div class="col-md-2">
-                        <div class="header-box-label">Concession %</div>
-                        <input type="number" id="concPer" class="form-control calc-input" value="0"
-                            onkeyup="calculateDiscount()">
-                    </div>
-                    <div class="col-md-2">
-                        <div class="header-box-label">Conc. Amt</div>
-                        <input type="number" id="concAmt" class="form-control calc-input" value="0"
+                        <div class="header-box-label">Discount</div>
+                        <input type="number" id="discountAmt" class="form-control calc-input" value="0"
                             onkeyup="calculateNet()">
                     </div>
                     <div class="col-md-2">
-                        <div class="header-box-label">Net Total (Current)</div>
+                        <div class="header-box-label">Net Payable</div>
                         <input type="number" id="netFee" class="form-control calc-input text-primary" value="0" readonly
                             style="background:#eef2ff;">
                     </div>
@@ -483,6 +528,10 @@
                         <div class="header-box-label" style="background:#059669;">Amt. Received</div>
                         <input type="number" id="amountPaid" class="form-control big-green-box" value="0"
                             onkeyup="calculateBalance()">
+                    </div>
+                    <div class="col-md-2">
+                        <div class="header-box-label" style="background:#dc2626;">Balance</div>
+                        <input type="number" id="newBalance" class="form-control big-red-box" value="0" readonly>
                     </div>
                 </div>
 
@@ -502,19 +551,14 @@
                             style="height:45px;">
                     </div>
                     <div class="col-md-3">
-                        <div class="header-box-label" style="background:#dc2626;">Remaining Balance</div>
-                        <input type="number" id="newBalance" class="form-control big-red-box" value="0" readonly>
+                        <label class="label-text">Previous Balance</label>
+                        <input type="number" id="oldBalance" class="form-control fw-bold text-danger" value="0" readonly
+                            style="height:45px; background:#fff5f5; border: 1px solid #feb2b2;">
                     </div>
                     <div class="col-md-3">
-                        <div class="d-flex gap-2 mb-2 justify-content-center">
-                            <div class="form-check"><input class="form-check-input" type="checkbox" checked
-                                    id="sendSms"><label class="form-check-label small fw-bold">SMS</label></div>
-                            <div class="form-check"><input class="form-check-input" type="checkbox" checked
-                                    id="sendWa"><label class="form-check-label small fw-bold">WhatsApp</label></div>
-                        </div>
                         <button class="btn btn-success w-100 fw-bold btn-lg shadow" onclick="submitPayment()"
-                            style="height:60px; background:#059669; border:none; font-size: 20px;">
-                            <i class="fas fa-file-invoice-dollar me-2"></i> SUBMIT & PRINT
+                            style="height:60px; background:#059669; border:none; font-size: 18px;">
+                            <i class="fas fa-file-invoice-dollar me-2"></i> PAY & PRINT
                         </button>
                     </div>
                 </div>
@@ -523,34 +567,59 @@
     </div>
 
     <script>
-        // --- SIDEBAR TOGGLE ---
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-
-        // --- SAME LOGIC AS PROVIDED BY YOU (NO CHANGES) ---
+        // =====================
+        // GLOBAL STATE
+        // =====================
         let currentStudentId = null;
         let currentDuesData = [];
-        let studentOldBalance = 0;
+        let paidMonthsList = [];
+        let currentMonth = "";
 
-        document.getElementById('todayDate').innerText = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        const MONTHS = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"];
 
-        function checkUrlParams() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const studentId = urlParams.get('id');
-            if (studentId) {
-                document.getElementById('loadingOverlay').style.display = 'block';
-                fetch(`/students/${studentId}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        selectStudent(data);
-                        document.getElementById('loadingOverlay').style.display = 'none';
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        document.getElementById('loadingOverlay').style.display = 'none';
-                    });
-            }
+        // =====================
+        // INITIALIZATION
+        // =====================
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('todayDate').innerText = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+            initMonthStrip();
+            checkUrlParams();
+        });
+
+        function initMonthStrip() {
+            const strip = document.getElementById('monthStrip');
+            const today = new Date();
+            const monthMap = { 0: "Jan", 1: "Feb", 2: "Mar", 3: "Apr", 4: "May", 5: "Jun", 6: "Jul", 7: "Aug", 8: "Sep", 9: "Oct", 10: "Nov", 11: "Dec" };
+            currentMonth = monthMap[today.getMonth()];
+            document.getElementById('currentMonth').innerText = currentMonth + " " + today.getFullYear();
+
+            MONTHS.forEach(m => {
+                const isCurrent = m === currentMonth;
+                strip.innerHTML += `
+                    <label class="month-chk" id="month-label-${m}">
+                        <input type="checkbox" class="m-chk" value="${m}" onchange="recalculateTotal()"> 
+                        ${m} ${isCurrent ? '<span class="badge bg-warning text-dark" style="font-size:9px;">NOW</span>' : ''}
+                    </label>
+                `;
+            });
         }
 
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function toggleAll(el) {
+            document.querySelectorAll('.m-chk').forEach(c => {
+                if (!c.parentElement.classList.contains('paid-month')) {
+                    c.checked = el.checked;
+                }
+            });
+            recalculateTotal();
+        }
+
+        // =====================
+        // SEARCH FUNCTIONALITY
+        // =====================
         async function searchStudent() {
             let q = document.getElementById('searchInput').value;
             let drop = document.getElementById('searchDropdown');
@@ -563,170 +632,231 @@
             if (data.length > 0) {
                 drop.style.display = 'block';
                 data.forEach(s => {
-                    let balText = s.current_balance > 0 ? `<span class='text-danger ms-2 fw-bold'>Due: ₹${s.current_balance}</span>` : '';
-                    let studentData = JSON.stringify(s).replace(/'/g, "&apos;");
-                    drop.innerHTML += `<div class="search-item" onclick='selectStudent(${studentData})'><strong>${s.student_name}</strong> (${s.class_val?.class_name || 'N/A'}) ${balText}</div>`;
+                    let balText = s.current_balance > 0 ? `<span class='text-danger ms-2 fw-bold'>Due: ₹${s.current_balance}</span>` : '<span class="text-success ms-2">✓ Clear</span>';
+                    drop.innerHTML += `
+                        <div class="search-item" onclick="selectStudent(${s.id})">
+                            <strong>${s.student_name}</strong> 
+                            <span class="text-muted">(${s.class_val?.class_name || 'N/A'})</span> 
+                            ${balText}
+                        </div>
+                    `;
                 });
             }
         }
 
-        function selectStudent(s) {
-            currentStudentId = s.id;
-            document.getElementById('searchDropdown').style.display = 'none';
-            document.getElementById('mainPanel').style.display = 'block';
-            document.getElementById('searchInput').value = '';
-
-            document.getElementById('pName').innerText = s.student_name;
-            document.getElementById('pFather').innerText = s.father_name;
-
-            let className = (s.class_val && s.class_val.class_name) ? s.class_val.class_name : '-';
-            let sectionName = (s.section_val && s.section_val.section_name) ? s.section_val.section_name : '';
-            document.getElementById('pClass').innerText = className + (sectionName ? ' (' + sectionName + ')' : '');
-
-            document.getElementById('pAdm').innerText = s.admission_no;
-            document.getElementById('pId').innerText = s.id;
-            document.getElementById('pMobile').innerText = s.mobile_number;
-
-            // --- UPDATED PHOTO LOGIC FOR CLOUDINARY ---
-            let photoElement = document.getElementById('pPhoto');
-            if (s.student_photo) {
-                // Check if Cloudinary URL (starts with http) or local file
-                if (s.student_photo.startsWith('http')) {
-                    photoElement.src = s.student_photo;
-                } else {
-                    photoElement.src = "/static/uploads/students/" + s.student_photo;
-                }
-            } else {
-                photoElement.src = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+        function checkUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const studentId = urlParams.get('id');
+            if (studentId) {
+                selectStudent(parseInt(studentId));
             }
-
-            studentOldBalance = s.current_balance || 0;
-            document.getElementById('oldBalance').value = studentOldBalance;
         }
 
-        async function fetchDues() {
+        // =====================
+        // STUDENT SELECTION
+        // =====================
+        async function selectStudent(studentId) {
             document.getElementById('loadingOverlay').style.display = 'block';
-            let months = [];
-            document.querySelectorAll('.m-chk:checked').forEach(c => months.push(c.value));
-            if (months.length === 0) {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                return alert("Select Month first!");
+            document.getElementById('searchDropdown').style.display = 'none';
+            document.getElementById('searchInput').value = '';
+
+            try {
+                // Fetch dues using new API
+                let res = await fetch(`/api/v1/fee-ledger/dues/${studentId}`);
+                let data = await res.json();
+
+                currentStudentId = studentId;
+                currentDuesData = data.dues;
+                paidMonthsList = data.paid_months || [];
+
+                // Update UI
+                populateStudentInfo(data.student);
+                updateMonthStrip();
+                renderFeeTable();
+                document.getElementById('totalDueDisplay').innerText = data.total_due.toFixed(0);
+                document.getElementById('oldBalance').value = data.student.current_balance || 0;
+
+                document.getElementById('mainPanel').style.display = 'block';
+            } catch (err) {
+                console.error(err);
+                alert("Error loading student data");
             }
-            let res = await fetch('/api/v1/collection/get-dues', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ student_id: currentStudentId, months: months })
-            });
-            let response = await res.json();
-            currentDuesData = response.dues;
-            studentOldBalance = response.old_balance;
-            document.getElementById('oldBalance').value = studentOldBalance;
-            renderFeeTable();
+
             document.getElementById('loadingOverlay').style.display = 'none';
         }
 
+        function populateStudentInfo(s) {
+            document.getElementById('pName').innerText = s.name;
+            document.getElementById('pFather').innerText = s.father_name;
+            document.getElementById('pClass').innerText = s.class_name + (s.section_name ? ' (' + s.section_name + ')' : '');
+            document.getElementById('pAdm').innerText = s.admission_no;
+            document.getElementById('pId').innerText = currentStudentId;
+            document.getElementById('pMobile').innerText = s.mobile;
+
+            // Photo
+            let photoEl = document.getElementById('pPhoto');
+            if (s.photo) {
+                photoEl.src = s.photo.startsWith('http') ? s.photo : '/static/uploads/students/' + s.photo;
+            } else {
+                photoEl.src = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+            }
+        }
+
+        function updateMonthStrip() {
+            MONTHS.forEach(m => {
+                let label = document.getElementById(`month-label-${m}`);
+                let checkbox = label?.querySelector('input');
+                if (label && checkbox) {
+                    if (paidMonthsList.includes(m)) {
+                        label.classList.add('paid-month');
+                        checkbox.checked = false;
+                        checkbox.disabled = true;
+                    } else {
+                        label.classList.remove('paid-month');
+                        checkbox.disabled = false;
+                    }
+                }
+            });
+        }
+
+        // =====================
+        // FEE TABLE RENDERING
+        // =====================
         function renderFeeTable() {
             let tbody = document.getElementById('feeTableBody');
             tbody.innerHTML = '';
             let initialTotal = 0;
+
             if (currentDuesData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center p-3 text-muted">No Fees found (or already paid)</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center p-3 text-muted">No fee structure found for this student</td></tr>';
+                return;
             }
-            currentDuesData.forEach((d) => {
+
+            currentDuesData.forEach((d, idx) => {
                 let isPaid = d.status === 'Paid';
-                let checkHtml = isPaid ? `<span class="badge bg-success">PAID</span>` : `<input type="checkbox" class="form-check-input fee-row-check" data-amount="${d.amount}" data-month="${d.month}" checked onchange="recalculateTotal()">`;
+                let checkHtml = isPaid
+                    ? `<span class="badge bg-success">PAID</span>`
+                    : `<input type="checkbox" class="form-check-input fee-row-check" data-amount="${d.amount}" data-month="${d.month}" data-head="${d.fee_head}" onchange="recalculateTotal()">`;
+
+                let statusBadge = isPaid
+                    ? `<span class="badge bg-success">✓ Paid</span>`
+                    : `<span class="badge bg-danger">Due</span>`;
+
                 if (!isPaid) initialTotal += d.amount;
-                tbody.innerHTML += `<tr class="${isPaid ? 'bg-light text-muted' : ''}"><td class="text-center">${checkHtml}</td><td>${d.fee_head}</td><td><span class="badge bg-secondary">${d.month}</span></td><td class="text-end fw-bold">₹ ${d.amount}</td></tr>`;
+
+                tbody.innerHTML += `
+                    <tr class="${isPaid ? 'paid-row' : ''}">
+                        <td class="text-center">${checkHtml}</td>
+                        <td>${d.fee_head}</td>
+                        <td><span class="badge bg-secondary">${d.month}</span></td>
+                        <td class="text-end fw-bold">₹ ${d.amount.toLocaleString()}</td>
+                        <td class="text-center">${statusBadge}</td>
+                    </tr>
+                `;
             });
+
             updateFooterValues(initialTotal);
         }
 
+        // =====================
+        // CALCULATIONS
+        // =====================
         function recalculateTotal() {
             let total = 0;
-            document.querySelectorAll('.fee-row-check:checked').forEach(chk => { total += parseFloat(chk.getAttribute('data-amount')); });
+            document.querySelectorAll('.fee-row-check:checked').forEach(chk => {
+                total += parseFloat(chk.getAttribute('data-amount'));
+            });
             updateFooterValues(total);
         }
+
         function updateFooterValues(total) {
             document.getElementById('totalFee').value = total;
-            document.getElementById('addFee').value = 0;
-            document.getElementById('concAmt').value = 0;
-            document.getElementById('concPer').value = 0;
+            document.getElementById('fineAmt').value = 0;
+            document.getElementById('discountAmt').value = 0;
             calculateNet();
         }
+
         function calculateNet() {
             let total = parseFloat(document.getElementById('totalFee').value) || 0;
-            let add = parseFloat(document.getElementById('addFee').value) || 0;
-            let conc = parseFloat(document.getElementById('concAmt').value) || 0;
-            let grandTotal = (total + add + studentOldBalance) - conc;
-            document.getElementById('netFee').value = total + add - conc;
-            document.getElementById('amountPaid').value = grandTotal;
+            let fine = parseFloat(document.getElementById('fineAmt').value) || 0;
+            let discount = parseFloat(document.getElementById('discountAmt').value) || 0;
+            let oldBalance = parseFloat(document.getElementById('oldBalance').value) || 0;
+
+            let net = total + fine - discount;
+            let grandTotal = net + oldBalance;
+
+            document.getElementById('netFee').value = net.toFixed(0);
+            document.getElementById('amountPaid').value = grandTotal.toFixed(0);
             calculateBalance();
         }
+
         function calculateBalance() {
             let net = parseFloat(document.getElementById('netFee').value) || 0;
             let old = parseFloat(document.getElementById('oldBalance').value) || 0;
             let paid = parseFloat(document.getElementById('amountPaid').value) || 0;
-            document.getElementById('newBalance').value = (net + old - paid).toFixed(2);
-        }
-        function calculateDiscount() {
-            let total = parseFloat(document.getElementById('totalFee').value) || 0;
-            let add = parseFloat(document.getElementById('addFee').value) || 0;
-            let per = parseFloat(document.getElementById('concPer').value) || 0;
-            document.getElementById('concAmt').value = Math.round(((total + add) * per) / 100);
-            calculateNet();
+            document.getElementById('newBalance').value = (net + old - paid).toFixed(0);
         }
 
+        // =====================
+        // PAYMENT SUBMISSION
+        // =====================
         async function submitPayment() {
-            let currentNet = parseFloat(document.getElementById('netFee').value) || 0;
             let amountPaid = parseFloat(document.getElementById('amountPaid').value) || 0;
-            let oldBal = parseFloat(document.getElementById('oldBalance').value) || 0;
-
             if (amountPaid <= 0) return alert("Please enter amount received!");
 
-            // ✅ NAYA LOGIC: Selected Rows se head aur month uthana
+            // Collect selected items
             let itemsToSubmit = [];
-            let paidMonths = [];
+            let selectedMonths = [];
 
             document.querySelectorAll('.fee-row-check:checked').forEach(chk => {
-                let row = chk.closest('tr');
                 itemsToSubmit.push({
-                    head: row.cells[1].innerText,           // e.g. Tution Fees
-                    month: row.cells[2].innerText.trim(),  // e.g. Mar
+                    head: chk.getAttribute('data-head'),
+                    month: chk.getAttribute('data-month'),
                     amount: parseFloat(chk.getAttribute('data-amount'))
                 });
 
                 let m = chk.getAttribute('data-month');
-                if (!paidMonths.includes(m)) paidMonths.push(m);
+                if (!selectedMonths.includes(m)) selectedMonths.push(m);
             });
 
-            // ✅ Payload taiyar karein
+            if (itemsToSubmit.length === 0) {
+                return alert("Please select at least one fee item!");
+            }
+
             let payload = {
                 student_id: currentStudentId,
-                total_amount: currentNet,
-                net_payable: currentNet,
-                paid_amount: amountPaid,
-                balance: parseFloat(document.getElementById('newBalance').value),
+                selected_months: selectedMonths,
                 payment_mode: document.getElementById('payMode').value,
+                discount: parseFloat(document.getElementById('discountAmt').value) || 0,
+                fine: parseFloat(document.getElementById('fineAmt').value) || 0,
+                amount_received: amountPaid,
                 remarks: document.getElementById('remarks').value,
-                paid_months_list: paidMonths,
-                items: itemsToSubmit // ✅ Ye items backend ki receipt_data mein jayenge
+                items: itemsToSubmit
             };
 
-            let res = await fetch('/api/v1/collection/pay-full', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            document.getElementById('loadingOverlay').style.display = 'block';
 
-            if (res.ok) {
-                let data = await res.json();
-                alert("✅ Payment Successful!");
-                // Seedha receipt print page khulega
-                window.open('/print/receipt?id=' + data.receipt_no, '_blank');
-                location.reload();
-            } else {
-                alert("Error Saving Payment. Please try again.");
+            try {
+                let res = await fetch('/api/v1/fee-ledger/collect', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    let data = await res.json();
+                    alert("✅ Payment Successful! Receipt: " + data.receipt_no);
+                    window.open('/print/receipt?id=' + data.receipt_no, '_blank');
+                    location.reload();
+                } else {
+                    let err = await res.json();
+                    alert("Error: " + (err.detail || "Payment failed"));
+                }
+            } catch (e) {
+                alert("Network error. Please try again.");
             }
+
+            document.getElementById('loadingOverlay').style.display = 'none';
         }
     </script>
 
