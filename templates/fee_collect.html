@@ -632,7 +632,10 @@
             if (data.length > 0) {
                 drop.style.display = 'block';
                 data.forEach(s => {
-                    let balText = s.current_balance > 0 ? `<span class='text-danger ms-2 fw-bold'>Due: ₹${s.current_balance}</span>` : '<span class="text-success ms-2">✓ Clear</span>';
+                    // ✅ FIX: Show balance if > 0, otherwise show neutral "View Dues"
+                    let balText = s.current_balance > 0
+                        ? `<span class='text-danger ms-2 fw-bold'>Balance: ₹${s.current_balance}</span>`
+                        : '<span class="text-primary ms-2"><i class="fas fa-eye"></i> View Dues</span>';
                     drop.innerHTML += `
                         <div class="search-item" onclick="selectStudent(${s.id})">
                             <strong>${s.student_name}</strong> 

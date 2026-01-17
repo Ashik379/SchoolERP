@@ -211,9 +211,13 @@ def save_bulk_structure(structures: List[FeeStructureCreate], db: Session = Depe
 def get_student_dues(student_id: int, db: Session = Depends(get_db)):
     """
     Calculate total dues for a student
+    - Uses FeePlan table (existing Fee Plan admin UI)
     - Automatically includes current month if not paid
     - Shows all unpaid months from Apr to current
     """
+    from models.fees import FeePlan, FeeItem
+    from models.masters import LedgerMaster
+    
     student = db.query(Student).options(
         joinedload(Student.class_val),
         joinedload(Student.section_val),
@@ -226,7 +230,7 @@ def get_student_dues(student_id: int, db: Session = Depends(get_db)):
     # Get months till current
     months_till_now = get_months_till_current()
     
-    # Get already paid months from ledger
+    # Get already paid months from NEW ledger
     paid_ledgers = db.query(StudentFeeLedger).filter(
         StudentFeeLedger.student_id == student_id
     ).all()
@@ -236,37 +240,55 @@ def get_student_dues(student_id: int, db: Session = Depends(get_db)):
         if ledger.months_paid:
             paid_months.extend(ledger.months_paid)
     
-    # Also check old paid_months table
+    # Also check OLD paid_months table
     old_paid = db.query(PaidMonth).filter(PaidMonth.student_id == student_id).all()
     for p in old_paid:
         if p.month not in paid_months:
             paid_months.append(p.month)
     
-    # Get fee structure for student's class
-    fee_structures = db.query(FeeStructure).options(
-        joinedload(FeeStructure.fee_head_val)
+    # ✅ FIX: Get fee plans from OLD FeePlan table (this is where admin creates data)
+    fee_plans = db.query(FeePlan).options(
+        joinedload(FeePlan.fee_item_val)
     ).filter(
-        FeeStructure.class_id == student.class_id,
-        FeeStructure.is_active == True
+        FeePlan.class_id == student.class_id,
+        FeePlan.amount > 0
     ).all()
     
     dues_list = []
     total_due = 0.0
     
+    # Month mapping for FeeItem boolean columns
+    month_col_map = {
+        "Apr": "apr", "May": "may", "Jun": "jun", "Jul": "jul",
+        "Aug": "aug", "Sep": "sep", "Oct": "oct", "Nov": "nov",
+        "Dec": "dec", "Jan": "jan", "Feb": "feb", "Mar": "mar"
+    }
+    
     for month in months_till_now:
         is_paid = month in paid_months
+        col_name = month_col_map.get(month, "apr")
         
-        for fs in fee_structures:
-            if fs.amount > 0:
-                dues_list.append({
-                    "fee_head": fs.fee_head_val.head_name if fs.fee_head_val else "Unknown",
-                    "fee_head_id": fs.fee_head_id,
-                    "month": month,
-                    "amount": fs.amount,
-                    "status": "Paid" if is_paid else "Due"
-                })
-                if not is_paid:
-                    total_due += fs.amount
+        for fp in fee_plans:
+            # Check if this fee is applicable for this month
+            fee_item = fp.fee_item_val
+            if fee_item:
+                # Get fee name from LedgerMaster
+                ledger = db.query(LedgerMaster).filter(LedgerMaster.id == fee_item.ledger_id).first()
+                fee_name = ledger.ledger_name if ledger else "School Fee"
+                
+                # Check if this month is marked for this fee item
+                is_applicable = getattr(fee_item, col_name, True)  # Default True if column missing
+                
+                if is_applicable and fp.amount > 0:
+                    dues_list.append({
+                        "fee_head": fee_name,
+                        "fee_head_id": fp.id,
+                        "month": month,
+                        "amount": fp.amount,
+                        "status": "Paid" if is_paid else "Due"
+                    })
+                    if not is_paid:
+                        total_due += fp.amount
         
         # Add transport fee if opted
         if student.transport_opted and student.pickup_point_id:
