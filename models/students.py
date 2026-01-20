@@ -53,7 +53,8 @@ class Student(Base):
     student_photo = Column(String(255), nullable=True)
     
     status = Column(Boolean, default=True)
-    current_balance = Column(Float, default=0.0)
+    current_balance = Column(Float, default=0.0)  # Partial payment remainder (carried forward)
+    calculated_dues = Column(Float, default=0.0)  # Monthly fees for unpaid months
      # ✅ RESULT WITHHOLD CONTROL
     is_result_withheld = Column(Boolean, default=False)
     withhold_reason = Column(String(255), nullable=True)

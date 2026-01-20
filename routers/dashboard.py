@@ -31,11 +31,15 @@ def dashboard_view(request: Request, db: Session = Depends(get_db)):
     except:
         todays_collection = 0.0
 
-    # ✅ SIMPLIFIED TOTAL DUES: Use aggregation on Student.current_balance
-    # This is the authoritative source of truth - updated on every payment
+    # ✅ UPDATED: Total Dues = Carried Forward + Calculated Monthly Dues
+    # current_balance = partial payment remainder
+    # calculated_dues = monthly fees × unpaid months
     try:
-        total_due = db.query(func.sum(Student.current_balance))\
-            .filter(Student.status == True, Student.current_balance > 0).scalar() or 0.0
+        carried = db.query(func.sum(Student.current_balance))\
+            .filter(Student.status == True).scalar() or 0.0
+        calculated = db.query(func.sum(Student.calculated_dues))\
+            .filter(Student.status == True).scalar() or 0.0
+        total_due = carried + calculated
     except Exception as e:
         print(f"Dashboard dues error: {e}")
         total_due = 0.0

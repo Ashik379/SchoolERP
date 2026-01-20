@@ -73,6 +73,7 @@ def run_migrations():
                 "ALTER TABLE students ADD COLUMN IF NOT EXISTS is_result_withheld BOOLEAN DEFAULT FALSE",
                 "ALTER TABLE students ADD COLUMN IF NOT EXISTS withhold_reason VARCHAR(500)",
                 "ALTER TABLE students ADD COLUMN IF NOT EXISTS current_balance FLOAT DEFAULT 0.0",
+                "ALTER TABLE students ADD COLUMN IF NOT EXISTS calculated_dues FLOAT DEFAULT 0.0",
                 
                 # Classes table - result publish column
                 "ALTER TABLE classes ADD COLUMN IF NOT EXISTS is_result_published BOOLEAN DEFAULT FALSE",

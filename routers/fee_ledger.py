@@ -414,18 +414,26 @@ def collect_fee(pay: PaymentRequest, db: Session = Depends(get_db)):
         db.add(ledger)
         db.flush()  # Save ledger first so recalculate sees it
         
-        # Recalculate student's FULL pending balance (not just this receipt's balance)
-        # This accounts for all unpaid months, not just what was selected
-        new_balance = calculate_student_dues(student, db)
-        student.current_balance = new_balance
+        # UPDATED LOGIC:
+        # 1. current_balance = balance_due (carried forward from THIS payment)
+        # 2. calculated_dues = recalculate unpaid months (for future)
+        
+        # Save balance from this receipt as carried forward
+        student.current_balance = max(balance_due, 0)  # Partial payment remainder
+        
+        # Recalculate monthly dues for remaining unpaid months
+        student.calculated_dues = calculate_student_dues(student, db)
         
         db.commit()
+        
+        # Total remaining = carried forward + newly calculated
+        total_remaining = student.current_balance + student.calculated_dues
         
         return {
             "success": True,
             "message": "Payment collected successfully",
             "receipt_no": receipt_no,
-            "balance_due": new_balance  # Show actual remaining dues
+            "balance_due": total_remaining  # Show total remaining
         }
         
     except Exception as e:
@@ -627,19 +635,22 @@ def calculate_student_dues(student: Student, db: Session) -> float:
 @router.post("/sync-balances")
 def sync_all_student_balances(db: Session = Depends(get_db)):
     """
-    Bulk recalculate and update current_balance for ALL active students.
-    This ensures Dashboard Pending Fees is always accurate.
-    Call this when fee structure changes or periodically.
+    Bulk recalculate and update calculated_dues for ALL active students.
+    NOTE: This does NOT touch current_balance (which is for carried forward only).
+    Dashboard total = SUM(current_balance + calculated_dues)
     """
     students = db.query(Student).filter(Student.status == True).all()
     
     updated_count = 0
-    total_dues = 0.0
+    total_calculated = 0.0
+    total_carried = 0.0
     
     for student in students:
-        new_balance = calculate_student_dues(student, db)
-        student.current_balance = new_balance
-        total_dues += new_balance
+        # Calculate monthly dues (unpaid months × fee)
+        monthly_dues = calculate_student_dues(student, db)
+        student.calculated_dues = monthly_dues
+        total_calculated += monthly_dues
+        total_carried += (student.current_balance or 0)
         updated_count += 1
     
     db.commit()
@@ -647,7 +658,9 @@ def sync_all_student_balances(db: Session = Depends(get_db)):
     return {
         "success": True,
         "message": f"Updated {updated_count} students",
-        "total_pending_dues": round(total_dues, 2)
+        "total_calculated_dues": round(total_calculated, 2),
+        "total_carried_forward": round(total_carried, 2),
+        "total_pending_dues": round(total_calculated + total_carried, 2)
     }
 
 
