@@ -476,9 +476,13 @@
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
                                 <p>Pending Fees</p>
-                                <h2>₹ {{ total_due | default(0) }}</h2>
+                                <h2 id="pendingFeesDisplay">₹ {{ total_due | default(0) }}</h2>
                             </div><i class="fas fa-chart-pie fa-3x opacity-25"></i>
                         </div>
+                        <button onclick="refreshDues()" class="btn btn-sm btn-light mt-2 rounded-pill opacity-75"
+                            style="font-size: 11px;" id="refreshDuesBtn">
+                            <i class="fas fa-sync-alt me-1"></i> Refresh Dues
+                        </button>
                     </div>
                 </div>
             </div>
@@ -607,6 +611,30 @@
         function toggleSidebar() { let sb = document.getElementById('sidebar'); if (sb) sb.classList.toggle('active'); }
         function updateTime() { const now = new Date(); const c = document.getElementById('clock'); const d = document.getElementById('dateDisplay'); if (c) c.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); if (d) d.innerText = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); }
         setInterval(updateTime, 1000); updateTime();
+
+        // Refresh Dues - Recalculate all student balances
+        async function refreshDues() {
+            const btn = document.getElementById('refreshDuesBtn');
+            const display = document.getElementById('pendingFeesDisplay');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Syncing...';
+
+            try {
+                const res = await fetch('/api/v1/fee-ledger/sync-balances', { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    display.innerHTML = '₹ ' + data.total_pending_dues.toLocaleString('en-IN');
+                    btn.innerHTML = '<i class="fas fa-check me-1"></i> Done!';
+                    setTimeout(() => { btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i> Refresh Dues'; btn.disabled = false; }, 2000);
+                } else {
+                    throw new Error('Sync failed');
+                }
+            } catch (e) {
+                console.error(e);
+                btn.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> Error';
+                setTimeout(() => { btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i> Refresh Dues'; btn.disabled = false; }, 2000);
+            }
+        }
 
         document.addEventListener("DOMContentLoaded", function () {
             const c = document.getElementById('attendanceChart');
