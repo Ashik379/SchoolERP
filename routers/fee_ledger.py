@@ -421,9 +421,12 @@ def collect_fee(pay: PaymentRequest, db: Session = Depends(get_db)):
             payment_breakdown=breakdown
         )
         db.add(ledger)
+        db.flush()  # Save ledger first so recalculate sees it
         
-        # Update student's current balance
-        student.current_balance = balance_due if balance_due > 0 else 0
+        # Recalculate student's FULL pending balance (not just this receipt's balance)
+        # This accounts for all unpaid months, not just what was selected
+        new_balance = calculate_student_dues(student, db)
+        student.current_balance = new_balance
         
         db.commit()
         
@@ -431,7 +434,7 @@ def collect_fee(pay: PaymentRequest, db: Session = Depends(get_db)):
             "success": True,
             "message": "Payment collected successfully",
             "receipt_no": receipt_no,
-            "balance_due": balance_due
+            "balance_due": new_balance  # Show actual remaining dues
         }
         
     except Exception as e:
@@ -567,4 +570,115 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
         "month_collection": float(month_collection),
         "total_pending": float(total_pending),
         "today_transactions": today_count
+    }
+
+
+# =====================
+# BALANCE SYNC APIs
+# =====================
+def calculate_student_dues(student: Student, db: Session) -> float:
+    """
+    Calculate accurate pending dues for a student.
+    Formula: (Monthly Fee × Unpaid Months) + Previous Balance - Total Paid
+    """
+    # Get all months from April to current month
+    months_till_now = get_months_till_current()
+    
+    # Get paid months from ledger
+    paid_months = set()
+    ledgers = db.query(StudentFeeLedger).filter(
+        StudentFeeLedger.student_id == student.id
+    ).all()
+    
+    total_paid = 0.0
+    for ledger in ledgers:
+        total_paid += ledger.paid_amount or 0
+        if ledger.months_paid:
+            for m in ledger.months_paid:
+                paid_months.add(m)
+    
+    # Get fee structure for this class
+    fee_structures = db.query(FeeStructure).options(
+        joinedload(FeeStructure.fee_head_val)
+    ).filter(
+        FeeStructure.class_id == student.class_id,
+        FeeStructure.is_active == True,
+        FeeStructure.amount > 0
+    ).all()
+    
+    # Calculate monthly fee (non-transport)
+    monthly_fee = 0.0
+    for fs in fee_structures:
+        if fs.fee_head_val and not fs.fee_head_val.is_transport:
+            monthly_fee += fs.amount
+    
+    # Add transport if opted
+    if student.transport_opted and student.pickup_point_id:
+        transport = db.query(TransportMaster).filter(
+            TransportMaster.id == student.pickup_point_id
+        ).first()
+        if transport:
+            monthly_fee += transport.monthly_charge or 0
+    
+    # Calculate total dues for unpaid months
+    total_due = 0.0
+    for month in months_till_now:
+        if month not in paid_months:
+            total_due += monthly_fee
+    
+    # Final balance = Total Due - Already Paid (can be negative if overpaid)
+    # But we don't subtract total_paid here because paid_months already excludes paid ones
+    # The dues are just for UNPAID months
+    
+    return max(total_due, 0)  # Never negative
+
+
+@router.post("/sync-balances")
+def sync_all_student_balances(db: Session = Depends(get_db)):
+    """
+    Bulk recalculate and update current_balance for ALL active students.
+    This ensures Dashboard Pending Fees is always accurate.
+    Call this when fee structure changes or periodically.
+    """
+    students = db.query(Student).filter(Student.status == True).all()
+    
+    updated_count = 0
+    total_dues = 0.0
+    
+    for student in students:
+        new_balance = calculate_student_dues(student, db)
+        student.current_balance = new_balance
+        total_dues += new_balance
+        updated_count += 1
+    
+    db.commit()
+    
+    return {
+        "success": True,
+        "message": f"Updated {updated_count} students",
+        "total_pending_dues": round(total_dues, 2)
+    }
+
+
+@router.get("/recalculate/{student_id}")
+def recalculate_single_student(student_id: int, db: Session = Depends(get_db)):
+    """
+    Recalculate dues for a single student and update current_balance.
+    Called after payment or when checking individual student.
+    """
+    student = db.query(Student).filter(Student.id == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    
+    new_balance = calculate_student_dues(student, db)
+    old_balance = student.current_balance or 0
+    student.current_balance = new_balance
+    db.commit()
+    
+    return {
+        "student_id": student_id,
+        "student_name": student.student_name,
+        "old_balance": round(old_balance, 2),
+        "new_balance": round(new_balance, 2),
+        "message": "Balance recalculated successfully"
     }

@@ -172,14 +172,34 @@ app.include_router(fee_ledger.router)  # Fee Ledger System (Unified)
 
 @app.get("/", response_class=HTMLResponse)
 def dashboard_ui(request: Request, db: Session = Depends(get_db)):
-    student_count = db.query(Student).count()
+    from models.fee_models import StudentFeeLedger
+    from sqlalchemy import func
+    import datetime
+    
+    student_count = db.query(Student).filter(Student.status == True).count()
     class_count = db.query(ClassMaster).count()
     route_count = db.query(TransportMaster).count()
     recent_students = db.query(Student).order_by(Student.id.desc()).limit(5).all()
+    
+    # Today's fee collection
+    today = datetime.date.today()
+    todays_collection = db.query(func.sum(StudentFeeLedger.paid_amount)).filter(
+        StudentFeeLedger.transaction_date == today
+    ).scalar() or 0
+    
+    # Total pending dues (sum of all current_balance)
+    total_due = db.query(func.sum(Student.current_balance)).filter(
+        Student.status == True
+    ).scalar() or 0
+    
     return templates.TemplateResponse("index.html", {
-        "request": request, "total_students": student_count, 
-        "total_classes": class_count, "total_routes": route_count, 
-        "recent_students": recent_students
+        "request": request, 
+        "total_students": student_count, 
+        "total_classes": class_count, 
+        "total_routes": route_count, 
+        "recent_students": recent_students,
+        "todays_collection": round(float(todays_collection), 2),
+        "total_due": round(float(total_due), 2)
     })
 
 @app.get("/admission", response_class=HTMLResponse)
