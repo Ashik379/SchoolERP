@@ -62,13 +62,9 @@ def get_bulk_id_data(class_id: int, db: Session = Depends(get_db)):
 @router.get("/api/filter")
 def filter_students(class_id: str = "", search: str = "", db: Session = Depends(get_db)):
     """
-    Search/filter students with REAL dues calculation.
-    Calculates total pending fees from Apr to current month.
+    Search/filter students - OPTIMIZED for speed.
+    Returns basic info + current_balance for quick loading.
     """
-    from models.fee_models import StudentFeeLedger, FeeStructure, FeeHeadMaster
-    from models.masters import TransportMaster
-    from datetime import date
-    
     query = db.query(Student).filter(Student.status == True).options(
         joinedload(Student.class_val),
         joinedload(Student.section_val)
@@ -83,71 +79,32 @@ def filter_students(class_id: str = "", search: str = "", db: Session = Depends(
             or_(
                 Student.student_name.ilike(search_fmt),
                 Student.admission_no.ilike(search_fmt),
-                Student.mobile_number.ilike(search_fmt)
+                Student.mobile_number.ilike(search_fmt),
+                Student.father_name.ilike(search_fmt)
             )
         )
     
-    students = query.limit(50).all()
-    
-    # Month order for academic year
-    MONTH_ORDER = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"]
-    month_col_map = {
-        "Apr": "apr", "May": "may", "Jun": "jun", "Jul": "jul",
-        "Aug": "aug", "Sep": "sep", "Oct": "oct", "Nov": "nov",
-        "Dec": "dec", "Jan": "jan", "Feb": "feb", "Mar": "mar"
-    }
-    month_map = {4: "Apr", 5: "May", 6: "Jun", 7: "Jul", 8: "Aug", 9: "Sep",
-                 10: "Oct", 11: "Nov", 12: "Dec", 1: "Jan", 2: "Feb", 3: "Mar"}
-    current_month = month_map.get(date.today().month, "Jan")
-    current_idx = MONTH_ORDER.index(current_month)
-    months_till_now = MONTH_ORDER[:current_idx + 1]
+    # Increased limit from 50 to 200 for all students to show
+    students = query.order_by(Student.id.desc()).limit(200).all()
     
     result = []
     for s in students:
-        # Start with previous balance (old dues)
-        total_due = s.current_balance or 0
-        
-        # Get paid months for this student from new ledger
-        paid_months = []
-        ledgers = db.query(StudentFeeLedger).filter(StudentFeeLedger.student_id == s.id).all()
-        for l in ledgers:
-            if l.months_paid:
-                paid_months.extend(l.months_paid)
-        paid_months = list(set(paid_months))  # Remove duplicates
-        
-        # Get fee structures for this class
-        fee_structures = db.query(FeeStructure).options(
-            joinedload(FeeStructure.fee_head_val)
-        ).filter(
-            FeeStructure.class_id == s.class_id,
-            FeeStructure.is_active == True,
-            FeeStructure.amount > 0
-        ).all()
-        
-        # Calculate unpaid fees
-        for month in months_till_now:
-            if month not in paid_months:
-                for fs in fee_structures:
-                    if fs.fee_head_val and not fs.fee_head_val.is_transport:
-                        total_due += fs.amount
-                
-                # Add transport if opted
-                if s.transport_opted and s.pickup_point_id:
-                    transport = db.query(TransportMaster).filter(
-                        TransportMaster.id == s.pickup_point_id
-                    ).first()
-                    if transport:
-                        total_due += transport.monthly_charge
+        # Photo URL - support both Cloudinary and local
+        photo_url = ""
+        if s.student_photo:
+            photo_url = s.student_photo if s.student_photo.startswith('http') else f'/static/uploads/students/{s.student_photo}'
         
         result.append({
             "id": s.id,
             "student_name": s.student_name,
+            "father_name": s.father_name or "-",  # ✅ Added father_name
             "admission_no": s.admission_no,
             "mobile_number": s.mobile_number,
+            "student_photo": photo_url,  # ✅ Added photo
             "class_val": {"class_name": s.class_val.class_name if s.class_val else "N/A"},
             "section_val": {"section_name": s.section_val.section_name if s.section_val else ""},
-            "current_balance": total_due,  # ✅ Now shows ACTUAL pending dues
-            "dues_alert": total_due > 0
+            "current_balance": float(s.current_balance or 0),  # ✅ Fast - no N+1 queries
+            "dues_alert": (s.current_balance or 0) > 0
         })
     
     return result
