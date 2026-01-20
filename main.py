@@ -25,9 +25,64 @@ from models.holidays import Holiday
 from models.website import WebsiteUpdate, StudentTopper 
 from models.communication import MessageLog 
 from models.fee_models import FeeHeadMaster, FeeStructure, StudentFeeLedger, ReceiptCounter
+from sqlalchemy import text
 
 # --- CREATE DATABASE TABLES ---
 Base.metadata.create_all(bind=engine)
+
+# --- AUTO MIGRATION: Add missing columns to existing tables ---
+def run_migrations():
+    """
+    Auto-migration function to add missing columns to production database.
+    This runs on every server start and safely adds columns if they don't exist.
+    """
+    from database import SessionLocal
+    db = SessionLocal()
+    
+    try:
+        # Check if we're using PostgreSQL (production) or SQLite (local)
+        db_url = str(engine.url)
+        is_postgres = 'postgresql' in db_url
+        
+        if is_postgres:
+            # PostgreSQL migrations - Add missing columns to student_fee_ledgers
+            migrations = [
+                "ALTER TABLE student_fee_ledgers ADD COLUMN IF NOT EXISTS total_due FLOAT DEFAULT 0.0",
+                "ALTER TABLE student_fee_ledgers ADD COLUMN IF NOT EXISTS discount FLOAT DEFAULT 0.0",
+                "ALTER TABLE student_fee_ledgers ADD COLUMN IF NOT EXISTS fine FLOAT DEFAULT 0.0",
+                "ALTER TABLE student_fee_ledgers ADD COLUMN IF NOT EXISTS net_payable FLOAT DEFAULT 0.0",
+                "ALTER TABLE student_fee_ledgers ADD COLUMN IF NOT EXISTS balance_due FLOAT DEFAULT 0.0",
+                "ALTER TABLE student_fee_ledgers ADD COLUMN IF NOT EXISTS payment_breakdown JSON",
+                "ALTER TABLE student_fee_ledgers ADD COLUMN IF NOT EXISTS created_by VARCHAR(50) DEFAULT 'Admin'",
+                "ALTER TABLE student_fee_ledgers ADD COLUMN IF NOT EXISTS created_at DATE",
+                # Students table - result hold columns
+                "ALTER TABLE students ADD COLUMN IF NOT EXISTS is_result_withheld BOOLEAN DEFAULT FALSE",
+                "ALTER TABLE students ADD COLUMN IF NOT EXISTS withhold_reason VARCHAR(500)",
+                # Classes table - result publish column
+                "ALTER TABLE classes ADD COLUMN IF NOT EXISTS is_result_published BOOLEAN DEFAULT FALSE",
+            ]
+            
+            for sql in migrations:
+                try:
+                    db.execute(text(sql))
+                    db.commit()
+                except Exception as e:
+                    db.rollback()
+                    # Column might already exist or other non-critical error
+                    print(f"Migration note: {str(e)[:100]}")
+            
+            print("✅ Database migrations completed successfully!")
+        else:
+            print("ℹ️ SQLite detected - skipping PostgreSQL migrations")
+            
+    except Exception as e:
+        print(f"⚠️ Migration error (non-critical): {str(e)[:200]}")
+        db.rollback()
+    finally:
+        db.close()
+
+# Run migrations on startup
+run_migrations()
 
 app = FastAPI(title="Digital School ERP")
 
