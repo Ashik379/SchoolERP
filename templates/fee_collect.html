@@ -605,9 +605,9 @@
                 // Set previous balance
                 document.getElementById('prevBalance').value = previousBalance;
 
-                // Calculate grand total (unpaid dues + previous balance)
+                // Calculate total (just unpaid dues, no separate previousBalance since they're now the same)
                 const unpaidDue = currentDuesData.filter(d => d.status !== 'Paid').reduce((sum, d) => sum + d.amount, 0);
-                document.getElementById('totalDueDisplay').innerText = (unpaidDue + previousBalance).toLocaleString();
+                document.getElementById('totalDueDisplay').innerText = unpaidDue.toLocaleString();
 
                 // Build month strip
                 buildMonthStrip();
@@ -657,7 +657,7 @@
                 d.status !== 'Paid' && selectedMonths.includes(d.month)
             );
 
-            if (filteredDues.length === 0 && previousBalance <= 0) {
+            if (filteredDues.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">Select months above to see dues</td></tr>';
                 updateCalculations([]);
                 return;
@@ -665,20 +665,10 @@
 
             let html = '';
 
-            // Add previous balance row if exists
-            if (previousBalance > 0) {
-                html += `
-                    <tr style="background: #fef3c7;">
-                        <td class="text-center">
-                            <input type="checkbox" class="fee-item-check" data-amount="${previousBalance}" data-head="Previous Balance" data-month="Carried" checked>
-                        </td>
-                        <td class="fw-bold"><i class="fas fa-history me-2 text-warning"></i>Previous Balance (Carry Forward)</td>
-                        <td><span class="badge bg-warning text-dark">Old Dues</span></td>
-                        <td class="text-end fw-bold text-danger">₹ ${previousBalance.toLocaleString()}</td>
-                        <td class="text-center"><span class="badge bg-warning text-dark">Pending</span></td>
-                    </tr>
-                `;
-            }
+            // NOTE: Previous Balance row REMOVED
+            // After sync-balances, current_balance = calculated dues from monthly fees
+            // Showing it separately was causing duplicate display
+            // The monthly fee items below already represent the pending amounts correctly
 
             // Add current dues
             filteredDues.forEach(d => {
