@@ -369,29 +369,20 @@ def collect_fee(pay: PaymentRequest, db: Session = Depends(get_db)):
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
     
-    # Calculate totals
+    # Calculate totals from selected items only
     total_due = sum(item.get('amount', 0) for item in pay.selected_items)
-    
-    # Include previous balance if any
-    previous_balance = float(student.current_balance) if student.current_balance else 0.0
     
     # Build payment breakdown
     breakdown = {}
-    previous_balance_already_included = False
     
     for item in pay.selected_items:
         key = f"{item.get('fee_head', 'Unknown')}|{item.get('month', 'N/A')}"
         breakdown[key] = item.get('amount', 0)
-        
-        # Check if previous balance is already in selected items
-        if item.get('fee_head', '').lower().startswith('previous balance'):
-            previous_balance_already_included = True
     
-    # Add previous balance to total_due only if NOT already included in selected_items
-    # This prevents double-counting when the frontend already sent it as a selected item
-    if previous_balance > 0 and not previous_balance_already_included:
-        breakdown["Previous Balance|Carried Forward"] = previous_balance
-        total_due += previous_balance
+    # NOTE: Previous Balance addition REMOVED
+    # After sync-balances, current_balance = calculated monthly dues
+    # Frontend now sends only monthly fee items, not separate Previous Balance
+    # Adding it here was causing duplicate (receipt showed 2x the actual dues)
     
     # Calculate net payable and balance
     net_payable = total_due - pay.discount + pay.fine
