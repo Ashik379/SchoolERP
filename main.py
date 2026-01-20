@@ -202,6 +202,16 @@ def fee_collect_page(request: Request):
 def fee_setup_page(request: Request):
     return templates.TemplateResponse("fee_setup.html", {"request": request})
 
+@app.get("/fees/schedule", response_class=HTMLResponse)
+def fee_schedule_page(request: Request):
+    """Fee Heads page - redirects to fee_setup"""
+    return templates.TemplateResponse("fee_setup.html", {"request": request})
+
+@app.get("/fees/master", response_class=HTMLResponse)
+def fee_master_page(request: Request):
+    """Fee Plans page - redirects to fee_setup"""
+    return templates.TemplateResponse("fee_setup.html", {"request": request})
+
 @app.get("/masters/class", response_class=HTMLResponse)
 def class_master_page(request: Request):
     return templates.TemplateResponse("master_class.html", {"request": request})
