@@ -45,8 +45,19 @@ def run_migrations():
         is_postgres = 'postgresql' in db_url
         
         if is_postgres:
-            # PostgreSQL migrations - Add missing columns to student_fee_ledgers
+            # PostgreSQL migrations - Add missing columns to all fee-related tables
             migrations = [
+                # fee_head_masters table
+                "ALTER TABLE fee_head_masters ADD COLUMN IF NOT EXISTS is_transport BOOLEAN DEFAULT FALSE",
+                "ALTER TABLE fee_head_masters ADD COLUMN IF NOT EXISTS frequency VARCHAR(20) DEFAULT 'Monthly'",
+                "ALTER TABLE fee_head_masters ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE",
+                "ALTER TABLE fee_head_masters ADD COLUMN IF NOT EXISTS created_at DATE",
+                
+                # fee_structures table
+                "ALTER TABLE fee_structures ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE",
+                "ALTER TABLE fee_structures ADD COLUMN IF NOT EXISTS academic_year VARCHAR(20) DEFAULT '2025-2026'",
+                
+                # student_fee_ledgers table
                 "ALTER TABLE student_fee_ledgers ADD COLUMN IF NOT EXISTS total_due FLOAT DEFAULT 0.0",
                 "ALTER TABLE student_fee_ledgers ADD COLUMN IF NOT EXISTS discount FLOAT DEFAULT 0.0",
                 "ALTER TABLE student_fee_ledgers ADD COLUMN IF NOT EXISTS fine FLOAT DEFAULT 0.0",
@@ -55,9 +66,14 @@ def run_migrations():
                 "ALTER TABLE student_fee_ledgers ADD COLUMN IF NOT EXISTS payment_breakdown JSON",
                 "ALTER TABLE student_fee_ledgers ADD COLUMN IF NOT EXISTS created_by VARCHAR(50) DEFAULT 'Admin'",
                 "ALTER TABLE student_fee_ledgers ADD COLUMN IF NOT EXISTS created_at DATE",
+                "ALTER TABLE student_fee_ledgers ADD COLUMN IF NOT EXISTS months_paid JSON",
+                "ALTER TABLE student_fee_ledgers ADD COLUMN IF NOT EXISTS academic_year VARCHAR(20) DEFAULT '2025-2026'",
+                
                 # Students table - result hold columns
                 "ALTER TABLE students ADD COLUMN IF NOT EXISTS is_result_withheld BOOLEAN DEFAULT FALSE",
                 "ALTER TABLE students ADD COLUMN IF NOT EXISTS withhold_reason VARCHAR(500)",
+                "ALTER TABLE students ADD COLUMN IF NOT EXISTS current_balance FLOAT DEFAULT 0.0",
+                
                 # Classes table - result publish column
                 "ALTER TABLE classes ADD COLUMN IF NOT EXISTS is_result_published BOOLEAN DEFAULT FALSE",
             ]
