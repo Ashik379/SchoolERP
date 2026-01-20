@@ -8,16 +8,19 @@ from datetime import datetime
 import os
 import shutil
 
-# ✅ 1. Cloudinary Import karo
-import cloudinary
-import cloudinary.uploader
-
-# ✅ 2. Apna Cloudinary Config Yahan Set Karo
-cloudinary.config( 
-  cloud_name = "dwe5az2ec",    # 👈 Yahan apna Cloud Name dalo
-  api_key = "862764192254549",          # 👈 Yahan apni API Key dalo
-  api_secret = "wkAdLdjkNg4Xsb88MzAfcAcPcE4"     # 👈 Yahan apna API Secret dalo
-)
+# Cloudinary Import (Optional)
+try:
+    import cloudinary
+    import cloudinary.uploader
+    cloudinary.config( 
+        cloud_name = "dwe5az2ec",
+        api_key = "862764192254549",
+        api_secret = "wkAdLdjkNg4Xsb88MzAfcAcPcE4"
+    )
+    CLOUDINARY_AVAILABLE = True
+except ImportError:
+    CLOUDINARY_AVAILABLE = False
+    print("Cloudinary not available in website module")
 
 router = APIRouter(tags=["Website CMS"])
 templates = Jinja2Templates(directory="templates")

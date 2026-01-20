@@ -2,7 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from datetime import datetime, timedelta
-from jose import JWTError, jwt
+try:
+    from jose import JWTError, jwt
+    JOSE_AVAILABLE = True
+except ImportError:
+    JOSE_AVAILABLE = False
+    JWTError = Exception
+    jwt = None
+    print("python-jose not available - Student API JWT disabled")
 from database import get_db
 from models.students import Student
 from models.results import Result

@@ -233,8 +233,7 @@
                     Fees</span><i class="fas fa-chevron-down arrow" id="arr_feeSub"></i></div>
             <div class="submenu" id="feeSub" style="display: block;">
                 <a href="/fees/collect">Collect Fee</a>
-                <a href="/fees/schedule">Fee Heads</a>
-                <a href="/fees/master">Fee Plans</a>
+                <a href="/fees/setup">Fee Setup</a>
                 <a href="/fees/history" class="text-white fw-bold" style="background: rgba(255,255,255,0.1);">Fee
                     History</a>
             </div>
@@ -307,81 +306,33 @@
 
         async function loadHistory() {
             try {
-                // ✅ NEW: Try new ledger API first, fallback to old API
-                let allData = [];
+                // Fetch from new StudentFeeLedger API only
+                let res = await fetch('/api/v1/fee-ledger/transactions');
+                if (!res.ok) throw new Error('API failed');
 
-                // Fetch from new StudentFeeLedger
-                try {
-                    let res1 = await fetch('/api/v1/fee-ledger/all-transactions');
-                    if (res1.ok) {
-                        let newData = await res1.json();
-                        newData.forEach(t => {
-                            allData.push({
-                                id: t.receipt_no,
-                                receipt_no: t.receipt_no,
-                                date: t.date,
-                                student_name: t.student_name || 'Unknown',
-                                class_name: t.class_name || '-',  // ✅ Now using class_name from API
-                                admission_no: t.admission_no,
-                                net_payable: t.paid_amount,
-                                amount_paid: t.paid_amount,
-                                balance: 0,
-                                payment_mode: t.payment_mode,
-                                is_new: true
-                            });
-                        });
-                    }
-                } catch (e) { console.log("New API failed"); }
-
-                // Also fetch from old FeeTransaction for backward compatibility
-                try {
-                    let res2 = await fetch('/api/v1/collection/history');
-                    if (res2.ok) {
-                        let oldData = await res2.json();
-                        oldData.forEach(t => {
-                            let s = t.student;
-                            allData.push({
-                                id: t.id,
-                                receipt_no: `VV-${t.id}`,
-                                date: t.payment_date,
-                                student_name: s ? s.student_name : 'Unknown',
-                                class_name: s && s.class_val ? s.class_val.class_name : '-',
-                                admission_no: s ? s.admission_no : '-',
-                                net_payable: t.net_payable,
-                                amount_paid: t.amount_paid,
-                                balance: t.balance_amount,
-                                payment_mode: t.payment_mode,
-                                is_new: false
-                            });
-                        });
-                    }
-                } catch (e) { console.log("Old API failed"); }
-
+                let allData = await res.json();
                 let tbody = document.getElementById('historyTable');
                 tbody.innerHTML = '';
 
                 if (allData.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="9" class="text-center p-5 text-danger fw-bold">No Transactions Found</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="9" class="text-center p-5 text-muted fw-bold">No Transactions Found</td></tr>';
                     return;
                 }
 
-                // Sort by date (newest first)
-                allData.sort((a, b) => new Date(b.date) - new Date(a.date));
-
                 allData.forEach(t => {
-                    let rowClass = t.is_new ? 'style="background:#f0fdf4;"' : '';
-                    let newBadge = t.is_new ? '<span class="badge bg-success ms-2" style="font-size:9px;">NEW</span>' : '';
+                    let balanceClass = t.balance > 0 ? 'text-danger' : 'text-success';
+                    let balanceText = t.balance > 0 ? `₹${t.balance}` : '₹0';
 
                     tbody.innerHTML += `
-                    <tr ${rowClass}>
-                        <td class="fw-bold text-primary">${t.receipt_no}${newBadge}</td>
+                    <tr>
+                        <td class="fw-bold text-primary">${t.receipt_no}</td>
                         <td class="text-muted">${t.date}</td>
                         <td class="fw-bold text-dark text-start ps-4">${t.student_name}</td>
-                        <td><span class="badge bg-light text-dark border">${t.class_name}</span></td>
-                        <td class="text-amt text-secondary">₹${t.net_payable}</td>
-                        <td class="text-amt text-success">₹${t.amount_paid}</td>
-                        <td class="text-amt text-danger">₹${t.balance || 0}</td>
-                        <td><span class="badge-mode">${t.payment_mode}</span></td>
+                        <td><span class="badge bg-light text-dark border">${t.class}</span></td>
+                        <td class="text-amt text-secondary">₹${t.paid_amount}</td>
+                        <td class="text-amt text-success">₹${t.paid_amount}</td>
+                        <td class="text-amt ${balanceClass}">${balanceText}</td>
+                        <td><span class="badge-mode">${t.mode}</span></td>
                         <td>
                             <button class="btn btn-sm btn-warning fw-bold shadow-sm px-3" onclick="printReceipt('${t.receipt_no}')" style="border-radius: 6px; background: #f59e0b; border: none; color: #fff;">
                                 <i class="fas fa-print me-1"></i> Print
@@ -391,12 +342,13 @@
                 `;
                 });
             } catch (e) {
+                console.error(e);
                 document.getElementById('historyTable').innerHTML = '<tr><td colspan="9" class="text-center text-danger p-4">Error loading data</td></tr>';
             }
         }
 
-        function printReceipt(id) {
-            window.open('/print/receipt?id=' + id, '_blank');
+        function printReceipt(receiptNo) {
+            window.open('/print/receipt?receipt=' + receiptNo, '_blank');
         }
 
         loadHistory();

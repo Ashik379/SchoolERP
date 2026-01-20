@@ -3,493 +3,572 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Fee Receipt - Vidya Vikas Inter College</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fee Receipt | Vidya Vikas</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            background: #e0e0e0;
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 20px;
+            font-family: 'Outfit', sans-serif;
+            background: #f0f0f0;
+            padding: 10px;
+            font-size: 10px;
         }
 
-        .a4-page {
+        /* Print Button Bar */
+        .print-bar {
+            max-width: 210mm;
+            margin: 0 auto 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .print-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
+        }
+
+        .print-btn.primary {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+
+        .print-btn.secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        /* A4 Page Container - holds 4 receipts */
+        .page-container {
             width: 210mm;
             min-height: 297mm;
-            background: #fff;
             margin: 0 auto;
+            background: white;
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr 1fr;
-            padding: 10mm;
-            gap: 5mm;
+            gap: 0;
+            border: 1px solid #ccc;
         }
 
-        .receipt-card {
-            border: 2px solid #1e3c72;
-            border-radius: 8px;
-            padding: 12px;
+        /* Each receipt is a quarter of the page */
+        .receipt-box {
+            width: 105mm;
+            height: 148.5mm;
+            border: 1px dashed #999;
+            padding: 8px;
             position: relative;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            background: white;
         }
 
-        .copy-tag {
+        .receipt-box::after {
+            content: '✂';
             position: absolute;
-            top: 0;
-            right: 0;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: #fff;
-            font-size: 8px;
-            padding: 3px 10px;
-            text-transform: uppercase;
-            font-weight: bold;
-            border-radius: 0 6px 0 8px;
+            top: -2px;
+            right: -2px;
+            font-size: 10px;
+            color: #999;
         }
 
-        .header-section {
-            text-align: center;
-            margin-bottom: 8px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #1e3c72;
+        /* Header */
+        .receipt-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 8px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 4px;
+        }
+
+        .school-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .school-logo {
+            width: 35px;
+            height: 35px;
+            background: white;
+            border-radius: 50%;
+            padding: 2px;
+            object-fit: contain;
         }
 
         .school-name {
-            font-size: 16px;
-            font-weight: 800;
-            color: #1e3c72;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         .school-address {
-            font-size: 9px;
-            color: #666;
-            margin: 3px 0;
+            font-size: 7px;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+
+        .receipt-badge {
+            text-align: right;
         }
 
         .receipt-title {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: #fff;
-            display: inline-block;
-            padding: 3px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-size: 8px;
+        }
+
+        .receipt-no {
             font-size: 10px;
-            font-weight: bold;
-            border-radius: 3px;
-            margin-top: 5px;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4px;
-            font-size: 10px;
-            margin-bottom: 8px;
-        }
-
-        .info-item {
-            display: flex;
-        }
-
-        .info-label {
             font-weight: 700;
-            color: #555;
-            min-width: 70px;
+            margin-top: 4px;
         }
 
-        .info-value {
-            color: #000;
-            font-weight: 500;
-            border-bottom: 1px dotted #999;
+        /* Student Details */
+        .student-section {
+            padding: 6px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .student-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+        }
+
+        .detail-item {
+            display: flex;
+            gap: 4px;
+        }
+
+        .detail-label {
+            font-size: 7px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            font-size: 9px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        /* Fee Table */
+        .fee-section {
             flex: 1;
-            padding-left: 5px;
-        }
-
-        .info-full {
-            grid-column: span 2;
+            overflow: hidden;
+            padding: 4px 0;
         }
 
         .fee-table {
             width: 100%;
-            font-size: 9px;
             border-collapse: collapse;
-            margin: 8px 0;
-            flex: 1;
+            font-size: 8px;
         }
 
         .fee-table th {
-            background: #f0f4f8;
-            border: 1px solid #ddd;
-            text-align: center;
-            text-transform: uppercase;
-            font-size: 8px;
-            padding: 5px 4px;
-            color: #1e3c72;
-            font-weight: 700;
-        }
-
-        .fee-table td {
-            border: 1px solid #ddd;
+            background: #1e3c72;
+            color: white;
             padding: 4px 6px;
-            vertical-align: middle;
-        }
-
-        .fee-table .total-row {
-            background: #f0f4f8;
-            font-weight: bold;
-        }
-
-        .fee-table .total-row td {
-            border-top: 2px solid #1e3c72;
-        }
-
-        .amount-words {
-            background: #f8f9fa;
-            padding: 5px 8px;
-            font-size: 9px;
-            border-radius: 4px;
-            margin: 5px 0;
-            border-left: 3px solid #1e3c72;
-        }
-
-        .amount-words strong {
-            color: #1e3c72;
-        }
-
-        .footer-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            font-size: 9px;
-            margin-top: auto;
-            padding-top: 8px;
-            border-top: 1px dashed #ddd;
-        }
-
-        .payment-info {
+            font-size: 7px;
+            text-transform: uppercase;
             text-align: left;
-            font-size: 9px;
         }
 
-        .payment-mode {
-            background: #e8f5e9;
-            padding: 2px 8px;
-            border-radius: 3px;
-            font-weight: 600;
-            color: #2e7d32;
-            display: inline-block;
-        }
-
-        .signature-box {
+        .fee-table th:last-child {
             text-align: right;
         }
 
-        .signature-line {
-            border-top: 1px solid #000;
-            width: 100px;
-            margin-left: auto;
-            margin-bottom: 3px;
+        .fee-table td {
+            padding: 3px 6px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 8px;
         }
 
-        .summary-box {
-            background: #f8f9fa;
+        .fee-table td:last-child {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .month-badge {
+            background: #e0e7ff;
+            color: #4338ca;
+            padding: 1px 5px;
+            border-radius: 8px;
+            font-size: 7px;
+            font-weight: 500;
+        }
+
+        /* Totals Section */
+        .totals-section {
+            background: #f8fafc;
             padding: 6px;
+            display: flex;
+            justify-content: space-between;
             border-radius: 4px;
-            font-size: 9px;
-            margin: 5px 0;
+            margin-top: 4px;
         }
 
-        .summary-row {
+        .amount-words {
+            flex: 1;
+            padding-right: 10px;
+        }
+
+        .amount-words-label {
+            font-size: 6px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+        }
+
+        .amount-words-value {
+            font-size: 8px;
+            font-weight: 600;
+            color: #1e3c72;
+            font-style: italic;
+        }
+
+        .totals-box {
+            min-width: 100px;
+        }
+
+        .total-row {
             display: flex;
             justify-content: space-between;
             padding: 2px 0;
-            border-bottom: 1px dotted #ddd;
+            font-size: 8px;
+            border-bottom: 1px dashed #d1d5db;
         }
 
-        .summary-row:last-child {
-            border-bottom: none;
+        .total-row.grand {
+            background: #ecfdf5;
+            padding: 4px 6px;
+            margin: 4px -6px 0;
+            border: 1px solid #059669;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #059669;
         }
 
-        .summary-row.grand-total {
-            font-weight: bold;
-            font-size: 11px;
-            color: #1e3c72;
-            border-top: 1px solid #1e3c72;
-            margin-top: 3px;
-            padding-top: 5px;
+        .total-row.balance {
+            background: #fef2f2;
+            padding: 4px 6px;
+            margin: 4px -6px 0;
+            border: 1px solid #dc2626;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 600;
+            color: #dc2626;
         }
 
-        .no-print {
-            margin-bottom: 20px;
+        /* Footer */
+        .receipt-footer {
+            padding-top: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 4px;
         }
 
+        .payment-info {
+            font-size: 7px;
+            color: #6b7280;
+        }
+
+        .payment-info strong {
+            color: #111827;
+        }
+
+        .signature-box {
+            text-align: center;
+        }
+
+        .signature-line {
+            width: 60px;
+            border-bottom: 1px solid #111827;
+            margin-bottom: 2px;
+        }
+
+        .signature-label {
+            font-size: 6px;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        /* Copy Label */
+        .copy-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Print Styles */
         @media print {
             body {
-                background: #fff;
+                background: white;
                 padding: 0;
-            }
-
-            .a4-page {
                 margin: 0;
-                box-shadow: none;
             }
 
             .no-print {
                 display: none !important;
             }
 
-            @page {
-                margin: 0;
-                size: A4;
+            .page-container {
+                width: 210mm;
+                height: 297mm;
+                border: none;
+                page-break-after: always;
             }
+
+            .receipt-box {
+                border: 1px dashed #666;
+            }
+
+            @page {
+                size: A4;
+                margin: 0;
+            }
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: #6b7280;
         }
     </style>
 </head>
 
 <body>
-
-    <div class="text-center no-print">
-        <button class="btn btn-dark fw-bold px-4" onclick="window.print()">
-            <i class="bi bi-printer"></i> 🖨 PRINT RECEIPT
+    <div class="print-bar no-print">
+        <button class="print-btn primary" onclick="window.print()">
+            🖨️ Print Receipt
         </button>
-        <button class="btn btn-outline-secondary fw-bold px-4 ms-2" onclick="window.close()">
-            ✕ Close
+        <button class="print-btn secondary" onclick="window.close()">
+            Close
         </button>
     </div>
 
-    <div class="a4-page" id="printArea">
-        <div class="receipt-card" id="card-0-S"></div>
-        <div class="receipt-card" id="card-0-O"></div>
-        <div class="receipt-card" id="card-1-S"></div>
-        <div class="receipt-card" id="card-1-O"></div>
+    <div class="page-container" id="pageContainer">
+        <!-- Receipt 1 - Office Copy -->
+        <div class="receipt-box" id="receipt1">
+            <div class="loading">Loading...</div>
+        </div>
+
+        <!-- Receipt 2 - Student Copy -->
+        <div class="receipt-box" id="receipt2">
+            <div class="loading">Loading...</div>
+        </div>
+
+        <!-- Empty slots for second student (if any) -->
+        <div class="receipt-box" id="receipt3">
+            <div class="loading" style="color: #ccc;">Empty Slot</div>
+        </div>
+
+        <div class="receipt-box" id="receipt4">
+            <div class="loading" style="color: #ccc;">Empty Slot</div>
+        </div>
     </div>
 
     <script>
-        async function loadReceipts() {
+        document.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const idStr = urlParams.get('id');
-            if (!idStr) {
-                alert("No receipt ID provided");
+            const receiptNo = urlParams.get('receipt');
+
+            if (!receiptNo) {
+                document.getElementById('receipt1').innerHTML = '<div class="loading text-danger">Receipt number not provided</div>';
                 return;
             }
 
-            const ids = idStr.split(',');
+            try {
+                const res = await fetch(`/api/v1/fee-ledger/receipt/${receiptNo}`);
+                if (!res.ok) throw new Error('Receipt not found');
 
-            for (let i = 0; i < Math.min(ids.length, 2); i++) {
-                try {
-                    // Try new API first
-                    let res = await fetch(`/api/v1/fee-ledger/receipt/${ids[i]}`);
+                const data = await res.json();
 
-                    if (!res.ok) {
-                        // Fallback to old API
-                        res = await fetch(`/api/v1/collection/receipt/${ids[i]}`);
-                    }
+                // Generate Office Copy (Receipt 1)
+                document.getElementById('receipt1').innerHTML = generateReceiptHTML(data, 'Office Copy');
 
-                    if (res.ok) {
-                        let data = await res.json();
-                        renderCard(data, `card-${i}-S`, "Student Copy");
-                        renderCard(data, `card-${i}-O`, "Office Copy");
-                    }
-                } catch (e) {
-                    console.error("Error fetching receipt:", ids[i], e);
-                }
+                // Generate Student Copy (Receipt 2)
+                document.getElementById('receipt2').innerHTML = generateReceiptHTML(data, 'Student Copy');
+
+                // Leave receipts 3 and 4 empty or hide them
+                document.getElementById('receipt3').innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100%;color:#ddd;font-size:12px;">Reserved for 2nd Student</div>';
+                document.getElementById('receipt4').innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100%;color:#ddd;font-size:12px;">Reserved for 2nd Student</div>';
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('receipt1').innerHTML = '<div class="loading" style="color:red;">Error loading receipt</div>';
             }
-        }
+        });
 
-        function renderCard(data, containerId, copyType) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
+        function generateReceiptHTML(data, copyType) {
+            const { receipt, student } = data;
+            const breakdown = receipt.breakdown || {};
 
-            // Handle both old and new API formats
-            const receiptNo = data.receipt_no || `VV-${data.txn?.id || '?'}`;
-            const date = data.date || data.txn?.payment_date || new Date().toLocaleDateString();
-            const student = data.student || {};
-            const items = data.items || data.breakup || [];
-            const totalAmount = data.total_amount || data.txn?.total_amount || 0;
-            const discount = data.discount || data.txn?.discount || 0;
-            const fine = data.fine || 0;
-            const paidAmount = data.paid_amount || data.txn?.amount_paid || 0;
-            const paymentMode = data.payment_mode || data.txn?.payment_mode || 'Cash';
-            const amountInWords = data.amount_in_words || numberToWords(paidAmount);
-            const months = data.months || data.formatted_months || [];
-
-            // Build items rows
-            let rowsHtml = "";
-            if (items.length > 0) {
-                items.forEach((item, idx) => {
-                    const head = item.head || item.particulars || 'Fee';
-                    const amount = item.amount || 0;
-                    rowsHtml += `
+            let feeRows = '';
+            let idx = 1;
+            for (const [key, amount] of Object.entries(breakdown)) {
+                const [head, month] = key.split('|');
+                feeRows += `
                     <tr>
-                        <td class="text-center">${idx + 1}</td>
+                        <td>${idx++}</td>
                         <td>${head}</td>
-                        <td class="text-end">₹${amount.toLocaleString()}</td>
+                        <td><span class="month-badge">${month}</span></td>
+                        <td>₹${parseFloat(amount).toLocaleString()}</td>
                     </tr>
                 `;
-                });
-            } else {
-                rowsHtml = `
-                <tr>
-                    <td class="text-center">1</td>
-                    <td>School Fee</td>
-                    <td class="text-end">₹${totalAmount.toLocaleString()}</td>
-                </tr>
+            }
+
+            const balanceHTML = receipt.balance_due > 0 ? `
+                <div class="total-row balance">
+                    <span>⚠️ Balance:</span>
+                    <span>₹${receipt.balance_due.toLocaleString()}</span>
+                </div>
+            ` : '';
+
+            return `
+                <div class="copy-label">${copyType}</div>
+                
+                <!-- Header -->
+                <div class="receipt-header">
+                    <div class="school-info">
+                        <img src="https://res.cloudinary.com/demo/image/upload/v1/samples/ecommerce/accessories-bag.jpg"
+                            alt="Logo" class="school-logo">
+                        <div>
+                            <div class="school-name">VIDYA VIKAS INTER COLLEGE</div>
+                            <div class="school-address">Village - Rahimpur, Post - Barwat, Dist - Azamgarh (U.P.)</div>
+                        </div>
+                    </div>
+                    <div class="receipt-badge">
+                        <div class="receipt-title">FEE RECEIPT</div>
+                        <div class="receipt-no">${receipt.receipt_no}</div>
+                    </div>
+                </div>
+
+                <!-- Student Details -->
+                <div class="student-section">
+                    <div class="student-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Name:</span>
+                            <span class="detail-value">${student.name}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Father:</span>
+                            <span class="detail-value">${student.father_name}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Date:</span>
+                            <span class="detail-value">${receipt.date}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Class:</span>
+                            <span class="detail-value">${student.class}${student.section ? ` (${student.section})` : ''}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Adm No:</span>
+                            <span class="detail-value">${student.admission_no}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Session:</span>
+                            <span class="detail-value">${receipt.academic_year}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fee Table -->
+                <div class="fee-section">
+                    <table class="fee-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Particular</th>
+                                <th>Month</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${feeRows}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Totals -->
+                <div class="totals-section">
+                    <div class="amount-words">
+                        <div class="amount-words-label">Amount in Words</div>
+                        <div class="amount-words-value">${receipt.amount_in_words}</div>
+                    </div>
+                    <div class="totals-box">
+                        <div class="total-row">
+                            <span>Total Due:</span>
+                            <span>₹${receipt.total_due.toLocaleString()}</span>
+                        </div>
+                        ${receipt.discount > 0 ? `
+                        <div class="total-row">
+                            <span>Discount:</span>
+                            <span style="color:green;">-₹${receipt.discount.toLocaleString()}</span>
+                        </div>` : ''}
+                        ${receipt.fine > 0 ? `
+                        <div class="total-row">
+                            <span>Fine:</span>
+                            <span style="color:red;">+₹${receipt.fine.toLocaleString()}</span>
+                        </div>` : ''}
+                        <div class="total-row grand">
+                            <span>Paid:</span>
+                            <span>₹${receipt.paid_amount.toLocaleString()}</span>
+                        </div>
+                        ${balanceHTML}
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="receipt-footer">
+                    <div class="payment-info">
+                        <div><strong>Mode:</strong> ${receipt.payment_mode}</div>
+                        <div><strong>Months:</strong> ${(receipt.months_paid || []).join(', ') || 'N/A'}</div>
+                        <div style="margin-top:3px;font-size:6px;color:#9ca3af;">Computer Generated Receipt</div>
+                    </div>
+                    <div class="signature-box">
+                        <div class="signature-line"></div>
+                        <div class="signature-label">Authorized Signatory</div>
+                    </div>
+                </div>
             `;
-            }
-
-            // Format months display
-            const monthsDisplay = Array.isArray(months) ? months.join(', ') : months;
-
-            container.innerHTML = `
-            <div class="copy-tag">${copyType}</div>
-            
-            <div class="header-section">
-                <div class="school-name">VIDYA VIKAS INTER COLLEGE</div>
-                <div class="school-address">Laxmiganj, Kushinagar, Uttar Pradesh - 274402</div>
-                <div class="school-address">📞 9876543210 | 📧 info@vvic.edu.in</div>
-                <div class="receipt-title">FEE RECEIPT</div>
-            </div>
-
-            <div class="info-grid">
-                <div class="info-item">
-                    <span class="info-label">Receipt No:</span>
-                    <span class="info-value" style="font-weight:700; color:#1e3c72;">${receiptNo}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Date:</span>
-                    <span class="info-value">${date}</span>
-                </div>
-                <div class="info-item info-full">
-                    <span class="info-label">Student:</span>
-                    <span class="info-value" style="font-weight:700;">${student.name || '-'}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Adm No:</span>
-                    <span class="info-value">${student.admission_no || '-'}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Class:</span>
-                    <span class="info-value">${student.class_name || '-'}${student.section_name ? ' (' + student.section_name + ')' : ''}</span>
-                </div>
-                <div class="info-item info-full">
-                    <span class="info-label">Father:</span>
-                    <span class="info-value">${student.father_name || '-'}</span>
-                </div>
-                <div class="info-item info-full">
-                    <span class="info-label">Month(s):</span>
-                    <span class="info-value">${monthsDisplay || 'Current Session'}</span>
-                </div>
-            </div>
-
-            <table class="fee-table">
-                <thead>
-                    <tr>
-                        <th width="10%">S.N</th>
-                        <th width="65%">PARTICULARS</th>
-                        <th width="25%">AMOUNT</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${rowsHtml}
-                </tbody>
-                <tfoot>
-                    <tr class="total-row">
-                        <td colspan="2" class="text-end">TOTAL</td>
-                        <td class="text-end">₹${totalAmount.toLocaleString()}</td>
-                    </tr>
-                </tfoot>
-            </table>
-
-            <div class="summary-box">
-                ${discount > 0 ? `<div class="summary-row"><span>Discount:</span><span style="color:#059669;">- ₹${discount.toLocaleString()}</span></div>` : ''}
-                ${fine > 0 ? `<div class="summary-row"><span>Fine/Late Fee:</span><span style="color:#dc2626;">+ ₹${fine.toLocaleString()}</span></div>` : ''}
-                <div class="summary-row grand-total">
-                    <span>AMOUNT PAID:</span>
-                    <span>₹${paidAmount.toLocaleString()}</span>
-                </div>
-            </div>
-
-            <div class="amount-words">
-                <strong>In Words:</strong> ${amountInWords}
-            </div>
-
-            <div class="footer-section">
-                <div class="payment-info">
-                    <span style="color:#666;">Payment Mode:</span>
-                    <span class="payment-mode">${paymentMode}</span>
-                </div>
-                <div class="signature-box">
-                    <div class="signature-line"></div>
-                    <div style="font-weight:600;">Authorised Signatory</div>
-                    <div style="color:#999; font-size:7px; margin-top:3px;">This is a computer generated receipt</div>
-                </div>
-            </div>
-        `;
         }
-
-        function numberToWords(num) {
-            const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
-                "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen",
-                "Seventeen", "Eighteen", "Nineteen"];
-            const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
-
-            num = Math.floor(num);
-            if (num === 0) return "Zero Rupees Only";
-            if (num < 0) return "Invalid Amount";
-
-            let result = "";
-
-            if (num >= 10000000) {
-                result += numberToWordsHelper(Math.floor(num / 10000000)) + " Crore ";
-                num %= 10000000;
-            }
-            if (num >= 100000) {
-                result += numberToWordsHelper(Math.floor(num / 100000)) + " Lakh ";
-                num %= 100000;
-            }
-            if (num >= 1000) {
-                result += numberToWordsHelper(Math.floor(num / 1000)) + " Thousand ";
-                num %= 1000;
-            }
-            if (num >= 100) {
-                result += ones[Math.floor(num / 100)] + " Hundred ";
-                num %= 100;
-            }
-            if (num >= 20) {
-                result += tens[Math.floor(num / 10)] + " ";
-                num %= 10;
-            }
-            if (num > 0) {
-                result += ones[num] + " ";
-            }
-
-            return result.trim() + " Rupees Only";
-        }
-
-        function numberToWordsHelper(num) {
-            const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
-                "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen",
-                "Seventeen", "Eighteen", "Nineteen"];
-            const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
-
-            if (num < 20) return ones[num];
-            if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? " " + ones[num % 10] : "");
-            return ones[Math.floor(num / 100)] + " Hundred" + (num % 100 ? " " + numberToWordsHelper(num % 100) : "");
-        }
-
-        // Load receipts on page load
-        loadReceipts();
     </script>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </body>
 
 </html>

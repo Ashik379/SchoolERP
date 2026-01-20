@@ -15,8 +15,6 @@
             --bg-body: #f3f4f6;
             --sidebar-width: 270px;
             --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            --text-dark: #111827;
-            --text-body: #374151;
             --success-color: #059669;
             --danger-color: #dc2626;
         }
@@ -24,12 +22,10 @@
         body {
             font-family: 'Outfit', sans-serif;
             background-color: var(--bg-body);
-            color: var(--text-body);
-            overflow-x: hidden;
             font-size: 14px;
+            overflow-x: hidden;
         }
 
-        /* --- SIDEBAR --- */
         .sidebar {
             height: 100vh;
             width: var(--sidebar-width);
@@ -37,35 +33,14 @@
             top: 0;
             left: 0;
             background: #111827;
-            background-image: radial-gradient(at 0% 0%, #1f2937 0px, transparent 50%), radial-gradient(at 100% 100%, #000000 0px, transparent 50%);
             color: #a3aed0;
             z-index: 1000;
             overflow-y: auto;
-            transition: 0.3s;
-        }
-
-        .sidebar::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .sidebar::-webkit-scrollbar-thumb {
-            background: #374151;
-            border-radius: 4px;
         }
 
         .brand-box {
             padding: 30px 20px;
             text-align: center;
-        }
-
-        .user-profile {
-            background: rgba(255, 255, 255, 0.03);
-            margin: 0 15px 20px;
-            padding: 15px;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .menu-item {
@@ -75,34 +50,25 @@
             color: #a3aed0;
             text-decoration: none;
             display: flex;
-            justify-content: space-between;
             align-items: center;
             transition: all 0.3s ease;
             font-weight: 500;
-            font-size: 14px;
-            cursor: pointer;
         }
 
         .menu-item:hover,
         .menu-item.active {
             background: var(--primary-gradient);
             color: white;
-            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.4);
-            transform: translateX(5px);
         }
 
-        .menu-item i.menu-icon {
+        .menu-item i {
             width: 25px;
-            font-size: 18px;
-            text-align: center;
             margin-right: 10px;
         }
 
-        /* --- CONTENT AREA --- */
         .main-content {
             margin-left: var(--sidebar-width);
             padding: 30px;
-            transition: 0.3s;
         }
 
         .glass-header {
@@ -117,19 +83,26 @@
             border-left: 5px solid #1e3c72;
         }
 
-        /* --- SEARCH BOX --- */
         .search-container {
             position: relative;
             margin-bottom: 20px;
         }
 
         .search-input {
-            height: 50px;
+            height: 55px;
             border-radius: 12px;
             border: 2px solid #1e3c72;
-            padding-left: 20px;
+            padding-left: 50px;
             font-size: 16px;
             font-weight: 600;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 17px;
+            color: #1e3c72;
+            font-size: 18px;
         }
 
         .search-results {
@@ -140,67 +113,60 @@
             background: white;
             z-index: 999;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
             display: none;
-            overflow: hidden;
-            margin-top: 5px;
-            border: 1px solid #ddd;
             max-height: 400px;
             overflow-y: auto;
         }
 
         .search-item {
-            padding: 12px 20px;
+            padding: 15px 20px;
             cursor: pointer;
             border-bottom: 1px solid #f0f0f0;
-            transition: 0.2s;
-            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .search-item:hover {
-            background-color: #f0f7ff;
-            color: #1e3c72;
-            font-weight: 600;
+            background: #f0f7ff;
         }
 
-        /* --- PREMIUM PANELS --- */
         .premium-card {
             background: white;
             border-radius: 15px;
             padding: 20px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e5e7eb;
             margin-bottom: 20px;
         }
 
-        .label-text {
+        .student-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item label {
+            font-size: 11px;
             font-weight: 700;
             color: #6b7280;
-            font-size: 11px;
             text-transform: uppercase;
+            display: block;
         }
 
-        .val-text {
+        .info-item span {
+            font-size: 14px;
             font-weight: 700;
             color: #111827;
-            font-size: 14px;
-        }
-
-        .date-box {
-            background: #7c3aed;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 6px;
-            font-weight: bold;
         }
 
         .due-badge {
             background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
             color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 18px;
             animation: pulse 2s infinite;
         }
 
@@ -216,109 +182,113 @@
             }
         }
 
-        /* --- MONTH STRIP --- */
         .month-strip {
-            background: #f9fafb;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
             display: flex;
-            align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 12px;
         }
 
-        .month-chk {
-            font-weight: 600;
-            color: #374151;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 6px 12px;
+        .month-btn {
+            padding: 8px 16px;
             border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            font-weight: 600;
+            cursor: pointer;
             transition: 0.2s;
         }
 
-        .month-chk:has(input:checked) {
-            background: #dbeafe;
-            color: #1e3c72;
+        .month-btn.selected {
+            background: #1e3c72;
+            color: white;
+            border-color: #1e3c72;
         }
 
-        .month-chk.paid-month {
-            opacity: 0.5;
-            text-decoration: line-through;
+        .month-btn.paid {
+            background: #dcfce7;
+            color: #166534;
+            border-color: #86efac;
+            cursor: not-allowed;
         }
 
-        /* --- FEE TABLE --- */
         .fee-table {
             width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #e5e7eb;
+            border-collapse: collapse;
         }
 
         .fee-table th {
             background: #1e3c72;
             color: white;
             padding: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
             font-size: 12px;
+            text-transform: uppercase;
         }
 
         .fee-table td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #f0f0f0;
-            background: #fff;
-            vertical-align: middle;
-            color: #111827;
-            font-weight: 500;
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
         }
 
-        .fee-table tr.paid-row {
-            background: #f0fdf4 !important;
+        .fee-table tr:hover {
+            background: #f9fafb;
         }
 
-        .fee-table tr.paid-row td {
-            background: #f0fdf4 !important;
-            color: #6b7280;
+        .calc-panel {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 15px;
+            padding: 25px;
+            border-top: 4px solid #059669;
         }
 
-        /* --- FOOTER CALCULATION --- */
         .calc-input {
-            font-weight: 800;
-            text-align: center;
+            height: 50px;
+            font-weight: 700;
             font-size: 16px;
-            border: 2px solid #d1d5db;
-            height: 45px;
-            border-radius: 8px;
+            text-align: center;
+            border-radius: 10px;
         }
 
-        .big-green-box {
+        .calc-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #6b7280;
+            margin-bottom: 5px;
+        }
+
+        .big-amount {
+            height: 60px;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .green-box {
             background: #059669 !important;
             color: white !important;
-            font-size: 24px;
-            height: 60px;
             border: none;
         }
 
-        .big-red-box {
+        .red-box {
             background: #dc2626 !important;
             color: white !important;
-            font-size: 24px;
-            height: 60px;
             border: none;
         }
 
-        .header-box-label {
-            background: #111827;
-            color: white;
-            text-align: center;
-            padding: 4px;
-            font-size: 11px;
-            font-weight: bold;
-            border-radius: 8px 8px 0 0;
+        .pay-btn {
+            height: 65px;
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            border: none;
+            border-radius: 12px;
+        }
+
+        .pay-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4);
         }
 
         #loadingOverlay {
@@ -328,66 +298,43 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            z-index: 2000;
-            text-align: center;
-            padding-top: 20vh;
-        }
-
-        .current-month-badge {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            margin-left: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
 
         @media (max-width: 768px) {
             .sidebar {
-                margin-left: -270px;
-            }
-
-            .sidebar.active {
-                margin-left: 0;
+                display: none;
             }
 
             .main-content {
                 margin-left: 0;
+                padding: 15px;
             }
         }
     </style>
 </head>
 
 <body>
-
     <div id="loadingOverlay">
-        <div class="spinner-grow text-primary" role="status"></div>
-        <div class="fw-bold mt-2 text-primary">Processing...</div>
+        <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;"></div>
+        <div class="fw-bold mt-3 text-primary">Processing Payment...</div>
     </div>
 
-    <div class="sidebar" id="sidebar">
+    <div class="sidebar">
         <div class="brand-box">
             <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
-            <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px; text-transform: uppercase;">ERP
-                Solution 2.0</small>
-        </div>
-        <div class="user-profile">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="45">
-            <div class="ms-3">
-                <h6 class="mb-0 text-white fw-bold">Accountant</h6>
-                <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25"
-                    style="font-size: 10px;">● Online</span>
-            </div>
+            <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px;">ERP Solution 2.0</small>
         </div>
         <div class="sidebar-menu mt-3">
-            <a href="/" class="menu-item"><span><i class="fas fa-tachometer-alt menu-icon"></i> Dashboard</span></a>
-            <a href="/students" class="menu-item"><span><i class="fas fa-users menu-icon"></i> Student List</span></a>
-            <a href="/fees/collect" class="menu-item active"><span><i class="fas fa-rupee-sign menu-icon"></i> Fee
-                    Collection</span></a>
-            <a href="/fees/history" class="menu-item"><span><i class="fas fa-history menu-icon"></i> Fee
-                    History</span></a>
+            <a href="/" class="menu-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="/students" class="menu-item"><i class="fas fa-users"></i> Students</a>
+            <a href="/fees/setup" class="menu-item"><i class="fas fa-cog"></i> Fee Setup</a>
+            <a href="/fees/collect" class="menu-item active"><i class="fas fa-rupee-sign"></i> Fee Collection</a>
+            <a href="/fees/history" class="menu-item"><i class="fas fa-history"></i> Fee History</a>
             <div class="mt-5 px-3">
                 <a href="/auth/logout" class="btn w-100 fw-bold text-white"
                     style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;">
@@ -400,92 +347,81 @@
     <div class="main-content">
         <div class="glass-header">
             <h4 class="fw-bold mb-0"><i class="fas fa-money-check-alt me-2 text-primary"></i>Fee Collection Panel</h4>
-            <div class="d-flex align-items-center gap-3">
-                <span class="current-month-badge"><i class="fas fa-calendar me-1"></i><span
-                        id="currentMonth">-</span></span>
-                <div class="date-box" id="todayDate"></div>
-                <button class="btn btn-dark d-md-none rounded-circle" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
-                </button>
+            <div>
+                <span class="badge bg-info me-2" id="currentMonth">-</span>
+                <span class="badge bg-dark" id="todayDate">-</span>
             </div>
         </div>
 
-        <!-- SEARCH BAR -->
+        <!-- SEARCH -->
         <div class="search-container">
-            <input type="text" id="searchInput" class="form-control search-input shadow-sm"
-                placeholder="🔍 Search Student by Name, Admission No..." onkeyup="searchStudent()" autocomplete="off">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" class="form-control search-input"
+                placeholder="Search Student by Name or Admission Number..." autocomplete="off">
             <div id="searchDropdown" class="search-results"></div>
         </div>
 
-        <!-- MAIN PANEL (Hidden by default) -->
-        <div id="mainPanel" style="display:none;">
-            <!-- STUDENT PROFILE CARD -->
+        <!-- MAIN PANEL -->
+        <div id="mainPanel" style="display: none;">
+            <!-- Student Info Card -->
             <div class="premium-card" style="border-top: 4px solid #1e3c72;">
-                <div class="row align-items-center">
-                    <div class="col-md-auto">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="d-flex gap-3">
                         <img id="pPhoto" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="80"
-                            height="80" class="rounded shadow-sm border" style="object-fit: cover;">
+                            height="80" class="rounded shadow" style="object-fit: cover;">
+                        <div class="student-info-grid">
+                            <div class="info-item">
+                                <label>Student Name</label>
+                                <span id="pName" class="text-primary">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Father's Name</label>
+                                <span id="pFather">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Class / Section</label>
+                                <span id="pClass" class="text-danger">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Admission No</label>
+                                <span id="pAdm">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Mobile</label>
+                                <span id="pMobile">-</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col">
-                        <div class="row g-3">
-                            <div class="col-md-3">
-                                <span class="label-text">Student Name</span><br>
-                                <span class="val-text text-primary" id="pName">-</span>
-                            </div>
-                            <div class="col-md-3">
-                                <span class="label-text">Father Name</span><br>
-                                <span class="val-text" id="pFather">-</span>
-                            </div>
-                            <div class="col-md-2">
-                                <span class="label-text">Class (Sec)</span><br>
-                                <span class="val-text text-danger" id="pClass">-</span>
-                            </div>
-                            <div class="col-md-2">
-                                <span class="label-text">Admission No</span><br>
-                                <span class="val-text" id="pAdm">-</span>
-                            </div>
-                            <div class="col-md-2 text-end">
-                                <button class="btn btn-sm btn-outline-secondary fw-bold" onclick="location.reload()">
-                                    <i class="fas fa-sync"></i> Clear
-                                </button>
-                            </div>
+                    <div class="text-end">
+                        <div class="due-badge">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Total Due: ₹<span
+                                id="totalDueDisplay">0</span>
                         </div>
-                        <div class="row g-3 mt-1">
-                            <div class="col-md-3">
-                                <span class="label-text">Mobile Number</span><br>
-                                <span class="val-text" id="pMobile">-</span>
-                            </div>
-                            <div class="col-md-3">
-                                <span class="label-text">System ID</span><br>
-                                <span class="val-text text-muted" id="pId">-</span>
-                            </div>
-                            <div class="col-md-6 text-end">
-                                <div class="due-badge" id="dueBox">
-                                    <i class="fas fa-exclamation-triangle me-2"></i>Total Due: ₹<span
-                                        id="totalDueDisplay">0</span>
-                                </div>
-                            </div>
-                        </div>
+                        <button class="btn btn-outline-secondary btn-sm mt-2" onclick="location.reload()">
+                            <i class="fas fa-sync me-1"></i>Clear
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- MONTH SELECTION -->
+            <!-- Month Selection -->
             <div class="premium-card">
-                <div class="month-strip" id="monthStrip">
-                    <span class="fw-bold text-dark"><i class="fas fa-calendar-check me-2"></i>Select Months:</span>
-                    <label class="month-chk"><input type="checkbox" id="selectAllMonths" onclick="toggleAll(this)">
-                        <span class="badge bg-dark">All</span></label>
-                    <!-- Months will be dynamically added -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0 fw-bold"><i class="fas fa-calendar-check me-2 text-primary"></i>Select Months</h6>
+                    <button class="btn btn-sm btn-outline-primary" onclick="selectAllUnpaidMonths()">
+                        <i class="fas fa-check-double me-1"></i>Select All Unpaid
+                    </button>
                 </div>
+                <div class="month-strip" id="monthStrip"></div>
             </div>
 
-            <!-- FEE TABLE -->
-            <div class="premium-card p-0 overflow-hidden">
-                <table class="fee-table mb-0">
+            <!-- Fee Table -->
+            <div class="premium-card p-0">
+                <table class="fee-table">
                     <thead>
                         <tr>
-                            <th width="60" class="text-center">Select</th>
+                            <th width="50"><input type="checkbox" id="selectAllItems" onclick="toggleAllItems(this)">
+                            </th>
                             <th>Fee Head</th>
                             <th>Month</th>
                             <th class="text-end">Amount (₹)</th>
@@ -494,71 +430,69 @@
                     </thead>
                     <tbody id="feeTableBody">
                         <tr>
-                            <td colspan="5" class="text-center p-5 text-muted fw-bold">
-                                Search and select a student to view dues
-                            </td>
+                            <td colspan="5" class="text-center py-5 text-muted">Select a student to view dues</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <!-- CALCULATION FOOTER -->
-            <div class="premium-card shadow-lg" style="background: #f8fafc; border-top: 4px solid #059669;">
-                <div class="row g-3">
+            <!-- Calculation Panel -->
+            <div class="calc-panel">
+                <div class="row g-3 align-items-end">
                     <div class="col-md-2">
-                        <div class="header-box-label">Current Dues</div>
-                        <input type="number" id="totalFee" class="form-control calc-input bg-white" value="0" readonly>
+                        <div class="calc-label">Selected Dues</div>
+                        <input type="number" id="selectedTotal" class="form-control calc-input" value="0" readonly>
                     </div>
                     <div class="col-md-2">
-                        <div class="header-box-label">Late Fee / Fine</div>
-                        <input type="number" id="fineAmt" class="form-control calc-input" value="0"
-                            onkeyup="calculateNet()">
+                        <div class="calc-label">Previous Balance</div>
+                        <input type="number" id="prevBalance" class="form-control calc-input text-danger" value="0"
+                            readonly style="background: #fef2f2;">
+                    </div>
+                    <div class="col-md-1">
+                        <div class="calc-label">Fine (+)</div>
+                        <input type="number" id="fineAmt" class="form-control calc-input" value="0" min="0"
+                            oninput="calculateNet()">
+                    </div>
+                    <div class="col-md-1">
+                        <div class="calc-label">Discount (-)</div>
+                        <input type="number" id="discountAmt" class="form-control calc-input" value="0" min="0"
+                            oninput="calculateNet()">
                     </div>
                     <div class="col-md-2">
-                        <div class="header-box-label">Discount</div>
-                        <input type="number" id="discountAmt" class="form-control calc-input" value="0"
-                            onkeyup="calculateNet()">
+                        <div class="calc-label">Net Payable</div>
+                        <input type="number" id="netPayable" class="form-control calc-input text-primary fw-bold"
+                            value="0" readonly style="background: #eef2ff;">
                     </div>
                     <div class="col-md-2">
-                        <div class="header-box-label">Net Payable</div>
-                        <input type="number" id="netFee" class="form-control calc-input text-primary" value="0" readonly
-                            style="background:#eef2ff;">
+                        <div class="calc-label text-success">Amount Received</div>
+                        <input type="number" id="amountPaid" class="form-control calc-input big-amount green-box"
+                            value="0" min="0" oninput="calculateBalance()">
                     </div>
                     <div class="col-md-2">
-                        <div class="header-box-label" style="background:#059669;">Amt. Received</div>
-                        <input type="number" id="amountPaid" class="form-control big-green-box" value="0"
-                            onkeyup="calculateBalance()">
-                    </div>
-                    <div class="col-md-2">
-                        <div class="header-box-label" style="background:#dc2626;">Balance</div>
-                        <input type="number" id="newBalance" class="form-control big-red-box" value="0" readonly>
+                        <div class="calc-label text-danger">Balance Due</div>
+                        <input type="number" id="balanceDue" class="form-control calc-input big-amount red-box"
+                            value="0" readonly>
                     </div>
                 </div>
 
-                <div class="row g-3 mt-2 align-items-end">
+                <div class="row g-3 mt-3 align-items-end">
                     <div class="col-md-2">
-                        <label class="label-text">Payment Mode</label>
-                        <select class="form-select fw-bold" id="payMode" style="height:45px; border:2px solid #d1d5db;">
+                        <div class="calc-label">Payment Mode</div>
+                        <select id="payMode" class="form-select calc-input">
                             <option value="Cash">💵 Cash</option>
-                            <option value="UPI">📱 UPI / QR</option>
+                            <option value="UPI">📱 UPI</option>
                             <option value="Cheque">🏦 Cheque</option>
                             <option value="Bank Transfer">🏛️ Bank Transfer</option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="label-text">Remarks / Transaction Details</label>
-                        <input type="text" id="remarks" class="form-control" placeholder="Optional notes..."
-                            style="height:45px;">
+                        <div class="calc-label">Remarks (Optional)</div>
+                        <input type="text" id="remarks" class="form-control calc-input"
+                            placeholder="Transaction ID, Cheque No, etc.">
                     </div>
-                    <div class="col-md-3">
-                        <label class="label-text">Previous Balance</label>
-                        <input type="number" id="oldBalance" class="form-control fw-bold text-danger" value="0" readonly
-                            style="height:45px; background:#fff5f5; border: 1px solid #feb2b2;">
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-success w-100 fw-bold btn-lg shadow" onclick="submitPayment()"
-                            style="height:60px; background:#059669; border:none; font-size: 18px;">
-                            <i class="fas fa-file-invoice-dollar me-2"></i> PAY & PRINT
+                    <div class="col-md-6">
+                        <button class="btn btn-success pay-btn w-100" onclick="submitPayment()">
+                            <i class="fas fa-file-invoice-dollar me-2"></i>PAY & PRINT RECEIPT
                         </button>
                     </div>
                 </div>
@@ -573,310 +507,320 @@
         let currentStudentId = null;
         let currentDuesData = [];
         let paidMonthsList = [];
-        let currentMonth = "";
-
+        let previousBalance = 0;
         const MONTHS = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"];
 
         // =====================
         // INITIALIZATION
         // =====================
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('todayDate').innerText = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-            initMonthStrip();
-            checkUrlParams();
-        });
-
-        function initMonthStrip() {
-            const strip = document.getElementById('monthStrip');
             const today = new Date();
-            const monthMap = { 0: "Jan", 1: "Feb", 2: "Mar", 3: "Apr", 4: "May", 5: "Jun", 6: "Jul", 7: "Aug", 8: "Sep", 9: "Oct", 10: "Nov", 11: "Dec" };
-            currentMonth = monthMap[today.getMonth()];
-            document.getElementById('currentMonth').innerText = currentMonth + " " + today.getFullYear();
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            document.getElementById('currentMonth').innerText = monthNames[today.getMonth()] + " " + today.getFullYear();
+            document.getElementById('todayDate').innerText = today.toLocaleDateString('en-GB');
 
-            MONTHS.forEach(m => {
-                const isCurrent = m === currentMonth;
-                strip.innerHTML += `
-                    <label class="month-chk" id="month-label-${m}">
-                        <input type="checkbox" class="m-chk" value="${m}" onchange="recalculateTotal()"> 
-                        ${m} ${isCurrent ? '<span class="badge bg-warning text-dark" style="font-size:9px;">NOW</span>' : ''}
-                    </label>
-                `;
-            });
-        }
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
-
-        function toggleAll(el) {
-            document.querySelectorAll('.m-chk').forEach(c => {
-                if (!c.parentElement.classList.contains('paid-month')) {
-                    c.checked = el.checked;
-                }
-            });
-            recalculateTotal();
-        }
-
-        // =====================
-        // SEARCH FUNCTIONALITY
-        // =====================
-        async function searchStudent() {
-            let q = document.getElementById('searchInput').value;
-            let drop = document.getElementById('searchDropdown');
-            if (q.length < 2) { drop.style.display = 'none'; return; }
-
-            let res = await fetch(`/students/api/filter?search=${q}`);
-            let data = await res.json();
-
-            drop.innerHTML = '';
-            if (data.length > 0) {
-                drop.style.display = 'block';
-                data.forEach(s => {
-                    // ✅ FIX: Show balance if > 0, otherwise show neutral "View Dues"
-                    let balText = s.current_balance > 0
-                        ? `<span class='text-danger ms-2 fw-bold'>Balance: ₹${s.current_balance}</span>`
-                        : '<span class="text-primary ms-2"><i class="fas fa-eye"></i> View Dues</span>';
-                    drop.innerHTML += `
-                        <div class="search-item" onclick="selectStudent(${s.id})">
-                            <strong>${s.student_name}</strong> 
-                            <span class="text-muted">(${s.class_val?.class_name || 'N/A'})</span> 
-                            ${balText}
-                        </div>
-                    `;
-                });
-            }
-        }
-
-        function checkUrlParams() {
+            // Check URL params for direct student load
             const urlParams = new URLSearchParams(window.location.search);
             const studentId = urlParams.get('id');
-            if (studentId) {
-                selectStudent(parseInt(studentId));
+            if (studentId) selectStudent(parseInt(studentId));
+        });
+
+        // =====================
+        // SEARCH
+        // =====================
+        document.getElementById('searchInput').addEventListener('input', async function () {
+            const q = this.value.trim();
+            const dropdown = document.getElementById('searchDropdown');
+
+            if (q.length < 2) {
+                dropdown.style.display = 'none';
+                return;
             }
-        }
+
+            try {
+                const res = await fetch(`/students/api/filter?search=${encodeURIComponent(q)}`);
+                const students = await res.json();
+
+                if (students.length > 0) {
+                    dropdown.innerHTML = students.map(s => {
+                        const dueText = s.current_balance > 0
+                            ? `<span class="badge bg-danger">Balance: ₹${s.current_balance}</span>`
+                            : `<span class="badge bg-success">Clear</span>`;
+                        return `
+                            <div class="search-item" onclick="selectStudent(${s.id})">
+                                <div>
+                                    <strong>${s.student_name}</strong>
+                                    <small class="text-muted ms-2">(${s.admission_no})</small>
+                                    <small class="text-primary ms-2">${s.class_val?.class_name || 'N/A'}</small>
+                                </div>
+                                ${dueText}
+                            </div>
+                        `;
+                    }).join('');
+                    dropdown.style.display = 'block';
+                } else {
+                    dropdown.innerHTML = '<div class="p-3 text-muted">No students found</div>';
+                    dropdown.style.display = 'block';
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        });
+
+        // Close dropdown on outside click
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) {
+                document.getElementById('searchDropdown').style.display = 'none';
+            }
+        });
 
         // =====================
         // STUDENT SELECTION
         // =====================
         async function selectStudent(studentId) {
-            document.getElementById('loadingOverlay').style.display = 'block';
             document.getElementById('searchDropdown').style.display = 'none';
             document.getElementById('searchInput').value = '';
 
             try {
-                // Fetch dues using new API
-                let res = await fetch(`/api/v1/fee-ledger/dues/${studentId}`);
-                let data = await res.json();
+                const res = await fetch(`/api/v1/fee-ledger/dues/${studentId}`);
+                const data = await res.json();
 
                 currentStudentId = studentId;
-                currentDuesData = data.dues;
+                currentDuesData = data.dues || [];
                 paidMonthsList = data.paid_months || [];
+                previousBalance = data.student.current_balance || 0;
 
-                // Update UI
-                populateStudentInfo(data.student);
-                updateMonthStrip();
+                // Populate student info
+                const s = data.student;
+                document.getElementById('pName').innerText = s.name;
+                document.getElementById('pFather').innerText = s.father_name;
+                document.getElementById('pClass').innerText = s.class_name + (s.section_name ? ` (${s.section_name})` : '');
+                document.getElementById('pAdm').innerText = s.admission_no;
+                document.getElementById('pMobile').innerText = s.mobile;
+
+                if (s.photo) {
+                    document.getElementById('pPhoto').src = s.photo.startsWith('http') ? s.photo : '/static/uploads/students/' + s.photo;
+                }
+
+                // Set previous balance
+                document.getElementById('prevBalance').value = previousBalance;
+
+                // Calculate grand total (unpaid dues + previous balance)
+                const unpaidDue = currentDuesData.filter(d => d.status !== 'Paid').reduce((sum, d) => sum + d.amount, 0);
+                document.getElementById('totalDueDisplay').innerText = (unpaidDue + previousBalance).toLocaleString();
+
+                // Build month strip
+                buildMonthStrip();
+
+                // Build fee table
                 renderFeeTable();
-                document.getElementById('totalDueDisplay').innerText = data.total_due.toFixed(0);
-                document.getElementById('oldBalance').value = data.student.current_balance || 0;
 
                 document.getElementById('mainPanel').style.display = 'block';
+
             } catch (err) {
                 console.error(err);
-                alert("Error loading student data");
-            }
-
-            document.getElementById('loadingOverlay').style.display = 'none';
-        }
-
-        function populateStudentInfo(s) {
-            document.getElementById('pName').innerText = s.name;
-            document.getElementById('pFather').innerText = s.father_name;
-            document.getElementById('pClass').innerText = s.class_name + (s.section_name ? ' (' + s.section_name + ')' : '');
-            document.getElementById('pAdm').innerText = s.admission_no;
-            document.getElementById('pId').innerText = currentStudentId;
-            document.getElementById('pMobile').innerText = s.mobile;
-
-            // Photo
-            let photoEl = document.getElementById('pPhoto');
-            if (s.photo) {
-                photoEl.src = s.photo.startsWith('http') ? s.photo : '/static/uploads/students/' + s.photo;
-            } else {
-                photoEl.src = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+                alert('Error loading student data');
             }
         }
 
-        function updateMonthStrip() {
-            MONTHS.forEach(m => {
-                let label = document.getElementById(`month-label-${m}`);
-                let checkbox = label?.querySelector('input');
-                if (label && checkbox) {
-                    if (paidMonthsList.includes(m)) {
-                        label.classList.add('paid-month');
-                        checkbox.checked = false;
-                        checkbox.disabled = true;
-                    } else {
-                        label.classList.remove('paid-month');
-                        checkbox.disabled = false;
-                    }
-                }
+        function buildMonthStrip() {
+            const strip = document.getElementById('monthStrip');
+            strip.innerHTML = MONTHS.map(m => {
+                const isPaid = paidMonthsList.includes(m);
+                const cssClass = isPaid ? 'month-btn paid' : 'month-btn';
+                const icon = isPaid ? '<i class="fas fa-check me-1"></i>' : '';
+                return `<button class="${cssClass}" data-month="${m}" ${isPaid ? 'disabled' : ''} onclick="toggleMonth(this)">${icon}${m}</button>`;
+            }).join('');
+        }
+
+        function toggleMonth(btn) {
+            btn.classList.toggle('selected');
+            renderFeeTable();
+        }
+
+        function selectAllUnpaidMonths() {
+            document.querySelectorAll('.month-btn:not(.paid)').forEach(btn => {
+                btn.classList.add('selected');
             });
+            renderFeeTable();
         }
 
         // =====================
-        // FEE TABLE RENDERING
+        // FEE TABLE
         // =====================
         function renderFeeTable() {
-            let tbody = document.getElementById('feeTableBody');
-            tbody.innerHTML = '';
-            let initialTotal = 0;
+            const tbody = document.getElementById('feeTableBody');
+            const selectedMonths = [...document.querySelectorAll('.month-btn.selected')].map(btn => btn.dataset.month);
 
-            if (currentDuesData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center p-3 text-muted">No fee structure found for this student</td></tr>';
+            // Filter dues for selected unpaid months
+            const filteredDues = currentDuesData.filter(d =>
+                d.status !== 'Paid' && selectedMonths.includes(d.month)
+            );
+
+            if (filteredDues.length === 0 && previousBalance <= 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">Select months above to see dues</td></tr>';
+                updateCalculations([]);
                 return;
             }
 
-            currentDuesData.forEach((d, idx) => {
-                let isPaid = d.status === 'Paid';
-                let checkHtml = isPaid
-                    ? `<span class="badge bg-success">PAID</span>`
-                    : `<input type="checkbox" class="form-check-input fee-row-check" data-amount="${d.amount}" data-month="${d.month}" data-head="${d.fee_head}" onchange="recalculateTotal()">`;
+            let html = '';
 
-                let statusBadge = isPaid
-                    ? `<span class="badge bg-success">✓ Paid</span>`
-                    : `<span class="badge bg-danger">Due</span>`;
+            // Add previous balance row if exists
+            if (previousBalance > 0) {
+                html += `
+                    <tr style="background: #fef3c7;">
+                        <td class="text-center">
+                            <input type="checkbox" class="fee-item-check" data-amount="${previousBalance}" data-head="Previous Balance" data-month="Carried" checked>
+                        </td>
+                        <td class="fw-bold"><i class="fas fa-history me-2 text-warning"></i>Previous Balance (Carry Forward)</td>
+                        <td><span class="badge bg-warning text-dark">Old Dues</span></td>
+                        <td class="text-end fw-bold text-danger">₹ ${previousBalance.toLocaleString()}</td>
+                        <td class="text-center"><span class="badge bg-warning text-dark">Pending</span></td>
+                    </tr>
+                `;
+            }
 
-                if (!isPaid) initialTotal += d.amount;
-
-                tbody.innerHTML += `
-                    <tr class="${isPaid ? 'paid-row' : ''}">
-                        <td class="text-center">${checkHtml}</td>
+            // Add current dues
+            filteredDues.forEach(d => {
+                html += `
+                    <tr>
+                        <td class="text-center">
+                            <input type="checkbox" class="fee-item-check" data-amount="${d.amount}" data-head="${d.fee_head}" data-month="${d.month}">
+                        </td>
                         <td>${d.fee_head}</td>
-                        <td><span class="badge bg-secondary">${d.month}</span></td>
+                        <td><span class="badge bg-danger">${d.month}</span></td>
                         <td class="text-end fw-bold">₹ ${d.amount.toLocaleString()}</td>
-                        <td class="text-center">${statusBadge}</td>
+                        <td class="text-center"><span class="badge bg-danger">Due</span></td>
                     </tr>
                 `;
             });
 
-            updateFooterValues(initialTotal);
+            tbody.innerHTML = html;
+
+            // Add event listeners to checkboxes
+            document.querySelectorAll('.fee-item-check').forEach(cb => {
+                cb.addEventListener('change', () => updateCalculations());
+            });
+
+            updateCalculations();
+        }
+
+        function toggleAllItems(masterCheckbox) {
+            document.querySelectorAll('.fee-item-check').forEach(cb => {
+                cb.checked = masterCheckbox.checked;
+            });
+            updateCalculations();
         }
 
         // =====================
         // CALCULATIONS
         // =====================
-        function recalculateTotal() {
-            // ✅ FIX: Sync month strip checkboxes with fee table checkboxes
-            document.querySelectorAll('.m-chk').forEach(monthChk => {
-                let month = monthChk.value;
-                let isMonthChecked = monthChk.checked;
-
-                // Find all fee rows for this month and check/uncheck them
-                document.querySelectorAll('.fee-row-check').forEach(rowChk => {
-                    if (rowChk.getAttribute('data-month') === month) {
-                        rowChk.checked = isMonthChecked;
-                    }
-                });
+        function updateCalculations() {
+            const checked = document.querySelectorAll('.fee-item-check:checked');
+            let selectedTotal = 0;
+            checked.forEach(cb => {
+                selectedTotal += parseFloat(cb.dataset.amount) || 0;
             });
-
-            // Now calculate total from checked fee rows
-            let total = 0;
-            document.querySelectorAll('.fee-row-check:checked').forEach(chk => {
-                total += parseFloat(chk.getAttribute('data-amount'));
-            });
-            updateFooterValues(total);
-        }
-
-        function updateFooterValues(total) {
-            document.getElementById('totalFee').value = total;
-            document.getElementById('fineAmt').value = 0;
-            document.getElementById('discountAmt').value = 0;
+            document.getElementById('selectedTotal').value = selectedTotal;
             calculateNet();
         }
 
         function calculateNet() {
-            let total = parseFloat(document.getElementById('totalFee').value) || 0;
-            let fine = parseFloat(document.getElementById('fineAmt').value) || 0;
-            let discount = parseFloat(document.getElementById('discountAmt').value) || 0;
-            let oldBalance = parseFloat(document.getElementById('oldBalance').value) || 0;
+            const selected = parseFloat(document.getElementById('selectedTotal').value) || 0;
+            const fine = parseFloat(document.getElementById('fineAmt').value) || 0;
+            const discount = parseFloat(document.getElementById('discountAmt').value) || 0;
 
-            let net = total + fine - discount;
-            let grandTotal = net + oldBalance;
+            const net = selected + fine - discount;
+            document.getElementById('netPayable').value = net;
 
-            document.getElementById('netFee').value = net.toFixed(0);
-            document.getElementById('amountPaid').value = grandTotal.toFixed(0);
+            // Auto-set amount paid to net payable if empty
+            const paid = document.getElementById('amountPaid');
+            if (parseFloat(paid.value) === 0 && net > 0) {
+                paid.value = net;
+            }
+
             calculateBalance();
         }
 
         function calculateBalance() {
-            let net = parseFloat(document.getElementById('netFee').value) || 0;
-            let old = parseFloat(document.getElementById('oldBalance').value) || 0;
-            let paid = parseFloat(document.getElementById('amountPaid').value) || 0;
-            document.getElementById('newBalance').value = (net + old - paid).toFixed(0);
+            const net = parseFloat(document.getElementById('netPayable').value) || 0;
+            const paid = parseFloat(document.getElementById('amountPaid').value) || 0;
+            const balance = net - paid;
+            document.getElementById('balanceDue').value = balance > 0 ? balance : 0;
         }
 
         // =====================
         // PAYMENT SUBMISSION
         // =====================
         async function submitPayment() {
-            let amountPaid = parseFloat(document.getElementById('amountPaid').value) || 0;
-            if (amountPaid <= 0) return alert("Please enter amount received!");
-
-            // Collect selected items
-            let itemsToSubmit = [];
-            let selectedMonths = [];
-
-            document.querySelectorAll('.fee-row-check:checked').forEach(chk => {
-                itemsToSubmit.push({
-                    head: chk.getAttribute('data-head'),
-                    month: chk.getAttribute('data-month'),
-                    amount: parseFloat(chk.getAttribute('data-amount'))
-                });
-
-                let m = chk.getAttribute('data-month');
-                if (!selectedMonths.includes(m)) selectedMonths.push(m);
-            });
-
-            if (itemsToSubmit.length === 0) {
-                return alert("Please select at least one fee item!");
+            const paid = parseFloat(document.getElementById('amountPaid').value) || 0;
+            if (paid <= 0) {
+                alert('Please enter amount received');
+                return;
             }
 
-            let payload = {
+            const checkedItems = document.querySelectorAll('.fee-item-check:checked');
+            if (checkedItems.length === 0) {
+                alert('Please select at least one fee item');
+                return;
+            }
+
+            // Build selected items array
+            const selectedItems = [];
+            const selectedMonths = new Set();
+
+            checkedItems.forEach(cb => {
+                selectedItems.push({
+                    fee_head: cb.dataset.head,
+                    month: cb.dataset.month,
+                    amount: parseFloat(cb.dataset.amount)
+                });
+                if (cb.dataset.month !== 'Carried') {
+                    selectedMonths.add(cb.dataset.month);
+                }
+            });
+
+            const payload = {
                 student_id: currentStudentId,
-                selected_months: selectedMonths,
+                selected_months: [...selectedMonths],
+                selected_items: selectedItems,
                 payment_mode: document.getElementById('payMode').value,
                 discount: parseFloat(document.getElementById('discountAmt').value) || 0,
                 fine: parseFloat(document.getElementById('fineAmt').value) || 0,
-                amount_received: amountPaid,
-                remarks: document.getElementById('remarks').value,
-                items: itemsToSubmit
+                amount_received: paid,
+                remarks: document.getElementById('remarks').value
             };
 
-            document.getElementById('loadingOverlay').style.display = 'block';
+            document.getElementById('loadingOverlay').style.display = 'flex';
 
             try {
-                let res = await fetch('/api/v1/fee-ledger/collect', {
+                const res = await fetch('/api/v1/fee-ledger/pay', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
 
-                if (res.ok) {
-                    let data = await res.json();
-                    alert("✅ Payment Successful! Receipt: " + data.receipt_no);
-                    window.open('/print/receipt?id=' + data.receipt_no, '_blank');
-                    location.reload();
+                const result = await res.json();
+
+                if (res.ok && result.success) {
+                    // Open receipt in new window
+                    window.open(`/print/receipt?receipt=${result.receipt_no}`, '_blank');
+
+                    // Reload to show updated data
+                    setTimeout(() => {
+                        window.location.href = `/fees/collect?id=${currentStudentId}`;
+                    }, 1000);
                 } else {
-                    let err = await res.json();
-                    alert("Error: " + (err.detail || "Payment failed"));
+                    alert(result.detail || 'Payment failed');
                 }
-            } catch (e) {
-                alert("Network error. Please try again.");
+            } catch (err) {
+                console.error(err);
+                alert('Network error');
             }
 
             document.getElementById('loadingOverlay').style.display = 'none';
         }
     </script>
-
 </body>
 
 </html>

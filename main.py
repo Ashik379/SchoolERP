@@ -9,25 +9,22 @@ from fastapi.middleware.cors import CORSMiddleware
 from models import communication
 
 # --- IMPORT ROUTERS (APIs) ---
-from routers import dashboard, masters, students, fees, collection, results, auth, attendance, website, communication
+from routers import dashboard, masters, students, results, auth, attendance, website, communication
 from routers.exams import router as exams_router 
 from routers import student_api
 from routers import bulk_import
 from routers import student_lifecycle
-from routers import fee_ledger  # ✅ NEW Fee Ledger Router
+from routers import fee_ledger  # Fee Ledger System (Unified)
 
 # --- IMPORT MODELS ---
 from models.students import Student
 from models.masters import ClassMaster, TransportMaster, SectionMaster, LedgerMaster
-from models.transactions import FeeTransaction
-from models.fees import FeeItem, FeePlan 
-from models.paid_history import PaidMonth
 from models.exams import Subject, ClassSubject, ExamType, ExamSchedule
 from models.attendance import StudentAttendance 
 from models.holidays import Holiday 
 from models.website import WebsiteUpdate, StudentTopper 
 from models.communication import MessageLog 
-from models.fee_models import FeeHeadMaster, FeeStructure, StudentFeeLedger, ReceiptCounter  # ✅ NEW Fee Models
+from models.fee_models import FeeHeadMaster, FeeStructure, StudentFeeLedger, ReceiptCounter
 
 # --- CREATE DATABASE TABLES ---
 Base.metadata.create_all(bind=engine)
@@ -87,8 +84,6 @@ templates = Jinja2Templates(directory="templates")
 app.include_router(dashboard.router)
 app.include_router(masters.router)
 app.include_router(students.router)
-app.include_router(fees.router)
-app.include_router(collection.router)
 app.include_router(exams_router) 
 app.include_router(results.router)
 app.include_router(attendance.router) 
@@ -98,7 +93,7 @@ app.include_router(communication.router)
 app.include_router(student_api.router)
 app.include_router(bulk_import.router)
 app.include_router(student_lifecycle.router)
-app.include_router(fee_ledger.router)  # ✅ NEW Fee Ledger Router
+app.include_router(fee_ledger.router)  # Fee Ledger System (Unified)
 
 # ===========================
 #   WEB PAGES (Admin Panel)
@@ -132,13 +127,9 @@ def print_admission_page(request: Request):
 def fee_collect_page(request: Request):
     return templates.TemplateResponse("fee_collect.html", {"request": request})
 
-@app.get("/fees/master", response_class=HTMLResponse)
-def fee_master_page(request: Request):
-    return templates.TemplateResponse("fee_master.html", {"request": request})
-
-@app.get("/fees/schedule", response_class=HTMLResponse)
-def fee_schedule_page(request: Request):
-    return templates.TemplateResponse("fee_schedule.html", {"request": request})
+@app.get("/fees/setup", response_class=HTMLResponse)
+def fee_setup_page(request: Request):
+    return templates.TemplateResponse("fee_setup.html", {"request": request})
 
 @app.get("/masters/class", response_class=HTMLResponse)
 def class_master_page(request: Request):
