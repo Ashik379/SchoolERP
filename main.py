@@ -90,7 +90,35 @@ def run_migrations():
             
             print("✅ Database migrations completed successfully!")
         else:
-            print("ℹ️ SQLite detected - skipping PostgreSQL migrations")
+            # SQLite migrations - need to check if column exists first
+            print("ℹ️ SQLite detected - running SQLite-compatible migrations")
+            
+            # Helper function to check if column exists in SQLite
+            def column_exists(table_name: str, column_name: str) -> bool:
+                result = db.execute(text(f"PRAGMA table_info({table_name})"))
+                columns = [row[1] for row in result.fetchall()]
+                return column_name in columns
+            
+            # SQLite migrations for students table
+            sqlite_migrations = [
+                ("students", "calculated_dues", "ALTER TABLE students ADD COLUMN calculated_dues FLOAT DEFAULT 0.0"),
+                ("students", "current_balance", "ALTER TABLE students ADD COLUMN current_balance FLOAT DEFAULT 0.0"),
+                ("students", "is_result_withheld", "ALTER TABLE students ADD COLUMN is_result_withheld BOOLEAN DEFAULT 0"),
+                ("students", "withhold_reason", "ALTER TABLE students ADD COLUMN withhold_reason VARCHAR(500)"),
+                ("classes", "is_result_published", "ALTER TABLE classes ADD COLUMN is_result_published BOOLEAN DEFAULT 0"),
+            ]
+            
+            for table, column, sql in sqlite_migrations:
+                try:
+                    if not column_exists(table, column):
+                        db.execute(text(sql))
+                        db.commit()
+                        print(f"✅ Added column {column} to {table}")
+                except Exception as e:
+                    db.rollback()
+                    print(f"Migration note ({table}.{column}): {str(e)[:100]}")
+            
+            print("✅ SQLite migrations completed!")
             
     except Exception as e:
         print(f"⚠️ Migration error (non-critical): {str(e)[:200]}")
