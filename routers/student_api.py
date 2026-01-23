@@ -138,42 +138,40 @@ def student_login(login_data: StudentLogin, db: Session = Depends(get_db)):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-# 2. DASHBOARD API (Main endpoint for frontend Dashboard.jsx)
+# 2. DASHBOARD API
 @router.get("/dashboard", response_model=DashboardResponse)
 def get_dashboard(
     current_student: Student = Depends(get_current_student),
     db: Session = Depends(get_db)
 ):
-    """
-    Get student dashboard with profile and aggregated stats.
-    This is the main endpoint called when Dashboard loads.
-    """
+    """Get student dashboard with profile and aggregated stats."""
+    
     # Build class details
     c_name = current_student.class_val.class_name if current_student.class_val else "N/A"
     sec = current_student.section_val.section_name if current_student.section_val else ""
     class_details = f"{c_name} - {sec}".strip(" -")
     
-    # Calculate attendance percentage
+    # ✅ Calculate attendance (Using "P" not "Present")
     total_days = db.query(func.count(StudentAttendance.id)).filter(
         StudentAttendance.student_id == current_student.id
     ).scalar() or 0
     
     present_days = db.query(func.count(StudentAttendance.id)).filter(
         StudentAttendance.student_id == current_student.id,
-        StudentAttendance.status == "Present"
+        StudentAttendance.status == "P"  # ✅ FIXED: Using "P" instead of "Present"
     ).scalar() or 0
     
     attendance_pct = round((present_days / total_days * 100) if total_days > 0 else 0)
     
-    # Calculate fees due (using current_balance from student)
+    # ✅ Calculate fees due
     fees_due = float(current_student.current_balance or 0) + float(current_student.calculated_dues or 0)
     
-    # Get latest result
+    # ✅ Get latest result
     latest_result = db.query(Result).filter(
         Result.student_id == current_student.id
     ).order_by(Result.id.desc()).first()
     
-    result_text = latest_result.grade if latest_result and hasattr(latest_result, 'grade') else "View"
+    result_text = latest_result.grade if latest_result else "View"
     
     return DashboardResponse(
         name=current_student.student_name,
@@ -205,7 +203,7 @@ def read_profile(current_student: Student = Depends(get_current_student)):
     }
 
 
-# 4. RESULTS API
+# 4. RESULTS API ✅
 @router.get("/results", response_model=List[ResultResponse])
 def read_results(
     current_student: Student = Depends(get_current_student), 
@@ -217,17 +215,17 @@ def read_results(
     return [
         ResultResponse(
             id=r.id,
-            exam_name=r.exam_name if hasattr(r, 'exam_name') else "Exam",
-            subject=r.subject if hasattr(r, 'subject') else "Subject",
-            marks_obtained=float(r.marks_obtained) if hasattr(r, 'marks_obtained') else 0,
-            total_marks=float(r.total_marks) if hasattr(r, 'total_marks') else 100,
-            grade=r.grade if hasattr(r, 'grade') else None
+            exam_name=r.exam_name or "Exam",
+            subject=r.subject or "Subject",
+            marks_obtained=float(r.marks_obtained) if r.marks_obtained else 0,
+            total_marks=float(r.total_marks) if r.total_marks else 100,
+            grade=r.grade
         )
         for r in results
     ]
 
 
-# 5. ATTENDANCE API
+# 5. ATTENDANCE API ✅
 @router.get("/attendance", response_model=List[AttendanceResponse])
 def get_attendance(
     current_student: Student = Depends(get_current_student),
@@ -238,17 +236,25 @@ def get_attendance(
         StudentAttendance.student_id == current_student.id
     ).order_by(StudentAttendance.date.desc()).limit(90).all()
     
+    # ✅ Map single letter codes to full status names
+    status_map = {
+        "P": "Present",
+        "A": "Absent",
+        "L": "Late",
+        "H": "Half Day"
+    }
+    
     return [
         AttendanceResponse(
             id=a.id,
             date=a.date.isoformat() if a.date else "",
-            status=a.status if a.status else "Absent"
+            status=status_map.get(a.status, "Absent")
         )
         for a in attendance
     ]
 
 
-# 6. FEES / PAYMENT HISTORY API
+# 6. FEES / PAYMENT HISTORY API ✅
 @router.get("/fees", response_model=List[FeeResponse])
 def get_fee_history(
     current_student: Student = Depends(get_current_student),
@@ -264,32 +270,28 @@ def get_fee_history(
             id=f.id,
             receipt_no=f.receipt_no or "",
             transaction_date=f.transaction_date.isoformat() if f.transaction_date else "",
-            paid_amount=float(f.paid_amount or 0),
+            paid_amount=float(f.paid_amount) if f.paid_amount else 0,
             payment_mode=f.payment_mode or "Cash"
         )
         for f in fees
     ]
 
 
-# 7. TIMETABLE API (Placeholder - implement based on your timetable model)
+# 7. TIMETABLE API (Placeholder)
 @router.get("/timetable")
 def get_timetable(
     current_student: Student = Depends(get_current_student),
     db: Session = Depends(get_db)
 ):
     """Get weekly timetable for the student's class."""
-    # TODO: Implement when Timetable model is available
-    # Return empty list for now
     return []
 
 
-# 8. HOMEWORK API (Placeholder - implement based on your homework model)
+# 8. HOMEWORK API (Placeholder)
 @router.get("/homework")
 def get_homework(
     current_student: Student = Depends(get_current_student),
     db: Session = Depends(get_db)
 ):
     """Get homework/assignments for the student's class."""
-    # TODO: Implement when Homework model is available
-    # Return empty list for now
     return []
