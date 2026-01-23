@@ -203,22 +203,49 @@ def read_profile(current_student: Student = Depends(get_current_student)):
     }
 
 
-# 4. RESULTS API ✅ FIXED - Using StudentMark model
+# 4. RESULTS API ✅ WITH VISIBILITY CHECKS
 @router.get("/results")
 def read_results(
     current_student: Student = Depends(get_current_student), 
     db: Session = Depends(get_db)
 ):
-    """Get all exam results for the student using StudentMark table."""
+    """Get exam results only if published and not withheld."""
     from models.exams import StudentMark, ExamType, ExamSchedule, ClassSubject
+    from models.masters import ClassMaster
     
-    # Get all marks for this student
+    # ✅ VISIBILITY CHECK 1: Is class result published?
+    class_info = db.query(ClassMaster).filter(
+        ClassMaster.id == current_student.class_id
+    ).first()
+    
+    if class_info and not class_info.is_result_published:
+        # Results not published for this class
+        return {
+            "visible": False,
+            "message": "Results have not been published yet. Please check back later.",
+            "results": []
+        }
+    
+    # ✅ VISIBILITY CHECK 2: Is student's result withheld?
+    if current_student.is_result_withheld:
+        reason = current_student.withhold_reason or "Please contact the school administration"
+        return {
+            "visible": False,
+            "message": f"Your result has been withheld. Reason: {reason}",
+            "results": []
+        }
+    
+    # ✅ All checks passed - fetch results
     marks = db.query(StudentMark).filter(
         StudentMark.student_id == current_student.id
     ).all()
     
     if not marks:
-        return []
+        return {
+            "visible": True,
+            "message": "",
+            "results": []
+        }
     
     results = []
     for mark in marks:
@@ -259,10 +286,13 @@ def read_results(
             "grade": grade
         })
     
-    return results
+    return {
+        "visible": True,
+        "message": "",
+        "results": results
+    }
 
 
-# Helper function for grade calculation
 def calculate_grade(percentage):
     if percentage >= 91: return "A1"
     elif percentage >= 81: return "A2"
