@@ -190,10 +190,12 @@ app.include_router(attendance.router)
 app.include_router(auth.router) 
 app.include_router(website.router)
 app.include_router(communication.router)
-app.include_router(student_api.router)
 app.include_router(bulk_import.router)
 app.include_router(student_lifecycle.router)
 app.include_router(fee_ledger.router)  # Fee Ledger System (Unified)
+
+# ✅ FIX: Added prefix for Student Portal API
+app.include_router(student_api.router)  # NO prefix needed here
 
 # ===========================
 #   WEB PAGES (Admin Panel)
