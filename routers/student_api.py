@@ -203,26 +203,75 @@ def read_profile(current_student: Student = Depends(get_current_student)):
     }
 
 
-# 4. RESULTS API ✅
-@router.get("/results", response_model=List[ResultResponse])
+# 4. RESULTS API ✅ FIXED - Using StudentMark model
+@router.get("/results")
 def read_results(
     current_student: Student = Depends(get_current_student), 
     db: Session = Depends(get_db)
 ):
-    """Get all exam results for the student."""
-    results = db.query(Result).filter(Result.student_id == current_student.id).all()
+    """Get all exam results for the student using StudentMark table."""
+    from models.exams import StudentMark, ExamType, ExamSchedule, ClassSubject
     
-    return [
-        ResultResponse(
-            id=r.id,
-            exam_name=r.exam_name or "Exam",
-            subject=r.subject or "Subject",
-            marks_obtained=float(r.marks_obtained) if r.marks_obtained else 0,
-            total_marks=float(r.total_marks) if r.total_marks else 100,
-            grade=r.grade
-        )
-        for r in results
-    ]
+    # Get all marks for this student
+    marks = db.query(StudentMark).filter(
+        StudentMark.student_id == current_student.id
+    ).all()
+    
+    if not marks:
+        return []
+    
+    results = []
+    for mark in marks:
+        # Get exam name
+        exam = db.query(ExamType).filter(ExamType.id == mark.exam_id).first()
+        exam_name = exam.exam_name if exam else "Exam"
+        
+        # Get subject name
+        class_subject = db.query(ClassSubject).filter(
+            ClassSubject.subject_id == mark.subject_id,
+            ClassSubject.class_id == current_student.class_id
+        ).first()
+        
+        subject_name = "Subject"
+        if class_subject and class_subject.subject_val:
+            subject_name = class_subject.subject_val.subject_name
+        
+        # Get max marks from schedule
+        schedule = db.query(ExamSchedule).filter(
+            ExamSchedule.exam_id == mark.exam_id,
+            ExamSchedule.subject_id == mark.subject_id,
+            ExamSchedule.class_id == current_student.class_id
+        ).first()
+        
+        max_marks = schedule.max_marks if schedule else 100
+        
+        # Calculate grade
+        marks_obtained = float(mark.marks_obtained) if mark.marks_obtained else 0
+        percentage = (marks_obtained / max_marks * 100) if max_marks > 0 else 0
+        grade = calculate_grade(percentage)
+        
+        results.append({
+            "id": mark.id,
+            "exam_name": exam_name,
+            "subject": subject_name,
+            "marks_obtained": marks_obtained,
+            "total_marks": float(max_marks),
+            "grade": grade
+        })
+    
+    return results
+
+
+# Helper function for grade calculation
+def calculate_grade(percentage):
+    if percentage >= 91: return "A1"
+    elif percentage >= 81: return "A2"
+    elif percentage >= 71: return "B1"
+    elif percentage >= 61: return "B2"
+    elif percentage >= 51: return "C1"
+    elif percentage >= 41: return "C2"
+    elif percentage >= 33: return "D"
+    else: return "E"
 
 
 # 5. ATTENDANCE API ✅
@@ -295,3 +344,30 @@ def get_homework(
 ):
     """Get homework/assignments for the student's class."""
     return []
+
+# 9. FEE STRUCTURE API ✅
+@router.get("/fee-structure")
+def get_fee_structure(
+    current_student: Student = Depends(get_current_student),
+    db: Session = Depends(get_db)
+):
+    """Get fee structure for the student's class."""
+    from models.fee_models import FeeStructure, FeeHeadMaster
+    
+    # Get fee structures for student's class
+    structures = db.query(FeeStructure).filter(
+        FeeStructure.class_id == current_student.class_id,
+        FeeStructure.is_active == True
+    ).all()
+    
+    result = []
+    for s in structures:
+        # Get fee head name
+        fee_head = db.query(FeeHeadMaster).filter(FeeHeadMaster.id == s.fee_head_id).first()
+        result.append({
+            "fee_head": fee_head.head_name if fee_head else "Unknown",
+            "amount": float(s.amount) if s.amount else 0,
+            "frequency": fee_head.frequency if fee_head else "Monthly"
+        })
+    
+    return result
