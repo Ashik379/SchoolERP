@@ -398,8 +398,8 @@
                     <tbody>
                         {% for txn in fees.transactions[:5] %}
                         <tr>
-                            <td>{{ txn.payment_date.strftime('%d %b %Y') if txn.payment_date else 'N/A' }}</td>
-                            <td class="fw-bold text-success">₹{{ "{:,.0f}".format(txn.amount_paid) }}</td>
+                            <td>{{ txn.transaction_date.strftime('%d %b %Y') if txn.transaction_date else 'N/A' }}</td>
+                            <td class="fw-bold text-success">₹{{ "{:,.0f}".format(txn.paid_amount) }}</td>
                             <td><span class="badge-info-soft">{{ txn.payment_mode or 'Cash' }}</span></td>
                         </tr>
                         {% endfor %}
