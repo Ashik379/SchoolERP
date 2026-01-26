@@ -752,9 +752,17 @@
             }
 
             allStudents.forEach(s => {
-                let photoUrl = s.student_photo
-                    ? `/static/uploads/students/${s.student_photo}`
-                    : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+                // Handle both Cloudinary URLs and local file names
+                let photoUrl = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'; // Default
+                if (s.student_photo) {
+                    if (s.student_photo.startsWith('http')) {
+                        // Cloudinary or external URL
+                        photoUrl = s.student_photo;
+                    } else {
+                        // Local file path
+                        photoUrl = `/static/uploads/students/${s.student_photo}`;
+                    }
+                }
 
                 let statusBadge = s.status
                     ? '<span class="status-badge status-active">Active</span>'

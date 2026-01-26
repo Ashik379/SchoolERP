@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,161 +8,261 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #f0f2f5; font-family: 'Segoe UI', sans-serif; }
-        
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
         /* Navbar */
-        .navbar { background: #1e3c72; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .navbar-brand { font-weight: bold; color: white !important; font-size: 18px; }
-        .btn-logout { background: rgba(255,255,255,0.2); color: white; border: none; font-size: 13px; }
+        .navbar {
+            background: #1e3c72;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: white !important;
+            font-size: 18px;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            font-size: 13px;
+        }
 
         /* Profile Card */
-        .profile-card { background: white; border-radius: 15px; padding: 20px; text-align: center; margin-top: -40px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-        .student-img { width: 100px; height: 120px; object-fit: cover; border-radius: 10px; border: 3px solid #fff; box-shadow: 0 3px 10px rgba(0,0,0,0.2); }
-        .student-name { font-size: 20px; font-weight: bold; margin-top: 10px; color: #333; }
-        .student-meta { font-size: 13px; color: #666; font-weight: 500; }
-        
-        /* Stats Grid */
-        .stat-card { background: white; border-radius: 12px; padding: 15px; border-left: 5px solid #1e3c72; box-shadow: 0 2px 10px rgba(0,0,0,0.03); height: 100%; }
-        .stat-label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
-        .stat-value { font-size: 22px; font-weight: bold; color: #333; margin-top: 5px; }
-        
-        /* Menu Grid */
-        .menu-btn { background: white; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; border: 1px solid #eee; display: block; text-decoration: none; color: #333; }
-        .menu-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-color: #1e3c72; }
-        .menu-icon { font-size: 30px; margin-bottom: 10px; color: #1e3c72; }
-        .menu-text { font-weight: 600; font-size: 14px; }
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-top: -40px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
 
-        .header-bg { background: #1e3c72; height: 150px; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
+        .student-img {
+            width: 100px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid #fff;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .student-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #333;
+        }
+
+        .student-meta {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Stats Grid */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            border-left: 5px solid #1e3c72;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            height: 100%;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        /* Menu Grid */
+        .menu-btn {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid #eee;
+            display: block;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .menu-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-color: #1e3c72;
+        }
+
+        .menu-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+            color: #1e3c72;
+        }
+
+        .menu-text {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .header-bg {
+            background: #1e3c72;
+            height: 150px;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="header-bg">
-    <nav class="navbar px-3">
-        <a class="navbar-brand" href="#"><i class="fas fa-university me-2"></i>Vidya Vikas ERP</a>
-        <a href="/auth/login" class="btn btn-sm btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
-    </nav>
-</div>
-
-<div class="container pb-5">
-    <div class="profile-card">
-        <img id="sPhoto" src="" class="student-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
-        <div class="student-name" id="sName">Loading...</div>
-        <div class="student-meta">
-            <span id="sAdm">...</span> | Class: <span id="sClass">...</span>
-        </div>
-        <div class="badge bg-success mt-2">Active Student</div>
+    <div class="header-bg">
+        <nav class="navbar px-3">
+            <a class="navbar-brand" href="#"><i class="fas fa-university me-2"></i>Vidya Vikas ERP</a>
+            <a href="/auth/login" class="btn btn-sm btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
     </div>
 
-    <div class="row g-3 mt-3">
-        <div class="col-6">
-            <div class="stat-card" style="border-left-color: #dc3545;">
-                <div class="stat-label">Fee Due</div>
-                <div class="stat-value text-danger">₹ <span id="sDue">0</span></div>
+    <div class="container pb-5">
+        <div class="profile-card">
+            <img id="sPhoto" src="" class="student-img"
+                onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+            <div class="student-name" id="sName">Loading...</div>
+            <div class="student-meta">
+                <span id="sAdm">...</span> | Class: <span id="sClass">...</span>
+            </div>
+            <div class="badge bg-success mt-2">Active Student</div>
+        </div>
+
+        <div class="row g-3 mt-3">
+            <div class="col-6">
+                <div class="stat-card" style="border-left-color: #dc3545;">
+                    <div class="stat-label">Fee Due</div>
+                    <div class="stat-value text-danger">₹ <span id="sDue">0</span></div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="stat-card" style="border-left-color: #28a745;">
+                    <div class="stat-label">Attendance</div>
+                    <div class="stat-value text-success" id="sAttendance">--%</div>
+                </div>
             </div>
         </div>
-        <div class="col-6">
-            <div class="stat-card" style="border-left-color: #28a745;">
-                <div class="stat-label">Attendance</div>
-                <div class="stat-value text-success" id="sAttendance">--%</div>
+
+        <h6 class="mt-4 mb-3 text-muted fw-bold ps-1">QUICK ACTIONS</h6>
+        <div class="row g-3">
+            <div class="col-6 col-md-3">
+                <a href="javascript:void(0)" onclick="goToFees()" class="menu-btn">
+                    <i class="fas fa-file-invoice-dollar menu-icon text-danger"></i>
+                    <div class="menu-text">Fees & Receipts</div>
+                </a>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <a href="javascript:void(0)" onclick="goToResults()" class="menu-btn">
+                    <i class="fas fa-poll menu-icon text-primary"></i>
+                    <div class="menu-text">Exam Results</div>
+                </a>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <a href="javascript:void(0)" onclick="goToAttendance()" class="menu-btn">
+                    <i class="fas fa-calendar-check menu-icon text-success"></i>
+                    <div class="menu-text">Attendance</div>
+                </a>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <a href="javascript:void(0)" onclick="goToProfile()" class="menu-btn">
+                    <i class="fas fa-user menu-icon text-warning"></i>
+                    <div class="menu-text">My Profile</div>
+                </a>
             </div>
         </div>
     </div>
 
-    <h6 class="mt-4 mb-3 text-muted fw-bold ps-1">QUICK ACTIONS</h6>
-    <div class="row g-3">
-        <div class="col-6 col-md-3">
-            <a href="javascript:void(0)" onclick="goToFees()" class="menu-btn">
-                <i class="fas fa-file-invoice-dollar menu-icon text-danger"></i>
-                <div class="menu-text">Fees & Receipts</div>
-            </a>
-        </div>
+    <script>
+        // URL se Student ID uthana
+        const pathParts = window.location.pathname.split('/');
+        const studentId = pathParts[pathParts.length - 1];
 
-        <div class="col-6 col-md-3">
-            <a href="javascript:void(0)" onclick="goToResults()" class="menu-btn">
-                <i class="fas fa-poll menu-icon text-primary"></i>
-                <div class="menu-text">Exam Results</div>
-            </a>
-        </div>
+        async function loadDashboard() {
+            if (!studentId) return;
 
-        <div class="col-6 col-md-3">
-            <a href="javascript:void(0)" onclick="goToAttendance()" class="menu-btn">
-                <i class="fas fa-calendar-check menu-icon text-success"></i>
-                <div class="menu-text">Attendance</div>
-            </a>
-        </div>
+            try {
+                // Humare backend API (/students/{id}) se data fetch ho raha hai
+                let res = await fetch(`/students/${studentId}`);
+                if (res.ok) {
+                    let s = await res.json();
 
-        <div class="col-6 col-md-3">
-    <a href="javascript:void(0)" onclick="goToProfile()" class="menu-btn">
-        <i class="fas fa-user menu-icon text-warning"></i>
-        <div class="menu-text">My Profile</div>
-    </a>
-</div>
-    </div>
-</div>
+                    document.getElementById('sName').innerText = s.student_name;
+                    document.getElementById('sAdm').innerText = s.admission_no;
 
-<script>
-    // URL se Student ID uthana
-    const pathParts = window.location.pathname.split('/');
-    const studentId = pathParts[pathParts.length - 1]; 
+                    let cls = (s.class_val && s.class_val.class_name) ? s.class_val.class_name : 'N/A';
+                    let sec = (s.section_val && s.section_val.section_name) ? ` (${s.section_val.section_name})` : '';
+                    document.getElementById('sClass').innerText = cls + sec;
 
-    async function loadDashboard() {
-        if(!studentId) return;
-        
-        try {
-            // Humare backend API (/students/{id}) se data fetch ho raha hai
-            let res = await fetch(`/students/${studentId}`);
-            if(res.ok) {
-                let s = await res.json();
-                
-                document.getElementById('sName').innerText = s.student_name;
-                document.getElementById('sAdm').innerText = s.admission_no;
-                
-                let cls = (s.class_val && s.class_val.class_name) ? s.class_val.class_name : 'N/A';
-                let sec = (s.section_val && s.section_val.section_name) ? ` (${s.section_val.section_name})` : '';
-                document.getElementById('sClass').innerText = cls + sec;
 
-                if(s.student_photo) {
-                    document.getElementById('sPhoto').src = "/static/uploads/students/" + s.student_photo;
+                    if (s.student_photo) {
+                        if (s.student_photo.startsWith('http')) {
+                            document.getElementById('sPhoto').src = s.student_photo;
+                        } else {
+                            document.getElementById('sPhoto').src = "/static/uploads/students/" + s.student_photo;
+                        }
+                    }
+
+                    // Balance amount (current_balance) students table se aa rahi hai
+                    document.getElementById('sDue').innerText = s.current_balance || 0;
+
+                    // Attendance calculation backend se round(%) hokar aa rahi hai
+                    document.getElementById('sAttendance').innerText = (s.attendance_percent || 0) + "%";
                 }
-
-                // Balance amount (current_balance) students table se aa rahi hai
-                document.getElementById('sDue').innerText = s.current_balance || 0;
-
-                // Attendance calculation backend se round(%) hokar aa rahi hai
-                document.getElementById('sAttendance').innerText = (s.attendance_percent || 0) + "%";
+            } catch (e) {
+                console.error("Error loading dashboard:", e);
             }
-        } catch(e) {
-            console.error("Error loading dashboard:", e);
         }
-    }
-    loadDashboard();
+        loadDashboard();
 
-    // ✅ NAVIGATION FUNCTIONS
-    function goToAttendance() {
-        if(studentId) {
-            window.location.href = `/students/attendance/${studentId}`; 
+        // ✅ NAVIGATION FUNCTIONS
+        function goToAttendance() {
+            if (studentId) {
+                window.location.href = `/students/attendance/${studentId}`;
+            }
         }
-    }
 
-    function goToFees() {
-        if(studentId) {
-            window.location.href = `/students/fees/${studentId}`;
+        function goToFees() {
+            if (studentId) {
+                window.location.href = `/students/fees/${studentId}`;
+            }
         }
-    }
 
-    // ✅ NEW: Exam Results Link
-    function goToResults() {
-        if(studentId) {
-            window.location.href = `/students/results/${studentId}`;
+        // ✅ NEW: Exam Results Link
+        function goToResults() {
+            if (studentId) {
+                window.location.href = `/students/results/${studentId}`;
+            }
         }
-    }
-    function goToProfile() {
-    if(studentId) {
-        window.location.href = `/students/profile/${studentId}`;
-    }
-}
-</script>
+        function goToProfile() {
+            if (studentId) {
+                window.location.href = `/students/profile/${studentId}`;
+            }
+        }
+    </script>
 
 </body>
+
 </html>

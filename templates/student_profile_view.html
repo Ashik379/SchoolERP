@@ -209,7 +209,7 @@
 </style>
 
 <div class="profile-hero">
-    <img src="{{ '/static/uploads/students/' + student.student_photo if student.student_photo else 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' }}"
+    <img src="{% if student.student_photo %}{% if student.student_photo.startswith('http') %}{{ student.student_photo }}{% else %}/static/uploads/students/{{ student.student_photo }}{% endif %}{% else %}https://cdn-icons-png.flaticon.com/512/3135/3135715.png{% endif %}"
         class="profile-photo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
     <h2 class="profile-name">{{ student.student_name }}</h2>
     <span class="admission-badge"><i class="fas fa-id-badge me-2"></i>{{ student.admission_no }}</span>
