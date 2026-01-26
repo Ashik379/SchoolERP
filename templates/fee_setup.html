@@ -160,25 +160,9 @@
 </head>
 
 <body>
-    <div class="sidebar">
-        <div class="brand-box">
-            <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
-            <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px;">ERP Solution 2.0</small>
-        </div>
-        <div class="sidebar-menu mt-3">
-            <a href="/" class="menu-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-            <a href="/students" class="menu-item"><i class="fas fa-users"></i> Students</a>
-            <a href="/fees/setup" class="menu-item active"><i class="fas fa-cog"></i> Fee Setup</a>
-            <a href="/fees/collect" class="menu-item"><i class="fas fa-rupee-sign"></i> Fee Collection</a>
-            <a href="/fees/history" class="menu-item"><i class="fas fa-history"></i> Fee History</a>
-            <div class="mt-5 px-3">
-                <a href="/auth/logout" class="btn w-100 fw-bold text-white"
-                    style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;">
-                    <i class="fas fa-power-off me-2"></i> Logout
-                </a>
-            </div>
-        </div>
-    </div>
+    {% set active_page = 'fees' %}
+    {% include '_sidebar.html' %}
+
 
     <div class="main-content">
         <div class="glass-header">

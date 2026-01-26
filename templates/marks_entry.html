@@ -234,43 +234,9 @@
 
 <body>
 
-    <div class="sidebar" id="sidebar">
-        <div class="brand-box">
-            <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
-            <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px; text-transform: uppercase;">ERP
-                Solution 2.0</small>
-        </div>
-        <div class="user-profile">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="45">
-            <div class="ms-3">
-                <h6 class="mb-0 text-white fw-bold">Admin</h6><small class="text-success">● Active</small>
-            </div>
-        </div>
-        <div class="sidebar-menu mt-3">
-            <a href="/" class="menu-item"><span><i class="fas fa-tachometer-alt menu-icon"></i> Dashboard</span></a>
-            <div class="menu-item" onclick="toggleSubmenu('attSub')"><span><i class="fas fa-calendar-alt menu-icon"></i>
-                    Attendance</span><i class="fas fa-chevron-right arrow" id="arr_attSub"></i></div>
-            <div class="submenu" id="attSub"><a href="/attendance/entry">Mark Attendance</a><a
-                    href="/attendance/view">View Register</a></div>
+    {% set active_page = 'results' %}
+    {% include '_sidebar.html' %}
 
-            <div class="menu-item active" onclick="toggleSubmenu('resSub')"><span><i class="fas fa-poll menu-icon"></i>
-                    Results</span><i class="fas fa-chevron-down arrow" id="arr_resSub"></i></div>
-            <div class="submenu" id="resSub" style="display: block;">
-                <a href="/results/entry" class="text-white fw-bold"
-                    style="background: rgba(255,255,255,0.1); padding-left: 20px;">Marks Entry</a>
-                <a href="/results/print-selection">Report Card</a>
-                <a href="/results/manager">Result Manager</a>
-            </div>
-
-            <a href="/fees/id-cards-panel" class="menu-item"><span><i class="fas fa-id-badge menu-icon"></i> ID
-                    Cards</span></a>
-            <div class="mt-5 px-3">
-                <a href="/auth/logout" class="btn w-100 fw-bold text-white"
-                    style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;"><i
-                        class="fas fa-power-off me-2"></i> Logout</a>
-            </div>
-        </div>
-    </div>
 
     <div class="main-content">
         <div class="glass-header">

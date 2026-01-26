@@ -1,101 +1,330 @@
 {% extends "base.html" %}
 {% block content %}
 <style>
-    .info-label { font-size: 12px; color: #888; text-transform: uppercase; font-weight: 600; }
-    .info-value { font-size: 15px; color: #333; font-weight: 500; margin-bottom: 15px; }
-    .section-title { background: #f8f9fa; padding: 8px 15px; border-radius: 5px; font-weight: bold; margin-bottom: 15px; color: #1e3c72; border-left: 4px solid #1e3c72; }
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --card-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15);
+    }
+
+    .profile-hero {
+        background: var(--primary-gradient);
+        padding: 40px 20px;
+        border-radius: 0 0 30px 30px;
+        margin: -15px -15px 0 -15px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .profile-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -50%;
+        width: 200%;
+        height: 100%;
+        background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+    }
+
+    .profile-photo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 5px solid white;
+        object-fit: cover;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-name {
+        font-size: 24px;
+        font-weight: 700;
+        color: white;
+        margin-top: 15px;
+        margin-bottom: 5px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .admission-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(10px);
+        padding: 8px 20px;
+        border-radius: 30px;
+        color: white;
+        font-weight: 600;
+        font-size: 13px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .section-card {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: var(--card-shadow);
+        margin-top: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .section-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--primary-gradient);
+    }
+
+    .section-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #667eea;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title i {
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-size: 13px;
+        color: #94a3b8;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-label.special {
+        color: #667eea;
+    }
+
+    .info-value {
+        font-size: 15px;
+        color: #1f2937;
+        font-weight: 600;
+        text-align: right;
+        max-width: 55%;
+    }
+
+    .info-value.na {
+        color: #9ca3af;
+        font-weight: 400;
+    }
+
+    .transport-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .transport-badge.opted {
+        background: linear-gradient(135deg, rgba(17, 153, 142, 0.15) 0%, rgba(56, 239, 125, 0.15) 100%);
+        color: #11998e;
+    }
+
+    .transport-badge.not-opted {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    .btn-back {
+        background: var(--primary-gradient);
+        border: none;
+        color: white;
+        font-weight: 700;
+        padding: 16px 30px;
+        border-radius: 16px;
+        width: 100%;
+        font-size: 15px;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s;
+    }
+
+    .btn-back:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        color: white;
+    }
+
+    .id-cards-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+    .id-card-item {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+    }
+
+    .id-card-item .label {
+        font-size: 10px;
+        color: #94a3b8;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    .id-card-item .value {
+        font-size: 14px;
+        color: #1f2937;
+        font-weight: 700;
+        margin-top: 5px;
+        word-break: break-all;
+    }
 </style>
 
-<div class="container mt-4 pb-5">
-    <div class="text-center mb-4">
-        <img src="{{ '/static/uploads/students/' + student.student_photo if student.student_photo else 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' }}" 
-             class="rounded-circle shadow" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid white;">
-        <h4 class="mt-2 mb-0 fw-bold">{{ student.student_name }}</h4>
-        <p class="text-muted small">Admission No: {{ student.admission_no }}</p>
-    </div>
+<div class="profile-hero">
+    <img src="{{ '/static/uploads/students/' + student.student_photo if student.student_photo else 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png' }}"
+        class="profile-photo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+    <h2 class="profile-name">{{ student.student_name }}</h2>
+    <span class="admission-badge"><i class="fas fa-id-badge me-2"></i>{{ student.admission_no }}</span>
+</div>
 
-    <div class="section-title">PERSONAL INFORMATION</div>
-    <div class="row px-2">
-        <div class="col-6">
-            <div class="info-label">Date of Birth</div>
-            <div class="info-value">{{ student.dob or 'N/A' }}</div>
-        </div>
-        <div class="col-6">
-            <div class="info-label">Gender</div>
-            <div class="info-value">{{ student.gender }}</div>
-        </div>
-        <div class="col-6">
-            <div class="info-label">Category</div>
-            <div class="info-value">{{ student.category or 'General' }}</div>
-        </div>
-        <div class="col-6">
-            <div class="info-label">Blood Group</div>
-            <div class="info-value">{{ student.blood_group or 'N/A' }}</div>
-        </div>
-        
-        <div class="col-6">
-            <div class="info-label text-primary">APAAR ID</div>
-            <div class="info-value">{{ student.apaar_id or '-' }}</div>
-        </div>
-        <div class="col-6">
-            <div class="info-label text-primary">PAN Number</div>
-            <div class="info-value">{{ student.pan_no or '-' }}</div>
-        </div>
-        <div class="col-6">
-            <div class="info-label">Aadhaar No</div>
-            <div class="info-value">{{ student.aadhaar_no or '-' }}</div>
-        </div>
-    </div>
+<div class="container pb-5" style="margin-top: -20px;">
 
-    <div class="section-title">PARENTS DETAILS</div>
-    <div class="row px-2">
-        <div class="col-6">
-            <div class="info-label">Father's Name</div>
-            <div class="info-value">{{ student.father_name }}</div>
-        </div>
-        <div class="col-6">
-            <div class="info-label">Mother's Name</div>
-            <div class="info-value">{{ student.mother_name }}</div>
-        </div>
-        <div class="col-6">
-            <div class="info-label">Father Mobile</div>
-            <div class="info-value">{{ student.father_mobile or '-' }}</div>
-        </div>
-        <div class="col-6">
-            <div class="info-label">Student Mobile</div>
-            <div class="info-value">{{ student.mobile_number }}</div>
-        </div>
-
-        <div class="col-6">
-            <div class="info-label text-primary">Father Aadhaar</div>
-            <div class="info-value">{{ student.father_aadhaar or '-' }}</div>
-        </div>
-        <div class="col-6">
-            <div class="info-label text-primary">Mother Aadhaar</div>
-            <div class="info-value">{{ student.mother_aadhaar or '-' }}</div>
-        </div>
-    </div>
-
-    <div class="section-title">ADDRESS & TRANSPORT</div>
-    <div class="row px-2">
-        <div class="col-12">
-            <div class="info-label">Current Address</div>
-            <div class="info-value">{{ student.address or 'N/A' }}, {{ student.city or '' }}</div>
-        </div>
-        <div class="col-12">
-            <div class="info-label">Transport Status</div>
-            <div class="info-value">
-                {% if student.transport_opted %}
-                    <span class="text-success fw-bold">Opted</span> (Point: {{ student.transport_val.pickup_point_name if student.transport_val else 'N/A' }})
-                {% else %}
-                    <span class="text-muted">Not Opted</span>
-                {% endif %}
+    <!-- ID Cards Row -->
+    <div class="section-card" style="margin-top: 40px;">
+        <div class="id-cards-row">
+            <div class="id-card-item">
+                <div class="label">Aadhaar No</div>
+                <div class="value">{{ student.aadhaar_no or '—' }}</div>
+            </div>
+            <div class="id-card-item"
+                style="background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%);">
+                <div class="label" style="color: #667eea;">APAAR ID</div>
+                <div class="value" style="color: #667eea;">{{ student.apaar_id or '—' }}</div>
+            </div>
+            <div class="id-card-item">
+                <div class="label">PAN Number</div>
+                <div class="value">{{ student.pan_no or '—' }}</div>
             </div>
         </div>
     </div>
 
-    <div class="text-center mt-4">
-        <a href="/students/portal/{{ student.id }}" class="btn btn-primary w-100 rounded-pill">Back to Dashboard</a>
+    <!-- Personal Information -->
+    <div class="section-card">
+        <div class="section-title"><i class="fas fa-user"></i> Personal Information</div>
+        <div class="info-row">
+            <span class="info-label">Date of Birth</span>
+            <span class="info-value {% if not student.dob %}na{% endif %}">{{ student.dob or 'Not Provided' }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Gender</span>
+            <span class="info-value">{{ student.gender }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Category</span>
+            <span class="info-value">{{ student.category or 'General' }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Religion</span>
+            <span class="info-value {% if not student.religion %}na{% endif %}">{{ student.religion or 'Not Provided'
+                }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Blood Group</span>
+            <span class="info-value {% if not student.blood_group %}na{% endif %}">{{ student.blood_group or 'Not
+                Provided' }}</span>
+        </div>
+    </div>
+
+    <!-- Parents Details -->
+    <div class="section-card">
+        <div class="section-title"><i class="fas fa-users"></i> Parents Details</div>
+        <div class="info-row">
+            <span class="info-label">Father's Name</span>
+            <span class="info-value">{{ student.father_name }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Mother's Name</span>
+            <span class="info-value">{{ student.mother_name }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Father Mobile</span>
+            <span class="info-value {% if not student.father_mobile %}na{% endif %}">{{ student.father_mobile or 'Not
+                Provided' }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Student Mobile</span>
+            <span class="info-value">{{ student.mobile_number }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label special">Father Aadhaar</span>
+            <span class="info-value {% if not student.father_aadhaar %}na{% endif %}">{{ student.father_aadhaar or '—'
+                }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label special">Mother Aadhaar</span>
+            <span class="info-value {% if not student.mother_aadhaar %}na{% endif %}">{{ student.mother_aadhaar or '—'
+                }}</span>
+        </div>
+    </div>
+
+    <!-- Address & Transport -->
+    <div class="section-card">
+        <div class="section-title"><i class="fas fa-map-marker-alt"></i> Address & Transport</div>
+        <div class="info-row">
+            <span class="info-label">Current Address</span>
+            <span class="info-value {% if not student.address %}na{% endif %}">{{ student.address or 'Not Provided' }}{%
+                if student.city %}, {{ student.city }}{% endif %}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Transport Status</span>
+            <span class="info-value">
+                {% if student.transport_opted %}
+                <span class="transport-badge opted"><i class="fas fa-bus"></i>Opted</span>
+                {% else %}
+                <span class="transport-badge not-opted"><i class="fas fa-times"></i>Not Opted</span>
+                {% endif %}
+            </span>
+        </div>
+        {% if student.transport_opted and student.transport_val %}
+        <div class="info-row">
+            <span class="info-label">Pickup Point</span>
+            <span class="info-value">{{ student.transport_val.pickup_point_name }}</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="mt-4">
+        <a href="/students/portal/{{ student.id }}" class="btn btn-back">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
     </div>
 </div>
 {% endblock %}

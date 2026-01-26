@@ -300,46 +300,9 @@
 
 <body>
 
-    <div class="sidebar" id="sidebar">
-        <div class="brand-box">
-            <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
-            <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px; text-transform: uppercase;">ERP
-                Solution 2.0</small>
-        </div>
+    {% set active_page = 'website' %}
+    {% include '_sidebar.html' %}
 
-        <div class="user-profile">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="45">
-            <div class="ms-3">
-                <h6 class="mb-0 text-white fw-bold">Administrator</h6>
-                <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25"
-                    style="font-size: 10px;">● Active</span>
-            </div>
-        </div>
-
-        <div class="sidebar-menu mt-3">
-            <small class="px-4 text-secondary fw-bold text-uppercase" style="font-size: 11px;">Main Menu</small>
-
-            <a href="/" class="menu-item mt-2"><span><i class="fas fa-th-large menu-icon"></i> Dashboard</span></a>
-
-            <div class="menu-item" onclick="toggleSubmenu('masterSub')"><span><i class="fas fa-database menu-icon"></i>
-                    Master Record</span><i class="fas fa-chevron-right arrow" id="arr_masterSub"></i></div>
-            <div class="submenu" id="masterSub"><a href="/masters/class">Class Master</a><a
-                    href="/masters/section">Section Master</a></div>
-
-            <a href="/students" class="menu-item"><span><i class="fas fa-users menu-icon"></i> Students</span></a>
-
-            <hr style="border-color: rgba(255,255,255,0.1); margin: 10px 15px;">
-            <a href="/website/manager" class="menu-item active"><span><i
-                        class="fas fa-globe menu-icon text-warning"></i> Website Manager</span></a>
-            <a href="/communication" class="menu-item"><span><i class="fas fa-paper-plane menu-icon text-info"></i>
-                    Communication</span></a>
-            <hr style="border-color: rgba(255,255,255,0.1); margin: 10px 15px;">
-
-            <div class="mt-5 px-3 mb-4"><a href="/auth/logout" class="btn w-100 fw-bold text-white"
-                    style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;"><i
-                        class="fas fa-power-off me-2"></i> Logout</a></div>
-        </div>
-    </div>
 
     <div class="main-content">
 

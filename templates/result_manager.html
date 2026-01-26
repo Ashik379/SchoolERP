@@ -7,63 +7,241 @@
     <title>Result Manager | Vidya Vikas ERP</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --bg-body: #f0f2f5;
+            --sidebar-width: 270px;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --danger-gradient: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            --card-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15);
         }
 
-        .header-section {
+        * {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+        }
+
+        .sidebar {
+            height: 100vh;
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #111827;
+            color: #a3aed0;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            transition: 0.3s;
+            min-height: 100vh;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -270px;
+            }
+
+            .sidebar.active {
+                margin-left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        /* Glass Header */
+        .glass-header {
             background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--card-shadow);
             margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+        }
+
+        .stat-card.total::before {
+            background: var(--primary-gradient);
+        }
+
+        .stat-card.published::before {
+            background: var(--success-gradient);
+        }
+
+        .stat-card.unpublished::before {
+            background: var(--danger-gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-icon.total {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            color: #667eea;
+        }
+
+        .stat-icon.published {
+            background: linear-gradient(135deg, rgba(17, 153, 142, 0.15) 0%, rgba(56, 239, 125, 0.15) 100%);
+            color: #11998e;
+        }
+
+        .stat-icon.unpublished {
+            background: linear-gradient(135deg, rgba(255, 65, 108, 0.15) 0%, rgba(255, 75, 43, 0.15) 100%);
+            color: #ff416c;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Class Grid */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #667eea;
         }
 
         .class-card {
             background: white;
-            border-radius: 15px;
+            border-radius: 20px;
             padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s;
-            border-left: 5px solid #dc3545;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
         }
 
-        .class-card.published {
-            border-left-color: #28a745;
+        .class-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            transition: all 0.3s;
+        }
+
+        .class-card.unpublished::after {
+            background: var(--danger-gradient);
+        }
+
+        .class-card.published::after {
+            background: var(--success-gradient);
         }
 
         .class-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.2);
+        }
+
+        .class-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .student-count {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .student-count i {
+            color: #667eea;
         }
 
         .status-badge {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             padding: 8px 16px;
-            border-radius: 20px;
+            border-radius: 30px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .status-unpublished {
-            background: #dc3545;
-            color: white;
+        .status-badge.published {
+            background: linear-gradient(135deg, rgba(17, 153, 142, 0.15) 0%, rgba(56, 239, 125, 0.15) 100%);
+            color: #11998e;
         }
 
-        .status-published {
-            background: #28a745;
-            color: white;
+        .status-badge.unpublished {
+            background: linear-gradient(135deg, rgba(255, 65, 108, 0.15) 0%, rgba(255, 75, 43, 0.15) 100%);
+            color: #ff416c;
         }
 
+        /* Toggle Switch */
         .toggle-switch {
             position: relative;
             display: inline-block;
-            width: 60px;
-            height: 30px;
+            width: 56px;
+            height: 28px;
         }
 
         .toggle-switch input {
@@ -79,7 +257,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: #ccc;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
             transition: 0.4s;
             border-radius: 30px;
         }
@@ -89,494 +267,121 @@
             content: "";
             height: 22px;
             width: 22px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
+            left: 3px;
+            bottom: 3px;
+            background: white;
             transition: 0.4s;
             border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
         input:checked+.slider {
-            background-color: #28a745;
+            background: var(--success-gradient);
         }
 
         input:checked+.slider:before {
-            transform: translateX(30px);
+            transform: translateX(28px);
         }
 
-        .bulk-action-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        /* Bulk Action Button */
+        .btn-bulk {
+            background: var(--primary-gradient);
             border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
+            padding: 14px 28px;
+            border-radius: 14px;
             color: white;
             font-weight: 700;
-            font-size: 16px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            font-size: 15px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
             transition: all 0.3s;
         }
 
-        .bulk-action-btn:hover {
+        .btn-bulk:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        }
-
-        .stats-box {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
             color: white;
         }
 
-        .stats-box h3 {
-            font-size: 36px;
-            font-weight: 800;
-            margin: 0;
+        /* Student Hold Section */
+        .hold-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            margin-top: 30px;
         }
 
-        .stats-box p {
-            margin: 0;
+        .premium-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .premium-table thead th {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+            padding: 16px 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .premium-table tbody td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
             font-size: 14px;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="container py-4">
-        <!-- Header Section -->
-        <div class="header-section">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2 class="mb-0"><i class="fas fa-shield-alt text-primary"></i> Result Manager</h2>
-                    <p class="text-muted mb-0">Control result publication and student holds</p>
-                </div>
-                <div>
-                    <button class="bulk-action-btn" onclick="bulkPublishAll()">
-                        <i class="fas fa-rocket me-2"></i>Publish All Results
-                    </button>
-                    <a href="/" class="btn btn-outline-secondary ms-2">
-                        <i class="fas fa-home"></i> Dashboard
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Statistics -->
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="stats-box">
-                    <h3 id="totalClasses">0</h3>
-                    <p>Total Classes</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stats-box" style="background: rgba(40, 167, 69, 0.3);">
-                    <h3 id="publishedCount">0</h3>
-                    <p>Published</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stats-box" style="background: rgba(220, 53, 69, 0.3);">
-                    <h3 id="unpublishedCount">0</h3>
-                    <p>Unpublished</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Classes Grid -->
-        <div id="classesContainer" class="row">
-            <!-- Classes will be loaded here -->
-        </div>
-
-        <!-- Student Hold Management Section -->
-        <div class="header-section mt-5">
-            <h4 class="mb-3"><i class="fas fa-user-lock text-warning"></i> Student Hold Management</h4>
-            <p class="text-muted mb-3">Select a class to manage individual student result holds</p>
-
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <select id="classSelector" class="form-select" onchange="loadStudents(this.value)">
-                        <option value="">-- Select Class --</option>
-                    </select>
-                </div>
-            </div>
-
-            <div id="studentsTableContainer" style="display: none;">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Roll No</th>
-                                <th>Admission No</th>
-                                <th>Student Name</th>
-                                <th>Status</th>
-                                <th>Hold Result</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="studentsTableBody">
-                            <!-- Students will be loaded here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Withhold Reason Modal -->
-    <div class="modal fade" id="withholdReasonModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Withhold Reason</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>Student:</strong> <span id="withholdStudentName"></span></p>
-                    <div class="mb-3">
-                        <label for="withholdReason" class="form-label">Reason for Withholding Result</label>
-                        <textarea id="withholdReason" class="form-control" rows="3"
-                            placeholder="e.g., Fee dues pending"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" onclick="saveWithholdReason()">Hold Result</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Confirmation Modal -->
-    <div class="modal fade" id="confirmModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirm Action</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body" id="modalMessage">
-                    Are you sure you want to proceed?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="confirmBtn">Confirm</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        let confirmModal;
-        let withholdModal;
-        let pendingAction = null;
-
-        document.addEventListener('DOMContentLoaded', function () {
-            confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
-            withholdModal = new bootstrap.Modal(document.getElementById('withholdReasonModal'));
-            loadClasses();
-            populateClassSelector();
-        });
-
-        async function populateClassSelector() {
-            try {
-                const response = await fetch('/results/publication-status');
-                const classes = await response.json();
-
-                const selector = document.getElementById('classSelector');
-                classes.forEach(cls => {
-                    const option = document.createElement('option');
-                    option.value = cls.class_id;
-                    option.textContent = cls.class_name;
-                    selector.appendChild(option);
-                });
-            } catch (error) {
-                console.error('Error loading class selector:', error);
-            }
+            font-weight: 500;
         }
 
-        async function loadStudents(classId) {
-            if (!classId) {
-                document.getElementById('studentsTableContainer').style.display = 'none';
-                return;
-            }
-
-            try {
-                const response = await fetch(`/students/api/filter?class_id=${classId}`);
-                const students = await response.json();
-
-                displayStudents(students);
-                document.getElementById('studentsTableContainer').style.display = 'block';
-            } catch (error) {
-                console.error('Error loading students:', error);
-                showNotification('Failed to load students', 'error');
-            }
+        .premium-table tbody tr:hover td {
+            background-color: #fafbfc;
         }
 
-        function displayStudents(students) {
-            const tbody = document.getElementById('studentsTableBody');
-            tbody.innerHTML = '';
-
-            students.forEach(student => {
-                const isHeld = student.is_result_withheld || false;
-                const statusBadge = isHeld
-                    ? '<span class="badge bg-danger">ON HOLD</span>'
-                    : '<span class="badge bg-success">Active</span>';
-
-                const toggleChecked = isHeld ? 'checked' : '';
-
-                const row = `
-                    <tr>
-                        <td>${student.roll_no || '-'}</td>
-                        <td>${student.admission_no}</td>
-                        <td>${student.student_name}</td>
-                        <td>${statusBadge}</td>
-                        <td>
-                            <label class="toggle-switch">
-                                <input type="checkbox" ${toggleChecked} 
-                                       onchange="toggleStudentHold(${student.id}, this.checked, '${student.student_name}')">
-                                <span class="slider"></span>
-                            </label>
-                        </td>
-                        <td>
-                            ${isHeld && student.withhold_reason ?
-                        `<small class="text-muted" title="${student.withhold_reason}">
-                                    <i class="fas fa-info-circle"></i> ${student.withhold_reason.substring(0, 30)}...
-                                </small>` :
-                        '-'}
-                        </td>
-                    </tr>
-                `;
-
-                tbody.innerHTML += row;
-            });
+        .badge-hold {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 11px;
         }
 
-        let currentStudentId = null;
-        let currentStudentName = null;
-
-        function toggleStudentHold(studentId, hold, studentName) {
-            currentStudentId = studentId;
-            currentStudentName = studentName;
-
-            if (hold) {
-                // Show modal to get reason
-                document.getElementById('withholdStudentName').textContent = studentName;
-                document.getElementById('withholdReason').value = '';
-                withholdModal.show();
-            } else {
-                // Release hold immediately
-                executeStudentHold(studentId, false, '');
-            }
+        .badge-active {
+            background: #f0fdf4;
+            color: #16a34a;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 11px;
         }
 
-        async function saveWithholdReason() {
-            const reason = document.getElementById('withholdReason').value.trim();
-
-            if (!reason) {
-                alert('Please provide a reason for withholding the result');
-                return;
-            }
-
-            await executeStudentHold(currentStudentId, true, reason);
-            withholdModal.hide();
+        /* Notification Toast */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 18px 28px;
+            border-radius: 14px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            font-weight: 600;
+            animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
-        async function executeStudentHold(studentId, hold, reason) {
-            try {
-                const response = await fetch(`/students/hold/${studentId}?hold=${hold}&reason=${encodeURIComponent(reason)}`, {
-                    method: 'POST'
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    const action = hold ? 'held' : 'released';
-                    showNotification(`Result ${action} successfully`, 'success');
-
-                    // Reload students to update UI
-                    const classId = document.getElementById('classSelector').value;
-                    if (classId) {
-                        loadStudents(classId);
-                    }
-                } else {
-                    showNotification('Failed to update hold status', 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showNotification('Network error occurred', 'error');
-            }
+        .toast-success {
+            background: var(--success-gradient);
+            color: white;
         }
 
-        async function loadClasses() {
-            try {
-                const response = await fetch('/results/publication-status');
-                const classes = await response.json();
-
-                displayClasses(classes);
-                updateStats(classes);
-            } catch (error) {
-                console.error('Error loading classes:', error);
-                alert('Failed to load classes. Please refresh the page.');
-            }
+        .toast-error {
+            background: var(--danger-gradient);
+            color: white;
         }
 
-        function displayClasses(classes) {
-            const container = document.getElementById('classesContainer');
-            container.innerHTML = '';
-
-            classes.forEach(cls => {
-                const isPublished = cls.is_published;
-                const statusClass = isPublished ? 'published' : '';
-                const statusBadgeClass = isPublished ? 'status-published' : 'status-unpublished';
-                const statusText = isPublished ? 'Published' : 'Unpublished';
-                const statusIcon = isPublished ? 'fa-check-circle' : 'fa-lock';
-
-                const card = `
-                    <div class="col-md-6 col-lg-4">
-                        <div class="class-card ${statusClass}">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div>
-                                    <h4 class="mb-1">${cls.class_name}</h4>
-                                    <small class="text-muted">
-                                        <i class="fas fa-users"></i> ${cls.student_count} Students
-                                    </small>
-                                </div>
-                                <span class="status-badge ${statusBadgeClass}">
-                                    <i class="fas ${statusIcon}"></i> ${statusText}
-                                </span>
-                            </div>
-                            
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold">Publication Status:</span>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" ${isPublished ? 'checked' : ''} 
-                                           onchange="togglePublication(${cls.class_id}, this.checked, '${cls.class_name}')">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                container.innerHTML += card;
-            });
-        }
-
-        function updateStats(classes) {
-            const total = classes.length;
-            const published = classes.filter(c => c.is_published).length;
-            const unpublished = total - published;
-
-            document.getElementById('totalClasses').textContent = total;
-            document.getElementById('publishedCount').textContent = published;
-            document.getElementById('unpublishedCount').textContent = unpublished;
-        }
-
-        function togglePublication(classId, publish, className) {
-            const action = publish ? 'publish' : 'unpublish';
-            const message = `Are you sure you want to ${action} results for <strong>${className}</strong>?`;
-
-            document.getElementById('modalMessage').innerHTML = message;
-            pendingAction = () => executeToggle(classId, publish);
-
-            document.getElementById('confirmBtn').onclick = function () {
-                if (pendingAction) {
-                    pendingAction();
-                    confirmModal.hide();
-                }
-            };
-
-            confirmModal.show();
-        }
-
-        async function executeToggle(classId, publish) {
-            try {
-                const response = await fetch(`/results/publish/${classId}?publish=${publish}`, {
-                    method: 'POST'
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    showNotification(data.message, 'success');
-                    loadClasses(); // Reload to update UI
-                } else {
-                    showNotification('Failed to update publication status', 'error');
-                    loadClasses(); // Reload to reset toggle
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showNotification('Network error occurred', 'error');
-                loadClasses();
-            }
-        }
-
-        function bulkPublishAll() {
-            const message = 'Are you sure you want to <strong>PUBLISH RESULTS FOR ALL CLASSES</strong>? This will make results visible to all students.';
-
-            document.getElementById('modalMessage').innerHTML = message;
-            pendingAction = executeBulkPublish;
-
-            document.getElementById('confirmBtn').onclick = function () {
-                if (pendingAction) {
-                    pendingAction();
-                    confirmModal.hide();
-                }
-            };
-
-            confirmModal.show();
-        }
-
-        async function executeBulkPublish() {
-            try {
-                const response = await fetch('/results/publish-all', {
-                    method: 'POST'
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    showNotification(data.message, 'success');
-                    loadClasses();
-                } else {
-                    showNotification('Failed to publish all results', 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showNotification('Network error occurred', 'error');
-            }
-        }
-
-        function showNotification(message, type) {
-            const bgColor = type === 'success' ? '#28a745' : '#dc3545';
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${bgColor};
-                color: white;
-                padding: 15px 25px;
-                border-radius: 10px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-                z-index: 9999;
-                animation: slideIn 0.3s;
-            `;
-            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle me-2"></i>${message}`;
-
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-    </script>
-
-    <style>
         @keyframes slideIn {
             from {
                 transform: translateX(400px);
@@ -601,6 +406,381 @@
             }
         }
     </style>
+</head>
+
+<body>
+    {% set active_page = 'results' %}
+    {% include '_sidebar.html' %}
+    <div class="main-content">
+        <!-- Glass Header -->
+        <div class="glass-header">
+            <div>
+                <h4 class="fw-bold mb-1 text-dark"><i class="fas fa-shield-alt text-primary me-2"></i>Result Manager
+                </h4>
+                <small class="text-muted">Control result publication and student holds</small>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn-bulk" onclick="bulkPublishAll()">
+                    <i class="fas fa-rocket me-2"></i>Publish All Results
+                </button>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="stat-card total">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon total"><i class="fas fa-layer-group"></i></div>
+                        <div>
+                            <p class="stat-value" id="totalClasses">0</p>
+                            <p class="stat-label mb-0">Total Classes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card published">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon published"><i class="fas fa-check-circle"></i></div>
+                        <div>
+                            <p class="stat-value" id="publishedCount">0</p>
+                            <p class="stat-label mb-0">Published</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card unpublished">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon unpublished"><i class="fas fa-lock"></i></div>
+                        <div>
+                            <p class="stat-value" id="unpublishedCount">0</p>
+                            <p class="stat-label mb-0">Unpublished</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Class Publication Grid -->
+        <h5 class="section-title"><i class="fas fa-graduation-cap"></i> Class Publication Status</h5>
+        <div id="classesContainer" class="row g-4 mb-4">
+            <!-- Classes will be loaded here -->
+        </div>
+
+        <!-- Student Hold Management -->
+        <div class="hold-section">
+            <h5 class="section-title mb-4"><i class="fas fa-user-lock"></i> Student Hold Management</h5>
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold text-secondary small text-uppercase">Select Class</label>
+                    <select id="classSelector" class="form-select form-select-lg" onchange="loadStudents(this.value)"
+                        style="border-radius: 12px; border: 2px solid #e2e8f0;">
+                        <option value="">-- Select Class --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="studentsTableContainer" style="display: none;">
+                <div class="table-responsive" style="border-radius: 15px; overflow: hidden;">
+                    <table class="premium-table">
+                        <thead>
+                            <tr>
+                                <th>Roll No</th>
+                                <th>Admission No</th>
+                                <th>Student Name</th>
+                                <th>Status</th>
+                                <th>Hold Result</th>
+                                <th>Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withhold Reason Modal -->
+    <div class="modal fade" id="withholdReasonModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; border: none;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-user-lock text-warning me-2"></i>Withhold Reason
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3"><strong>Student:</strong> <span id="withholdStudentName"
+                            class="text-primary"></span></p>
+                    <div class="mb-3">
+                        <label for="withholdReason" class="form-label fw-bold">Reason for Withholding Result</label>
+                        <textarea id="withholdReason" class="form-control" rows="3" placeholder="e.g., Fee dues pending"
+                            style="border-radius: 12px; border: 2px solid #e2e8f0;"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal"
+                        style="border-radius: 10px;">Cancel</button>
+                    <button type="button" class="btn text-white px-4" onclick="saveWithholdReason()"
+                        style="background: var(--danger-gradient); border-radius: 10px;">Hold Result</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; border: none;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-question-circle text-primary me-2"></i>Confirm
+                        Action</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalMessage">
+                    Are you sure you want to proceed?
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal"
+                        style="border-radius: 10px;">Cancel</button>
+                    <button type="button" class="btn text-white px-4" id="confirmBtn"
+                        style="background: var(--primary-gradient); border-radius: 10px;">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let confirmModal;
+        let withholdModal;
+        let pendingAction = null;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+            withholdModal = new bootstrap.Modal(document.getElementById('withholdReasonModal'));
+            loadClasses();
+            populateClassSelector();
+        });
+
+        async function populateClassSelector() {
+            try {
+                const response = await fetch('/results/publication-status');
+                const classes = await response.json();
+                const selector = document.getElementById('classSelector');
+                classes.forEach(cls => {
+                    const option = document.createElement('option');
+                    option.value = cls.class_id;
+                    option.textContent = cls.class_name;
+                    selector.appendChild(option);
+                });
+            } catch (error) { console.error('Error loading class selector:', error); }
+        }
+
+        async function loadStudents(classId) {
+            if (!classId) {
+                document.getElementById('studentsTableContainer').style.display = 'none';
+                return;
+            }
+            try {
+                const response = await fetch(`/students/api/filter?class_id=${classId}`);
+                const students = await response.json();
+                displayStudents(students);
+                document.getElementById('studentsTableContainer').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading students:', error);
+                showNotification('Failed to load students', 'error');
+            }
+        }
+
+        function displayStudents(students) {
+            const tbody = document.getElementById('studentsTableBody');
+            tbody.innerHTML = '';
+            students.forEach(student => {
+                const isHeld = student.is_result_withheld || false;
+                const statusBadge = isHeld ? '<span class="badge-hold"><i class="fas fa-lock me-1"></i>ON HOLD</span>' : '<span class="badge-active"><i class="fas fa-check me-1"></i>Active</span>';
+                const toggleChecked = isHeld ? 'checked' : '';
+                const row = `
+                    <tr>
+                        <td class="fw-bold text-primary">${student.roll_no || '-'}</td>
+                        <td class="font-monospace text-secondary">${student.admission_no}</td>
+                        <td class="fw-bold text-dark">${student.student_name}</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <label class="toggle-switch">
+                                <input type="checkbox" ${toggleChecked} onchange="toggleStudentHold(${student.id}, this.checked, '${student.student_name}')">
+                                <span class="slider"></span>
+                            </label>
+                        </td>
+                        <td>${isHeld && student.withhold_reason ? `<small class="text-muted"><i class="fas fa-info-circle me-1"></i>${student.withhold_reason.substring(0, 30)}...</small>` : '<span class="text-muted">-</span>'}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        let currentStudentId = null;
+        let currentStudentName = null;
+
+        function toggleStudentHold(studentId, hold, studentName) {
+            currentStudentId = studentId;
+            currentStudentName = studentName;
+            if (hold) {
+                document.getElementById('withholdStudentName').textContent = studentName;
+                document.getElementById('withholdReason').value = '';
+                withholdModal.show();
+            } else {
+                executeStudentHold(studentId, false, '');
+            }
+        }
+
+        async function saveWithholdReason() {
+            const reason = document.getElementById('withholdReason').value.trim();
+            if (!reason) { alert('Please provide a reason for withholding the result'); return; }
+            await executeStudentHold(currentStudentId, true, reason);
+            withholdModal.hide();
+        }
+
+        async function executeStudentHold(studentId, hold, reason) {
+            try {
+                const response = await fetch(`/students/hold/${studentId}?hold=${hold}&reason=${encodeURIComponent(reason)}`, { method: 'POST' });
+                const data = await response.json();
+                if (response.ok) {
+                    const action = hold ? 'held' : 'released';
+                    showNotification(`Result ${action} successfully`, 'success');
+                    const classId = document.getElementById('classSelector').value;
+                    if (classId) loadStudents(classId);
+                } else {
+                    showNotification('Failed to update hold status', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Network error occurred', 'error');
+            }
+        }
+
+        async function loadClasses() {
+            try {
+                const response = await fetch('/results/publication-status');
+                const classes = await response.json();
+                displayClasses(classes);
+                updateStats(classes);
+            } catch (error) {
+                console.error('Error loading classes:', error);
+            }
+        }
+
+        function displayClasses(classes) {
+            const container = document.getElementById('classesContainer');
+            container.innerHTML = '';
+            classes.forEach(cls => {
+                const isPublished = cls.is_published;
+                const statusClass = isPublished ? 'published' : 'unpublished';
+                const statusBadgeClass = isPublished ? 'published' : 'unpublished';
+                const statusText = isPublished ? 'Published' : 'Unpublished';
+                const statusIcon = isPublished ? 'fa-check-circle' : 'fa-lock';
+                const card = `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="class-card ${statusClass}">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="class-name">${cls.class_name}</h5>
+                                    <p class="student-count mb-0"><i class="fas fa-users me-1"></i> ${cls.student_count} Students</p>
+                                </div>
+                                <span class="status-badge ${statusBadgeClass}"><i class="fas ${statusIcon}"></i> ${statusText}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                                <span class="text-secondary fw-bold small">Publication</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" ${isPublished ? 'checked' : ''} onchange="togglePublication(${cls.class_id}, this.checked, '${cls.class_name}')">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        function updateStats(classes) {
+            const total = classes.length;
+            const published = classes.filter(c => c.is_published).length;
+            const unpublished = total - published;
+            document.getElementById('totalClasses').textContent = total;
+            document.getElementById('publishedCount').textContent = published;
+            document.getElementById('unpublishedCount').textContent = unpublished;
+        }
+
+        function togglePublication(classId, publish, className) {
+            const action = publish ? 'publish' : 'unpublish';
+            const message = `Are you sure you want to ${action} results for <strong>${className}</strong>?`;
+            document.getElementById('modalMessage').innerHTML = message;
+            pendingAction = () => executeToggle(classId, publish);
+            document.getElementById('confirmBtn').onclick = function () {
+                if (pendingAction) { pendingAction(); confirmModal.hide(); }
+            };
+            confirmModal.show();
+        }
+
+        async function executeToggle(classId, publish) {
+            try {
+                const response = await fetch(`/results/publish/${classId}?publish=${publish}`, { method: 'POST' });
+                const data = await response.json();
+                if (response.ok) {
+                    showNotification(data.message, 'success');
+                    loadClasses();
+                } else {
+                    showNotification('Failed to update publication status', 'error');
+                    loadClasses();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Network error occurred', 'error');
+                loadClasses();
+            }
+        }
+
+        function bulkPublishAll() {
+            const message = 'Are you sure you want to <strong>PUBLISH RESULTS FOR ALL CLASSES</strong>? This will make results visible to all students.';
+            document.getElementById('modalMessage').innerHTML = message;
+            pendingAction = executeBulkPublish;
+            document.getElementById('confirmBtn').onclick = function () {
+                if (pendingAction) { pendingAction(); confirmModal.hide(); }
+            };
+            confirmModal.show();
+        }
+
+        async function executeBulkPublish() {
+            try {
+                const response = await fetch('/results/publish-all', { method: 'POST' });
+                const data = await response.json();
+                if (response.ok) {
+                    showNotification(data.message, 'success');
+                    loadClasses();
+                } else {
+                    showNotification('Failed to publish all results', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Network error occurred', 'error');
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `toast-notification toast-${type}`;
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle me-2"></i>${message}`;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
 </body>
 
 </html>

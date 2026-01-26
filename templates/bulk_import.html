@@ -290,47 +290,9 @@
 
 <body>
 
-    <div class="sidebar" id="sidebar">
-        <div class="brand-box">
-            <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
-            <small class="text-secondary" style="letter-spacing: 2px; font-size: 10px; text-transform: uppercase;">ERP
-                Solution 2.0</small>
-        </div>
-        <div class="user-profile">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle" width="45">
-            <div class="ms-3">
-                <h6 class="mb-0 text-white fw-bold">Admin</h6><small class="text-success">● Active</small>
-            </div>
-        </div>
-        <div class="sidebar-menu mt-3">
-            <a href="/" class="menu-item"><span><i class="fas fa-tachometer-alt menu-icon"></i> Dashboard</span></a>
+    {% set active_page = 'bulk_import' %}
+    {% include '_sidebar.html' %}
 
-            <div class="menu-item" onclick="toggleSubmenu('masterSub')"><span><i class="fas fa-database menu-icon"></i>
-                    Master Record</span><i class="fas fa-chevron-right arrow" id="arr_masterSub"></i></div>
-            <div class="submenu" id="masterSub"><a href="/masters/class">Class Master</a><a
-                    href="/masters/section">Section Master</a><a href="/masters/transport">Transport</a><a
-                    href="/masters/ledger">Ledger</a></div>
-
-            <a href="/admission" class="menu-item"><span><i class="fas fa-user-plus menu-icon"></i> Admission</span></a>
-            <a href="/students" class="menu-item"><span><i class="fas fa-users menu-icon"></i> Students</span></a>
-            <a href="/students/bulk-import" class="menu-item active"><span><i class="fas fa-file-excel menu-icon"></i>
-                    Bulk Import</span></a>
-
-            <div class="menu-item" onclick="toggleSubmenu('attSub')"><span><i class="fas fa-calendar-alt menu-icon"></i>
-                    Attendance</span><i class="fas fa-chevron-right arrow" id="arr_attSub"></i></div>
-            <div class="submenu" id="attSub"><a href="/attendance/entry">Mark Attendance</a><a
-                    href="/attendance/view">View Register</a></div>
-
-            <div class="menu-item" onclick="toggleSubmenu('feeSub')"><span><i class="fas fa-wallet menu-icon"></i>
-                    Fees</span><i class="fas fa-chevron-right arrow" id="arr_feeSub"></i></div>
-            <div class="submenu" id="feeSub"><a href="/fees/collect">Collect Fee</a><a href="/fees/schedule">Fee
-                    Heads</a><a href="/fees/master">Fee Plans</a><a href="/fees/history">Fee History</a></div>
-
-            <div class="mt-5 px-3 mb-4"><a href="/auth/logout" class="btn w-100 fw-bold text-white"
-                    style="background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%); border-radius: 12px; padding: 12px;"><i
-                        class="fas fa-power-off me-2"></i> Logout</a></div>
-        </div>
-    </div>
 
     <div class="main-content">
 
