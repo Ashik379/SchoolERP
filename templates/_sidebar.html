@@ -1,4 +1,140 @@
 <!-- UNIFIED SIDEBAR - Include this in all pages for consistent navigation -->
+<style>
+    /* SIDEBAR STYLES - Included with the sidebar component */
+    :root {
+        --sidebar-width: 270px;
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .sidebar {
+        height: 100vh;
+        width: var(--sidebar-width);
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: #111827;
+        background-image: radial-gradient(at 0% 0%, #1f2937 0px, transparent 50%), radial-gradient(at 100% 100%, #000000 0px, transparent 50%);
+        color: #a3aed0;
+        z-index: 1000;
+        overflow-y: auto;
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+        transition: 0.3s;
+    }
+
+    .sidebar::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+        background: #374151;
+        border-radius: 4px;
+    }
+
+    .brand-box {
+        padding: 30px 20px;
+        text-align: center;
+    }
+
+    .user-profile {
+        background: rgba(255, 255, 255, 0.03);
+        margin: 0 15px 20px;
+        padding: 15px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .sidebar-menu {
+        padding-bottom: 20px;
+    }
+
+    .menu-item {
+        padding: 14px 25px;
+        margin: 5px 15px;
+        border-radius: 12px;
+        color: #a3aed0;
+        text-decoration: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .menu-item:hover,
+    .menu-item.active {
+        background: var(--primary-gradient);
+        color: white;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        transform: translateX(5px);
+    }
+
+    .menu-item i.menu-icon {
+        width: 25px;
+        font-size: 18px;
+        text-align: center;
+        margin-right: 10px;
+    }
+
+    .menu-item .arrow {
+        font-size: 12px;
+        transition: transform 0.3s;
+    }
+
+    .submenu {
+        background: rgba(0, 0, 0, 0.2);
+        margin: 0 25px;
+        border-radius: 10px;
+        display: none;
+        padding: 5px 0;
+    }
+
+    .submenu a {
+        padding: 10px 15px;
+        display: block;
+        color: #8892b0;
+        text-decoration: none;
+        font-size: 13px;
+        transition: 0.2s;
+        border-radius: 8px;
+        margin: 2px 5px;
+    }
+
+    .submenu a:hover,
+    .submenu a.active-link {
+        color: white;
+        background: rgba(255, 255, 255, 0.05);
+        padding-left: 20px;
+    }
+
+    /* MAIN CONTENT - Must be used with sidebar */
+    .main-content {
+        margin-left: var(--sidebar-width);
+        padding: 30px;
+        min-height: 100vh;
+        transition: 0.3s;
+    }
+
+    /* MOBILE RESPONSIVE */
+    @media (max-width: 768px) {
+        .sidebar {
+            margin-left: -270px;
+        }
+
+        .sidebar.active {
+            margin-left: 0;
+        }
+
+        .main-content {
+            margin-left: 0;
+            padding: 15px;
+        }
+    }
+</style>
+
 <div class="sidebar" id="sidebar">
     <div class="brand-box">
         <h3 class="mb-0 fw-bold text-white"><i class="fas fa-graduation-cap text-info me-2"></i>Vidya Vikas</h3>
